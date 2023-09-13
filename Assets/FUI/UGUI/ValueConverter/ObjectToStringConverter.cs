@@ -1,93 +1,100 @@
-﻿namespace FUI.UGUI.ValueConverter
+﻿using System;
+
+namespace FUI.UGUI.ValueConverter
 {
     /// <summary>
-    /// 将一个object转换成String
+    /// 将一个类型转换成string的模板类
     /// </summary>
-    public class ObjectToStringConverter : ValueConverter<object, string>
+    public abstract class ToStringConverter<T> : ValueConverter<T, string>
     {
-        public override string Convert(object value)
+        public override string Convert(T value)
         {
             return value.ToString();
         }
 
-        public override object ConvertBack(string value)
+        public override T ConvertBack(string value)
         {
-            return value;
+            throw new Exception($"can not convert back string:{value} to {typeof(T)}");
         }
     }
 
     /// <summary>
+    /// 将一个object转换成String
+    /// </summary>
+    public class ObjectToStringConverter : ToStringConverter<object> { }
+
+    /// <summary>
     /// 将一个int转换成string
     /// </summary>
-    public class IntToStringConverter : ValueConverter<int, string>
+    public class IntToStringConverter : ToStringConverter<int>
     {
-        public override string Convert(int value)
-        {
-            return value.ToString();
-        }
         public override int ConvertBack(string value)
         {
-            return int.Parse(value);
+            if(!int.TryParse(value, out int result))
+            {
+                throw new Exception ($"can not convert back string:{value} to int32");
+            }
+            return result;
         }
     }
 
     /// <summary>
     /// 将一个long转换成string
     /// </summary>
-    public class LongToStringConverter : ValueConverter<long, string>
+    public class LongToStringConverter : ToStringConverter<long>
     {
-        public override string Convert(long value)
-        {
-            return value.ToString();
-        }
         public override long ConvertBack(string value)
         {
-            return long.Parse(value);
+            if(!long.TryParse(value, out long result))
+            {
+                throw new Exception($"can not convert back string:{value} to int64");
+            }
+            return result;
         }
     }
 
     /// <summary>
     /// 将一个float转换成string
     /// </summary>
-    public class FloatToStringConverter : ValueConverter<float, string>
+    public class FloatToStringConverter : ToStringConverter<float>
     {
-        public override string Convert(float value)
-        {
-            return value.ToString();
-        }
         public override float ConvertBack(string value)
         {
-            return float.Parse(value);
+            if(!float.TryParse(value, out float result))
+            {
+                throw new Exception($"can not convert back string:{value} to float");
+            }
+            return result;
         }
     }
 
     /// <summary>
     /// 将一个double转换成string
     /// </summary>
-    public class DoubleToStringConverter : ValueConverter<double, string>
+    public class DoubleToStringConverter : ToStringConverter<double>
     {
-        public override string Convert(double value)
-        {
-            return value.ToString();
-        }
         public override double ConvertBack(string value)
         {
-            return double.Parse(value);
+            if(!double.TryParse(value, out double result))
+            {
+                throw new Exception($"can not convert back string:{value} to double");
+            }
+            return result;
         }
     }
 
     /// <summary>
     /// 将一个bool转换成string
     /// </summary>
-    public class BoolToStringConverter : ValueConverter<bool, string>
+    public class BoolToStringConverter : ToStringConverter<bool>
     {
-        public override string Convert(bool value)
-        {
-            return value.ToString();
-        }
         public override bool ConvertBack(string value)
         {
-            return bool.Parse(value);
+            if(!bool.TryParse(value, out bool result))
+            {
+                throw new Exception($"can not convert back string:{value} to bool");
+            }
+            return result;
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using FUI.Test;
-using FUI.UGUI.ValueConverter;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,6 +15,7 @@ namespace FUI.Editor.Drawer
     [CustomEditor(typeof(Binding))]
     public class BindingPropertyEditor : UnityEditor.Editor
     {
+        const string BindingOutputPath = "./Library/Binding";
         
         public override VisualElement CreateInspectorGUI()
         {
@@ -34,12 +32,20 @@ namespace FUI.Editor.Drawer
             saveButton.text = "Save";
             saveButton.clicked += () =>
             {
-                var path = EditorUtility.SaveFilePanel("Save", Application.dataPath, binding.gameObject.name, "binding");
-                if (!string.IsNullOrEmpty(path))
+                var fileName = $"{binding.config.viewName}.binding";
+                var filePath = Path.Combine(BindingOutputPath, fileName);
+                if(!Directory.Exists(BindingOutputPath)) 
                 {
-                    var json = JsonUtility.ToJson(binding.config, true);
-                    File.WriteAllText(path, json);
+                    Directory.CreateDirectory(BindingOutputPath);
                 }
+
+                var json = JsonUtility.ToJson(binding.config, true);
+                if(File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+                File.WriteAllText(filePath, json);
+                UnityEngine.Debug.Log($"save to {filePath}");
             };
             rootElement.Add(saveButton);
 
@@ -58,8 +64,10 @@ namespace FUI.Editor.Drawer
             contextList.selectionType = SelectionType.None;
             rootElement.Add(contextList);
 
-            var addContextBtn = new Button();
-            addContextBtn.text = "AddBindingContext";
+            var addContextBtn = new Button
+            {
+                text = "AddBindingContext"
+            };
             addContextBtn.clicked += () =>
             {
                 binding.config.contexts.Add(new BindingContext());
