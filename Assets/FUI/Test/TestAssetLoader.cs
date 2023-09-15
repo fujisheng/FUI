@@ -18,7 +18,7 @@ namespace FUI.Test
             throw new NotImplementedException();
         }
 
-        public void DestroyGameObject(string path)
+        public void DestroyGameObject(GameObject gameObject)
         {
             throw new NotImplementedException();
         }
@@ -31,6 +31,11 @@ namespace FUI.Test
         public async Task<T> LoadAsync<T>(string path) where T : UnityEngine.Object
         {
             throw new NotImplementedException();
+        }
+
+        public void Release()
+        {
+            
         }
     }
 }

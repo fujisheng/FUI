@@ -11,7 +11,7 @@ namespace FUI.UGUI.VisualElement
         {
             image = GetComponent<Image>();
         }
-        public override void SetValue(Sprite value)
+        public override void UpdateValue(Sprite value)
         {
             image.sprite = value;
         }

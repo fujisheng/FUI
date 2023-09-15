@@ -10,6 +10,7 @@ namespace FUI
         Task<T> LoadAsync<T>(string path) where T : Object;
         GameObject CreateGameObject(string path);
         Task<GameObject> CreateGameObjectAsync(string path);
-        void DestroyGameObject(string path);
+        void DestroyGameObject(GameObject gameObject);
+        void Release();
     }
 }

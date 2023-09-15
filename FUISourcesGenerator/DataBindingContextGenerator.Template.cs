@@ -8,11 +8,13 @@
         const string ViewModelTypeMark = "*ViewModelType*";
         const string ViewModelNameMark = "*ViewModelName*";
         const string ConvertersMark = "*Converters*";
+        const string DefaultViewModelTypeMark = "*DefaultViewModelType*";
 
 
         const string Template = @"
 namespace __DataBindingGenerated
 {
+    [FUI.DefaultViewModel(typeof(*DefaultViewModelType*))]
     public class __*ViewName*_Binding_Generated : FUI.UGUI.UGUIView
     {
 *Converters*
@@ -60,7 +62,7 @@ namespace __DataBindingGenerated
     {
         throw new System.Exception($""{this.Name} GetVisualElement type:{typeof(*ElementType*)} path:{@""*ElementPath*""} failed""); 
     }
-    element.SetValue(convertedValue);
+    element.UpdateValue(convertedValue);
 };
 ";
     }

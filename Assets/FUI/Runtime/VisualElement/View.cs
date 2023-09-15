@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace FUI
 {
-    public abstract class View
+    public abstract partial class View
     {
         #region 视觉元素查找键
         readonly struct ElementKey : IEquatable<ElementKey>
@@ -172,6 +172,15 @@ namespace FUI
                 return default;
             }
             return (TVisualElement)visualElement;
+        }
+
+        /// <summary>
+        /// 当这个界面被销毁的时候
+        /// </summary>
+        public virtual void OnDestroy()
+        {
+            Unbinding();
+            RemoveVisualElements();
         }
     }
 }

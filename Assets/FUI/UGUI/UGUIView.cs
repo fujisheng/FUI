@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using FUI.Bindable;
+
+using UnityEngine;
 
 namespace FUI.UGUI
 {
@@ -16,7 +18,7 @@ namespace FUI.UGUI
         /// <param name="bindingContext">绑定的上下文</param>
         /// <param name="assetLoader">资源加载器</param>
         /// <param name="assetPath">这个view的资源路径</param>
-        public UGUIView(ViewModel bindingContext, IAssetLoader assetLoader, string assetPath, string viewName) : base(bindingContext, viewName)
+        public UGUIView(ObservableObject bindingContext, IAssetLoader assetLoader, string assetPath, string viewName) : base(bindingContext, viewName)
         {
             this.assetLoader = assetLoader;
             this.gameObject = assetLoader.CreateGameObject(assetPath);
@@ -29,7 +31,7 @@ namespace FUI.UGUI
         /// <param name="gameObject">这个view对应的gameobject</param>
         /// <param name="bindingContext">绑定的上下文</param>
         /// <param name="assetLoader">这个view对应的资源加载器</param>
-        public UGUIView(ViewModel bindingContext, IAssetLoader assetLoader, GameObject gameObject, string viewName) : base(bindingContext, viewName)
+        public UGUIView(ObservableObject bindingContext, IAssetLoader assetLoader, GameObject gameObject, string viewName) : base(bindingContext, viewName)
         {
             this.assetLoader = assetLoader;
             this.gameObject = gameObject;
@@ -47,6 +49,16 @@ namespace FUI.UGUI
                 element.SetAssetLoader(assetLoader);
                 AddVisualElement(element.name, element);
             }
+        }
+
+        /// <summary>
+        /// 当这个界面被销毁的时候
+        /// </summary>
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            assetLoader.DestroyGameObject(gameObject);
+            assetLoader.Release();
         }
     }
 }

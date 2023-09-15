@@ -1,0 +1,2 @@
+﻿添加Command绑定
+让View也是一个Element

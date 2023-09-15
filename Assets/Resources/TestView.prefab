@@ -400,7 +400,7 @@ GameObject:
   - component: {fileID: 3145704663778077795}
   - component: {fileID: 7044993777799422260}
   - component: {fileID: 5146929232749467492}
-  - component: {fileID: 8033806515645708669}
+  - component: {fileID: 3359992775409552562}
   m_Layer: 5
   m_Name: TestView
   m_TagString: Untagged
@@ -493,7 +493,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &8033806515645708669
+--- !u!114 &3359992775409552562
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -502,7 +502,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5930938856053180566}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7efd9ea47d38a0844bcfeca4a4e74b73, type: 3}
+  m_Script: {fileID: 11500000, guid: e61d52e5e1a6d884ba7e25cbe5ae6ca3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   config:
@@ -512,7 +512,7 @@ MonoBehaviour:
       properties:
       - name: Name
         type: FUI.Test.Name
-        converterType: FUI.UGUI.ValueConverter.ObjectToStringConverter
+        converterType: FUI.ObjectToStringConverter
         elementPath: txt_Name
         elementType: FUI.UGUI.VisualElement.TextElement
         converterValueType: System.Object
@@ -520,7 +520,7 @@ MonoBehaviour:
         elementValueType: System.String
       - name: ID
         type: System.Int32
-        converterType: FUI.UGUI.ValueConverter.IntToStringConverter
+        converterType: FUI.IntToStringConverter
         elementPath: txt_ID
         elementType: FUI.UGUI.VisualElement.TextElement
         converterValueType: System.Int32
@@ -528,7 +528,7 @@ MonoBehaviour:
         elementValueType: System.String
       - name: Age
         type: System.Int32
-        converterType: FUI.UGUI.ValueConverter.IntToStringConverter
+        converterType: FUI.IntToStringConverter
         elementPath: txt_Age
         elementType: FUI.UGUI.VisualElement.TextElement
         converterValueType: System.Int32

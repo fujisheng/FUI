@@ -2,14 +2,16 @@
 
 namespace FUI.UGUI.ValueConverter
 {
-    public class StringToSpriteConverter : AssetLoadableValueConverter<string, Sprite>
+    /// <summary>
+    /// 将string转换成Sprite
+    /// </summary>
+    public class StringToSpriteConverter : ValueConverter<string, Sprite, IAssetLoader>
     {
-        public override Sprite Convert(string value)
+        public override Sprite Convert(string value, IAssetLoader assetLoader)
         {
-            return AssetLoader.Load<Sprite>(value);
+            return assetLoader.Load<Sprite>(value);
         }
-
-        public override string ConvertBack(Sprite value)
+        public override string ConvertBack(Sprite value, IAssetLoader assetLoader)
         {
             return value.name;
         }

@@ -25,7 +25,7 @@ namespace FUI.UGUI
         /// 当绑定的值更改的时候
         /// </summary>
         /// <param name="value"></param>
-        public abstract void SetValue(object value);
+        public abstract void UpdateValue(object value);
     }
 
     /// <summary>
@@ -38,21 +38,21 @@ namespace FUI.UGUI
         /// 设置值
         /// </summary>
         /// <param name="value">值</param>
-        public abstract void SetValue(TValue value);
+        public abstract void UpdateValue(TValue value);
 
         /// <summary>
         /// 设置值
         /// </summary>
         /// <param name="value">值</param>
         /// <exception cref="System.Exception"></exception>
-        public override void SetValue(object value)
+        public override void UpdateValue(object value)
         {
             if(!(value is TValue genericValue))
             {
                 throw new System.Exception($"can not convert {value.GetType()} to {typeof(TValue)}");
             }
 
-            SetValue(genericValue);
+            UpdateValue(genericValue);
         }
     }
 }

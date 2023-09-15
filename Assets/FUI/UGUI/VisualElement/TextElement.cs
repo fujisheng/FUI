@@ -13,7 +13,7 @@ namespace FUI.UGUI.VisualElement
             text = transform.GetComponent<Text>();
         }
 
-        public override void SetValue(string value)
+        public override void UpdateValue(string value)
         {
             text.text = value;
         }

@@ -15,7 +15,7 @@ namespace FUI.UGUI.VisualElement
             button = transform.GetComponent<Button>();
         }
 
-        public override void SetValue(Action value)
+        public override void UpdateValue(Action value)
         {
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(()=>value.Invoke());

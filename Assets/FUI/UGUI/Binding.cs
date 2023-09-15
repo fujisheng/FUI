@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-namespace FUI.Editor
+namespace FUI.UGUI
 {
     [Serializable]
     public class BindingProperty

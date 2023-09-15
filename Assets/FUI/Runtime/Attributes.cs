@@ -42,4 +42,17 @@ namespace FUI
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
     public class ObservablePropertyAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public class CommandAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    public class DefaultViewModelAttribute : Attribute
+    {
+        public Type type;
+        public DefaultViewModelAttribute(Type type)
+        {
+            this.type = type;
+        }
+    }
 }

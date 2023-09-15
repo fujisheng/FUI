@@ -2,7 +2,6 @@
 using FUI.Bindable;
 
 using System;
-using System.Collections.Generic;
 
 namespace FUI.Test
 {
@@ -53,9 +52,16 @@ namespace FUI.Test
         //    List = new ObservableList<ItemData> { 1, 2, 3 };
         //}
 
-        protected virtual void OnSubmit()
+        [Command]
+        public virtual void OnSubmit()
         {
             UnityEngine.Debug.Log("ClickBtn TestViewModel....");
+        }
+
+        [Command]
+        public virtual void OnClickItem(int index)
+        {
+            UnityEngine.Debug.Log($"ClickItem {index} TestViewModel....");
         }
     }
 }

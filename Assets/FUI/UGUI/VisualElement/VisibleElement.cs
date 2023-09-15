@@ -2,7 +2,7 @@
 {
     public class VisibleElement : UGUIVisualElement<bool>
     {
-        public override void SetValue(bool value)
+        public override void UpdateValue(bool value)
         {
             gameObject.SetActive(value);
         }

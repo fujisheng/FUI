@@ -1,4 +1,7 @@
-﻿using System;
+﻿using FUI.Bindable;
+using FUI.UGUI;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -85,15 +88,15 @@ namespace FUI.Editor.Drawer
 
         void RefreshContextItem(BindingContext itemData, VisualElement itemView)
         {
-            var viewModels = GetAssignableTypes<ViewModel>();
-            var viewModelSelector = itemView.Q<PopupField<Type>>("ViewModelSelector");
-            SetChoices(viewModelSelector, viewModels);
-            var selected = viewModels.Find((x)=>x.FullName == itemData.type);
+            var observableObjects = GetHasCustomAttributeTypes<ObservableObjectAttribute>();
+            var observableObjectSelector = itemView.Q<PopupField<Type>>("ObservableObjectSelector");
+            SetChoices(observableObjectSelector, observableObjects);
+            var selected = observableObjects.Find((x)=>x.FullName == itemData.type);
             if (selected != null)
             {
-                viewModelSelector.value = selected;
+                observableObjectSelector.value = selected;
             }
-            viewModelSelector.RegisterCallback<ChangeEvent<Type>>((evt) =>
+            observableObjectSelector.RegisterCallback<ChangeEvent<Type>>((evt) =>
             {
                 itemData.type = evt.newValue.FullName;
                 if (evt.newValue != null)
@@ -107,7 +110,7 @@ namespace FUI.Editor.Drawer
             propertyList.style.height = propertyList.itemsSource.Count * propertyList.itemHeight;
 
             var addPropertyBtn = itemView.Q<Button>("AddPropertyBtn");
-            addPropertyBtn.visible = viewModelSelector.value != null && (propertyList.itemsSource == null || propertyList.itemsSource.Count == 0);
+            addPropertyBtn.visible = observableObjectSelector.value != null && (propertyList.itemsSource == null || propertyList.itemsSource.Count == 0);
             addPropertyBtn.clicked += () =>
             {
                 itemData.properties.Add(new BindingProperty());
@@ -139,7 +142,7 @@ namespace FUI.Editor.Drawer
                     toolbar.style.backgroundColor = new Color(38f / 255f, 38f / 255f, 38f / 255f, 1f);
                     var viewModelSelector = new PopupField<Type>
                     {
-                        name = "ViewModelSelector",
+                        name = "ObservableObjectSelector",
                         formatSelectedValueCallback = (x) => x == null ? string.Empty : x.Name,
                         formatListItemCallback= (x) => x == null ? string.Empty : x.FullName,
                     };
@@ -203,11 +206,10 @@ namespace FUI.Editor.Drawer
 
         void RefreshPropertyItem(BindingProperty itemData, VisualElement itemView, ListView list, int index)
         {
-            var viewModelType = list.parent.Q<PopupField<Type>>("ViewModelSelector").value;
+            var observableObjectType = list.parent.Q<PopupField<Type>>("ObservableObjectSelector").value;
             //要绑定的属性选择
             var propertySelector = itemView.Q<PopupField<PropertyInfo>>("PropertySelector");
-            var properties = new List<PropertyInfo>();
-            properties.AddRange(viewModelType.GetProperties());
+            var properties = GetHasCustomAttributeProperties<ObservablePropertyAttribute>(observableObjectType);
             SetChoices(propertySelector, properties);
             propertySelector.RegisterCallback<ChangeEvent<PropertyInfo>>((evt) =>
             {
@@ -441,7 +443,7 @@ namespace FUI.Editor.Drawer
         {
             foreach(var @interface in converterType.GetInterfaces())
             {
-                if(@interface.IsGenericType && @interface.GetGenericTypeDefinition() == typeof(IValueConverter<,>))
+                if(@interface.IsGenericType && @interface.GetGenericTypeDefinition() == typeof(IValueConverter<,,>))
                 {
                     return (@interface.GetGenericArguments()[0], @interface.GetGenericArguments()[1]);
                 }
@@ -463,6 +465,28 @@ namespace FUI.Editor.Drawer
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// 获取拥有某个自定义特性的所有类型
+        /// </summary>
+        List<Type> GetHasCustomAttributeTypes<T>() where T : Attribute
+        {
+            var result = new List<Type>();
+
+            foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                result.AddRange(assembly.GetTypes().Where(x => x.GetCustomAttribute<T>(false) != null));
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取一个类型拥有某个自定义特性的所有属性
+        /// </summary>
+        List<PropertyInfo> GetHasCustomAttributeProperties<T>(Type type) where T : Attribute
+        {
+            return type.GetProperties().Where(x => x.GetCustomAttribute<T>() != null).ToList();
         }
     }
 }

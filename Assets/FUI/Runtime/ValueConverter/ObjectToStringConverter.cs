@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FUI.UGUI.ValueConverter
+namespace FUI
 {
     /// <summary>
     /// 将一个类型转换成string的模板类
@@ -54,6 +54,36 @@ namespace FUI.UGUI.ValueConverter
     }
 
     /// <summary>
+    /// 将一个short转换成string
+    /// </summary>
+    public class ShortToStringConverter : ToStringConverter<short>
+    {
+        public override short ConvertBack(string value)
+        {
+            if(!short.TryParse(value, out short result))
+            {
+                throw new Exception($"can not convert back string:{value} to int16");
+            }
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// 将一个byte转换成string
+    /// </summary>
+    public class ByteToStringConverter : ToStringConverter<byte>
+    {
+        public override byte ConvertBack(string value)
+        {
+            if(!byte.TryParse(value, out byte result))
+            {
+                throw new Exception($"can not convert back string:{value} to byte");
+            }
+            return result;
+        }
+    }
+
+    /// <summary>
     /// 将一个float转换成string
     /// </summary>
     public class FloatToStringConverter : ToStringConverter<float>
@@ -84,6 +114,21 @@ namespace FUI.UGUI.ValueConverter
     }
 
     /// <summary>
+    /// 将一个decimal转换成string
+    /// </summary>
+    public class DecimalToStringConverter : ToStringConverter<decimal>
+    {
+        public override decimal ConvertBack(string value)
+        {
+            if(!decimal.TryParse(value, out decimal result))
+            {
+                throw new Exception($"can not convert back string:{value} to decimal");
+            }
+            return result;
+        }
+    }
+
+    /// <summary>
     /// 将一个bool转换成string
     /// </summary>
     public class BoolToStringConverter : ToStringConverter<bool>
@@ -97,4 +142,9 @@ namespace FUI.UGUI.ValueConverter
             return result;
         }
     }
+
+    /// <summary>
+    /// 将一个enum转换成string
+    /// </summary>
+    public class EnumToStringConverter : ToStringConverter<Enum> { }
 }

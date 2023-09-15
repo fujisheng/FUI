@@ -28,11 +28,13 @@ namespace FUISourcesGenerator
                 var bindingBuilder = new StringBuilder();
                 HashSet<string> converterTypes = new HashSet<string>();
                 HashSet<string> propertyDelegates = new HashSet<string>();
+                string defaultViewModelType = null;
                 foreach (var bindingContext in config.contexts)
                 {
                     var bindingItemsBuilder = new StringBuilder();
                     var vmName = GetFormattedType(bindingContext.type);
-                    
+                    defaultViewModelType = defaultViewModelType ?? bindingContext.type;
+
                     foreach(var property in bindingContext.properties)
                     {
                         var delegateName = Utility.GetPropertyChangedDelegateName(property.name);
@@ -54,6 +56,7 @@ namespace FUISourcesGenerator
                     bindingBuilder.AppendLine(bindingItem);
                 }
                 code = code.Replace(BindingMark, bindingBuilder.ToString());
+                code = code.Replace(DefaultViewModelTypeMark, defaultViewModelType);
 
                 var convertersBuilder = new StringBuilder();
                 foreach (var converterType in converterTypes)
