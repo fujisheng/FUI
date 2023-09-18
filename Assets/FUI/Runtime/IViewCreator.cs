@@ -40,11 +40,6 @@ namespace FUI
     public interface IViewCreator
     {
         /// <summary>
-        /// 初始化
-        /// </summary>
-        void Initialize();
-
-        /// <summary>
         /// 创建一个界面
         /// </summary>
         /// <param name="param">界面参数</param>

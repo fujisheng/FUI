@@ -33,7 +33,6 @@ namespace FUI.UGUI
         public string viewName = "TestView";
         [SerializeField]
         public List<BindingContext> contexts = new List<BindingContext>();
-        //public BindingContext defaultContext;
     }
 
     public class Binding : MonoBehaviour

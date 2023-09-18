@@ -31,7 +31,6 @@ namespace FUI
         public virtual void Initialize()
         {
             EnsureCreator();
-            creator.Initialize();
         }
 
         /// <summary>

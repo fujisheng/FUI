@@ -33,6 +33,8 @@ namespace FUI.Editor.Drawer
             var rootElement = new VisualElement();
             var saveButton = new Button();
             saveButton.text = "Save";
+            saveButton.name = "SaveButton";
+            saveButton.visible = binding.config.contexts.Count > 0;
             saveButton.clicked += () =>
             {
                 var fileName = $"{binding.config.viewName}.binding";
@@ -52,32 +54,46 @@ namespace FUI.Editor.Drawer
             };
             rootElement.Add(saveButton);
 
+            var addContextBtn = new Button();
+            addContextBtn.text = "Add Context";
+            addContextBtn.name = "AddContextButton";
+            addContextBtn.clicked += () =>
+            {
+                binding.config.contexts.Add(new BindingContext());
+                rootElement.Q<ListView>("ContextList").Refresh();
+                RefreshRoot(rootElement, binding);
+            };
+            rootElement.Add(addContextBtn);
+           
             var contextList = new ListView
             {
                 itemHeight = 200,
                 makeItem = () => CreateContextItem(),
             };
+            contextList.name = "ContextList";
             contextList.style.height = 400;
             contextList.bindItem = (e, i) =>
             {
                 var itemData = contextList.itemsSource[i] as BindingContext;
-                RefreshContextItem(itemData, e);
+                RefreshContextItem(rootElement, contextList, e, i);
             };
             contextList.itemsSource = binding.config.contexts;
             contextList.selectionType = SelectionType.None;
-            rootElement.Add(contextList);
 
-            var addContextBtn = new Button
-            {
-                text = "AddBindingContext"
-            };
-            addContextBtn.clicked += () =>
-            {
-                binding.config.contexts.Add(new BindingContext());
-                contextList.itemsSource = binding.config.contexts;
-            };
-            rootElement.Add(addContextBtn);
+            rootElement.Add(contextList);
+            RefreshRoot(rootElement, binding);
             return rootElement;
+        }
+
+        void RefreshRoot(VisualElement rootElement, Binding binding)
+        {
+            var saveButton = rootElement.Q<Button>("SaveButton");
+            saveButton.visible = binding.config.contexts.Count > 0;
+            saveButton.style.height = binding.config.contexts.Count > 0 ? 20 : 0;
+
+            var addContextBtn = rootElement.Q<Button>("AddContextButton");
+            addContextBtn.visible = binding.config.contexts.Count == 0;
+            addContextBtn.style.height = binding.config.contexts.Count == 0 ? 20 : 0;
         }
 
         void SetChoices<T>(PopupField<T> popupField, List<T> choices)
@@ -86,8 +102,9 @@ namespace FUI.Editor.Drawer
             prop.SetValue(popupField, choices);
         }
 
-        void RefreshContextItem(BindingContext itemData, VisualElement itemView)
+        void RefreshContextItem(VisualElement root, ListView list, VisualElement itemView, int index)
         {
+            var itemData = list.itemsSource[index] as BindingContext;
             var observableObjects = GetHasCustomAttributeTypes<ObservableObjectAttribute>();
             var observableObjectSelector = itemView.Q<PopupField<Type>>("ObservableObjectSelector");
             SetChoices(observableObjectSelector, observableObjects);
@@ -101,7 +118,7 @@ namespace FUI.Editor.Drawer
                 itemData.type = evt.newValue.FullName;
                 if (evt.newValue != null)
                 {
-                    RefreshContextItem(itemData, itemView);
+                    list.Refresh();
                 }
             });
 
@@ -114,18 +131,30 @@ namespace FUI.Editor.Drawer
             addPropertyBtn.clicked += () =>
             {
                 itemData.properties.Add(new BindingProperty());
-                RefreshContextItem(itemData, itemView);
+                list.Refresh();
             };
 
             var addContextBtn = itemView.Q<Button>("AddContextBtn");
             addContextBtn.clicked += () =>
             {
+                if(index >= list.itemsSource.Count - 1)
+                {
+                    list.itemsSource.Add(new BindingContext());
+                }
+                else
+                {
+                    list.itemsSource.Insert(index + 1, new BindingContext());
+                }
 
+                list.Refresh();
             };
 
             var removeContextBtn = itemView.Q<Button>("RemoveContextBtn");
             removeContextBtn.clicked += () =>
             {
+                list.itemsSource.RemoveAt(index);
+                list.Refresh();
+                RefreshRoot(root, target as Binding);
             };
         }
 
@@ -175,6 +204,7 @@ namespace FUI.Editor.Drawer
                         var titleItem = new TextElement { text = t };
                         titleItem.style.width = 155;
                         titleItem.style.left = 5;
+                        titleItem.style.height = 30;
                         title.Add(titleItem);
                     }
                 }
@@ -188,7 +218,7 @@ namespace FUI.Editor.Drawer
                 };
                 propertyList.bindItem = (e, i) =>
                 {
-                    RefreshPropertyItem(propertyList.itemsSource[i] as BindingProperty, e, propertyList, i);
+                    RefreshPropertyItem(propertyList, e, i);
                 };
                 propertyList.style.height = 200;
                 propertyList.selectionType = SelectionType.None;
@@ -204,8 +234,10 @@ namespace FUI.Editor.Drawer
             return element;
         }
 
-        void RefreshPropertyItem(BindingProperty itemData, VisualElement itemView, ListView list, int index)
+        void RefreshPropertyItem(ListView list, VisualElement itemView, int index)
         {
+            var itemData = list.itemsSource[index] as BindingProperty;
+
             var observableObjectType = list.parent.Q<PopupField<Type>>("ObservableObjectSelector").value;
             //要绑定的属性选择
             var propertySelector = itemView.Q<PopupField<PropertyInfo>>("PropertySelector");
@@ -242,7 +274,7 @@ namespace FUI.Editor.Drawer
             {
                 if(evt.newValue == null)
                 {
-                    itemData.converterType = evt.newValue.FullName;
+                    itemData.converterType = string.Empty;
                     itemData.converterValueType = string.Empty;
                     itemData.converterTargetType = string.Empty;
                 }
@@ -263,6 +295,7 @@ namespace FUI.Editor.Drawer
             {
                 var obj = evt.newValue;
                 itemData.elementPath = GetChildPath(evt.newValue as GameObject);
+                list.Refresh();
             });
             var root = (target as MonoBehaviour).gameObject;
             if (!string.IsNullOrEmpty(itemData.elementPath))
@@ -301,7 +334,14 @@ namespace FUI.Editor.Drawer
             var addPropertyBtn = itemView.Q<Button>("AddPropertyBtn");
             addPropertyBtn.clicked += () =>
             {
-                list.itemsSource.Insert(index, new BindingProperty());
+                if(index >= list.itemsSource.Count - 1)
+                {
+                    list.itemsSource.Add(new BindingProperty());
+                }
+                else
+                {
+                    list.itemsSource.Insert(index + 1, new BindingProperty());
+                }
                 list.style.height = list.itemsSource.Count * list.itemHeight;
                 list.Refresh();
             };
