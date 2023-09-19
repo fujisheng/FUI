@@ -12,20 +12,23 @@ namespace FUI
         ObservableObject viewModel;
         ViewBehavior behavior;
 
+        private Container() { }
+
         /// <summary>
-        /// 初始化容器
+        /// 构建一个容器
         /// </summary>
         /// <param name="view">对应的View</param>
         /// <param name="viewModel">对应的ViewModel</param>
         /// <param name="behavior">对应的Behavior</param></param>
-        internal Container(View view, ObservableObject viewModel, ViewBehavior behavior)
+        public static Container Create(View view, ObservableObject viewModel, ViewBehavior behavior)
         {
-            this.Name = view.Name;
-            this.view = view;
-            this.viewModel = viewModel;
-            this.behavior = behavior;
-
-            this.behavior.OnCreate(viewModel);
+            var container = new Container();
+            container.Name = view.Name;
+            container.view = view;
+            container.viewModel = viewModel;
+            container.behavior = behavior;
+            behavior.OnCreate(viewModel);
+            return container;
         }
 
         /// <summary>
@@ -33,6 +36,7 @@ namespace FUI
         /// </summary>
         internal void Open(object param)
         {
+            this.view.Enable();
             this.behavior.OnOpen(param);
         }
 
@@ -42,24 +46,25 @@ namespace FUI
         internal void Close()
         {
             this.behavior.OnClose();
+            this.view.Disable();
         }
 
         /// <summary>
-        /// 暂停这个容器
+        /// 聚焦这个容器
         /// </summary>
-        internal void Pause()
-        {
-            this.behavior.OnPause();
-            this.view.Unbinding();
-        }
-
-        /// <summary>
-        /// 恢复这个容器
-        /// </summary>
-        internal void Resume()
+        internal void Focus()
         {
             this.view.Binding(this.viewModel);
-            this.behavior.OnResume();
+            this.behavior.OnFocus();
+        }
+
+        /// <summary>
+        /// 失焦这个容器
+        /// </summary>
+        internal void Unfocus()
+        {
+            this.behavior.OnUnfocus();
+            this.view.Unbinding();
         }
 
         /// <summary>
@@ -68,7 +73,7 @@ namespace FUI
         internal void Destroy()
         {
             this.behavior.OnDestroy();
-            this.view.OnDestroy();
+            this.view.Destroy();
         }
     }
 }

@@ -3,6 +3,7 @@ using FUI.Test;
 
 namespace Assets.FUI.Test
 {
+    [DefaultViewConfig(asset = "TestView.prefab", layer = Layer.Common, viewType = ViewType.Normal)]
     internal class TestViewBehavior : ViewBehavior<TestViewModel>
     {
         protected override void OnCreate()

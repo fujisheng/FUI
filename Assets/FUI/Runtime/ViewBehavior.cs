@@ -28,19 +28,19 @@ namespace FUI
         public virtual void OnOpen(object param) { }
 
         /// <summary>
+        /// 当这个界面是当前聚焦的View的时候
+        /// </summary>
+        public virtual void OnFocus() { }
+
+        /// <summary>
+        /// 当这个界面失焦的时候
+        /// </summary>
+        public virtual void OnUnfocus() { }
+
+        /// <summary>
         /// 当关闭这个View的时候
         /// </summary>
         public virtual void OnClose() { }
-
-        /// <summary>
-        /// 当暂停这个View的时候 一般是切换到其他View的时候
-        /// </summary>
-        public virtual void OnPause() { }
-
-        /// <summary>
-        /// 当恢复这个View的时候 一般是从其他View切换回来的时候
-        /// </summary>
-        public virtual void OnResume() { }
 
         /// <summary>
         /// 当销毁这个View的时候

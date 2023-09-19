@@ -50,6 +50,11 @@ namespace FUI
         protected ObservableObject BindingContext { get; private set; }
 
         /// <summary>
+        /// 是否已经绑定了
+        /// </summary>
+        bool binding = false;
+
+        /// <summary>
         /// 界面名
         /// </summary>
         public string Name { get; private set; }
@@ -98,6 +103,7 @@ namespace FUI
 
             this.BindingContext = bindingContext ?? throw new System.Exception($"{Name} binding error: bindingContext is null");
             this.BindingContext.PropertyChanged += OnPropertyChanged;
+            this.binding = true;
         }
 
         /// <summary>
@@ -112,6 +118,7 @@ namespace FUI
 
             this.BindingContext.PropertyChanged -= OnPropertyChanged;
             this.BindingContext = null;
+            this.binding = false;
         }
 
         /// <summary>
@@ -175,9 +182,37 @@ namespace FUI
         }
 
         /// <summary>
-        /// 当这个界面被销毁的时候
+        /// 激活这个界面
         /// </summary>
-        public virtual void OnDestroy()
+        public virtual void Enable()
+        {
+            if(this.binding == true)
+            {
+                return;
+            }
+
+            if(this.BindingContext == null)
+            {
+                throw new System.Exception($"{Name} enable error: bindingContext is null");
+            }
+
+            Binding(this.BindingContext);
+        }
+
+        /// <summary>
+        /// 反激活这个界面
+        /// </summary>
+        public virtual void Disable()
+        {
+            var bindingContext = this.BindingContext;
+            Unbinding();
+            this.BindingContext = bindingContext;
+        }
+
+        /// <summary>
+        /// 销毁这个界面
+        /// </summary>
+        public virtual void Destroy()
         {
             Unbinding();
             RemoveVisualElements();

@@ -9,7 +9,7 @@ namespace FUI
     /// <summary>
     /// 界面创建参数
     /// </summary>
-    public struct ViewCreateParam
+    public struct ViewBuildParam
     {
         /// <summary>
         /// 界面名字
@@ -26,7 +26,7 @@ namespace FUI
         /// </summary>
         public Type viewBehaviorType;
 
-        public ViewCreateParam(string viewName, Type viewModelType = null, Type viewBehaviorType = null)
+        public ViewBuildParam(string viewName, Type viewModelType = null, Type viewBehaviorType = null)
         {
             this.viewName = viewName;
             this.viewModelType = viewModelType;
@@ -37,7 +37,7 @@ namespace FUI
     /// <summary>
     /// 界面构造器
     /// </summary>
-    public interface IViewCreator
+    public interface IViewBuilder
     {
         /// <summary>
         /// 创建一个界面
@@ -46,7 +46,7 @@ namespace FUI
         /// <param name="viewModel">返回的ViewModel</param>
         /// <param name="behavior">返回的ViewBehavior</param>
         /// <returns>要打开的View</returns>
-        View CreateView(ViewCreateParam param, out ObservableObject viewModel, out ViewBehavior behavior);
+        View BuildView(ViewBuildParam param, out ObservableObject viewModel, out ViewBehavior behavior);
 
         /// <summary>
         /// 异步创建一个界面
@@ -56,6 +56,6 @@ namespace FUI
         /// <param name="viewModel">返回的ViewModel</param>
         /// <param name="behavior">返回的ViewBehavior</param>
         /// <returns>要打开的View</returns>
-        Task<View> CreateViewAsync(ViewCreateParam param, CancellationToken cancellationToken, out ObservableObject viewModel, out ViewBehavior behavior);
+        Task<View> BuildViewAsync(ViewBuildParam param, CancellationToken cancellationToken, out ObservableObject viewModel, out ViewBehavior behavior);
     }
 }

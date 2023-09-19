@@ -14,7 +14,7 @@ namespace FUI.Test
         UIManager uiManager;
         void Awake()
         {
-            uiManager = new UIManager(new UGUIViewCreator(()=>new TestAssetLoader()));
+            uiManager = new UIManager(new UGUIViewBuilder(()=>new TestAssetLoader()));
             uiManager.Initialize();
             UnityEngine.Debug.Log($"uiManager  initialize........");
         }

@@ -55,4 +55,18 @@ namespace FUI
             this.type = type;
         }
     }
+
+    public class DefaultViewConfigAttribute : Attribute
+    {
+        public string asset;
+        public Layer layer;
+        public ViewType viewType;
+
+        public DefaultViewConfigAttribute(string asset = null, Layer layer = Layer.Common, ViewType viewType = ViewType.Normal)
+        {
+            this.asset = asset;
+            this.layer = layer;
+            this.viewType = viewType;
+        }
+    }
 }

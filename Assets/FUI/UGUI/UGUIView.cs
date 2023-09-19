@@ -52,11 +52,29 @@ namespace FUI.UGUI
         }
 
         /// <summary>
+        /// 暂时直接SetActive
+        /// </summary>
+        public override void Enable()
+        {
+            base.Enable();
+            gameObject.SetActive(true);
+        }
+
+        /// <summary>
+        /// 暂时直接SetActive
+        /// </summary>
+        public override void Disable()
+        {
+            base.Disable();
+            gameObject.SetActive(false);
+        }
+
+        /// <summary>
         /// 当这个界面被销毁的时候
         /// </summary>
-        public override void OnDestroy()
+        public override void Destroy()
         {
-            base.OnDestroy();
+            base.Destroy();
             assetLoader.DestroyGameObject(gameObject);
             assetLoader.Release();
         }
