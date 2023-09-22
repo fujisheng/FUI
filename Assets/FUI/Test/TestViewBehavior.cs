@@ -1,23 +1,27 @@
 ﻿using FUI;
 using FUI.Test;
 
+using System.Threading.Tasks;
+
 namespace Assets.FUI.Test
 {
     [DefaultViewConfig(asset = "TestView.prefab", layer = Layer.Common, viewType = ViewType.Normal)]
     internal class TestViewBehavior : ViewBehavior<TestViewModel>
     {
-        protected override void OnCreate()
+        protected override async void OnCreate()
         {
-            VM.Name = new Name { firstName = "test", lastName = "1Name" };
+            await Task.Delay(1000);
+            VM.Name = new Name { firstName = "test", lastName = "OnCreate" };
             VM.ID = 1;
-            VM.Age = 10;
+            VM.Age = 11;
         }
 
-        public override void OnOpen(object param)
+        protected override async void OnOpen(object param)
         {
-            VM.Name = new Name { firstName = "test", lastName = "openName" };
+            await Task.Delay(2000);
+            VM.Name = new Name { firstName = "test", lastName = "OnOpen" };
             VM.ID = 2;
-            VM.Age = 11;
+            VM.Age = 22;
 
             UnityEngine.Debug.Log($"OnOpen TestView。。。。。。。。。。。。");
         }

@@ -54,7 +54,7 @@ namespace FUI.UGUI
         /// <summary>
         /// 暂时直接SetActive
         /// </summary>
-        public override void Enable()
+        protected override void Enable()
         {
             base.Enable();
             gameObject.SetActive(true);
@@ -63,7 +63,7 @@ namespace FUI.UGUI
         /// <summary>
         /// 暂时直接SetActive
         /// </summary>
-        public override void Disable()
+        protected override void Disable()
         {
             base.Disable();
             gameObject.SetActive(false);
@@ -72,7 +72,7 @@ namespace FUI.UGUI
         /// <summary>
         /// 当这个界面被销毁的时候
         /// </summary>
-        public override void Destroy()
+        protected override void Destroy()
         {
             base.Destroy();
             assetLoader.DestroyGameObject(gameObject);

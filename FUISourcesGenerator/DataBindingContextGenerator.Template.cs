@@ -22,13 +22,13 @@ namespace __DataBindingGenerated
 
         public __*ViewName*_Binding_Generated(FUI.ViewModel bindingContext, FUI.IAssetLoader assetLoader, UnityEngine.GameObject gameObject, string viewName) : base(bindingContext, assetLoader, gameObject, viewName) { }
 
-        public override void Binding(FUI.Bindable.ObservableObject bindingContext)
+        protected override void Binding(FUI.Bindable.ObservableObject bindingContext)
         {
             base.Binding(bindingContext);
 *Binding*
         }
 
-        public override void Unbinding()
+        protected override void Unbinding()
         {
             base.Unbinding();
 *Unbinding*

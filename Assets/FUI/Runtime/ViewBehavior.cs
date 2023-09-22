@@ -16,7 +16,7 @@ namespace FUI
         /// 当创建这个视图行为的时候
         /// </summary>
         /// <param name="vm"></param>
-        public virtual void OnCreate(ObservableObject vm)
+        protected virtual void OnCreate(ObservableObject vm)
         {
             this.VM = vm;
         }
@@ -25,27 +25,36 @@ namespace FUI
         /// 当打开这个View的时候
         /// </summary>
         /// <param name="param">打开时传入的参数</param>
-        public virtual void OnOpen(object param) { }
+        protected virtual void OnOpen(object param) { }
 
         /// <summary>
         /// 当这个界面是当前聚焦的View的时候
         /// </summary>
-        public virtual void OnFocus() { }
+        protected virtual void OnFocus() { }
 
         /// <summary>
         /// 当这个界面失焦的时候
         /// </summary>
-        public virtual void OnUnfocus() { }
+        protected virtual void OnUnfocus() { }
 
         /// <summary>
         /// 当关闭这个View的时候
         /// </summary>
-        public virtual void OnClose() { }
+        protected virtual void OnClose() { }
 
         /// <summary>
         /// 当销毁这个View的时候
         /// </summary>
-        public virtual void OnDestroy() { }
+        protected virtual void OnDestroy() { }
+
+        #region 内部调用
+        internal void InternalOnCreate(ObservableObject vm) => OnCreate(vm);
+        internal void InternalOnOpen(object param) => OnOpen(param);
+        internal void InternalOnFocus() => OnFocus();
+        internal void InternalOnUnfocus() => OnUnfocus();
+        internal void InternalOnClose() => OnClose();
+        internal void InternalOnDestroy() => OnDestroy();
+        #endregion
     }
 
     /// <summary>
@@ -62,7 +71,7 @@ namespace FUI
         /// 当创建的时候
         /// </summary>
         /// <param name="vm"></param>
-        public sealed override void OnCreate(ObservableObject vm)
+        protected sealed override void OnCreate(ObservableObject vm)
         {
             if(vm is TObservableObject tvm)
             {

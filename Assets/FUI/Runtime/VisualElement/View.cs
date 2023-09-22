@@ -1,58 +1,15 @@
 ﻿using FUI.Bindable;
 
-using System;
 using System.Collections.Generic;
 
 namespace FUI
 {
-    public abstract partial class View
+    public abstract partial class View : IView
     {
-        #region 视觉元素查找键
-        readonly struct ElementKey : IEquatable<ElementKey>
-        {
-            public readonly string elementPath;
-            public readonly string elementType;
-
-            public ElementKey(string elementPath, string elementType)
-            {
-                this.elementPath = elementPath;
-                this.elementType = elementType;
-            }
-
-            public ElementKey(string elementPath, Type elementType)
-            {
-                this.elementPath = elementPath;
-                this.elementType = elementType.FullName;
-            }
-
-            public bool IsEmpty => elementPath == null && elementType == null;
-
-            public bool Equals(ElementKey other)
-            {
-                return elementPath == other.elementPath && elementType == other.elementType;
-            }
-
-            public override int GetHashCode()
-            {
-                return elementPath.GetHashCode() ^ elementType.GetHashCode();
-            }
-
-            public override string ToString()
-            {
-                return $"name:{elementPath} type:{elementType}";
-            }
-        }
-        #endregion
-
         /// <summary>
         /// 当前绑定的上下文
         /// </summary>
         protected ObservableObject BindingContext { get; private set; }
-
-        /// <summary>
-        /// 是否已经绑定了
-        /// </summary>
-        bool binding = false;
 
         /// <summary>
         /// 界面名
@@ -62,7 +19,7 @@ namespace FUI
         /// <summary>
         /// 元素查找表
         /// </summary>
-        Dictionary<ElementKey, IVisualElement> elementMap;
+        readonly Dictionary<ElementKey, IVisualElement> elementMap;
 
         /// <summary>
         /// 初始化这个View
@@ -89,38 +46,7 @@ namespace FUI
         /// <param name="propertyName">更改的属性名</param>
         protected virtual void OnPropertyChanged(object sender, string propertyName) { }
 
-        /// <summary>
-        /// 绑定一个上下文
-        /// </summary>
-        /// <param name="bindingContext"></param>
-        /// <exception cref="System.Exception"></exception>
-        public virtual void Binding(ObservableObject bindingContext)
-        {
-            if(this.BindingContext != null)
-            {
-                throw new System.Exception($"{Name} binding error: bindingContext not null, you must unbinding first");
-            }
-
-            this.BindingContext = bindingContext ?? throw new System.Exception($"{Name} binding error: bindingContext is null");
-            this.BindingContext.PropertyChanged += OnPropertyChanged;
-            this.binding = true;
-        }
-
-        /// <summary>
-        /// 解绑上下文
-        /// </summary>
-        public virtual void Unbinding()
-        {
-            if(this.BindingContext == null)
-            {
-                return;
-            }
-
-            this.BindingContext.PropertyChanged -= OnPropertyChanged;
-            this.BindingContext = null;
-            this.binding = false;
-        }
-
+        #region VisualElement
         /// <summary>
         /// 添加一个视觉元素
         /// </summary>
@@ -129,7 +55,7 @@ namespace FUI
         protected void AddVisualElement(string elementName, IVisualElement visualElement)
         {
             var key = new ElementKey(elementName, visualElement.GetType());
-            if(elementMap.ContainsKey(key))
+            if (elementMap.ContainsKey(key))
             {
                 UnityEngine.Debug.LogWarning($"{Name} already contains element {key} will replace it");
             }
@@ -143,15 +69,15 @@ namespace FUI
         protected void RemoveVisualElement(IVisualElement visualElement)
         {
             var removeKey = default(ElementKey);
-            foreach(var kv in elementMap)
+            foreach (var kv in elementMap)
             {
-                if(kv.Value == visualElement)
+                if (kv.Value == visualElement)
                 {
                     removeKey = kv.Key;
                     break;
                 }
             }
-            if(!removeKey.IsEmpty)
+            if (!removeKey.IsEmpty)
             {
                 elementMap.Remove(removeKey);
             }
@@ -174,48 +100,94 @@ namespace FUI
         protected TVisualElement GetVisualElement<TVisualElement>(string elementName) where TVisualElement : IVisualElement
         {
             var key = new ElementKey(elementName, typeof(TVisualElement));
-            if(!elementMap.TryGetValue(key, out var visualElement))
+            if (!elementMap.TryGetValue(key, out var visualElement))
             {
                 return default;
             }
             return (TVisualElement)visualElement;
         }
+        #endregion
 
         /// <summary>
-        /// 激活这个界面
+        /// 绑定一个上下文
         /// </summary>
-        public virtual void Enable()
+        /// <param name="bindingContext"></param>
+        /// <exception cref="System.Exception"></exception>
+        protected virtual void Binding(ObservableObject bindingContext)
         {
-            if(this.binding == true)
+            if(this.BindingContext != null)
+            {
+                throw new System.Exception($"{Name} binding error: bindingContext not null, you must unbinding first");
+            }
+
+            this.BindingContext = bindingContext ?? throw new System.Exception($"{Name} binding error: bindingContext is null");
+            this.BindingContext.PropertyChanged += OnPropertyChanged;
+        }
+
+        /// <summary>
+        /// 解绑上下文
+        /// </summary>
+        protected virtual void Unbinding()
+        {
+            if(this.BindingContext == null)
             {
                 return;
             }
 
-            if(this.BindingContext == null)
-            {
-                throw new System.Exception($"{Name} enable error: bindingContext is null");
-            }
-
-            Binding(this.BindingContext);
+            this.BindingContext.PropertyChanged -= OnPropertyChanged;
+            this.BindingContext = null;
         }
+
+        /// <summary>
+        /// 激活这个界面
+        /// </summary>
+        protected virtual void Enable() { }
 
         /// <summary>
         /// 反激活这个界面
         /// </summary>
-        public virtual void Disable()
-        {
-            var bindingContext = this.BindingContext;
-            Unbinding();
-            this.BindingContext = bindingContext;
-        }
+        protected virtual void Disable() { }
 
         /// <summary>
         /// 销毁这个界面
         /// </summary>
-        public virtual void Destroy()
+        protected virtual void Destroy()
         {
             Unbinding();
             RemoveVisualElements();
         }
+
+        #region IView适配
+        /// <summary>
+        /// 当前绑定的上下文
+        /// </summary>
+        ObservableObject IView.BindingContext => BindingContext;
+
+        /// <summary>
+        /// 绑定一个上下文
+        /// </summary>
+        /// <param name="observableObject"></param>
+        void IView.Binding(ObservableObject observableObject) => Binding(observableObject);
+
+        /// <summary>
+        /// 解绑上下文
+        /// </summary>
+        void IView.Unbinding() => Unbinding();
+
+        /// <summary>
+        /// 激活这个界面
+        /// </summary>
+        void IView.Enable() => Enable();
+
+        /// <summary>
+        /// 反激活这个界面
+        /// </summary>
+        void IView.Disable() => Disable();
+
+        /// <summary>
+        /// 销毁这个界面
+        /// </summary>
+        void IView.Destroy() => Destroy();
+        #endregion
     }
 }

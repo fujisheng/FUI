@@ -10,6 +10,8 @@ namespace FUISourcesGenerator
     {
         public static string ObservableObjectFullName = "FUI.ObservableObjectAttribute";
         public static string ObservablePropertyFullName = "FUI.ObservablePropertyAttribute";
+        public static string SynchronizePropertiesFullName = "FUI.ISynchronizeProperties";
+        public static string SynchronizePropertiesMethodName = "Synchronize";
 
         /// <summary>
         /// 是否拥有某个自定义特性

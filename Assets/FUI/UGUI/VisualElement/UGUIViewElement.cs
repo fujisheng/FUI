@@ -10,10 +10,12 @@ namespace FUI.UGUI.VisualElement
     public class UGUIViewElement : UGUIVisualElement<ObservableObject>
     {
         View view;
+        Type viewType;
+        Binding binding;
         
         void Awake()
         {
-            var binding = gameObject.GetComponent<Binding>();
+            binding = gameObject.GetComponent<Binding>();
             if(binding == null)
             {
                 return;
@@ -24,9 +26,35 @@ namespace FUI.UGUI.VisualElement
                 return;
             }
 
-            view = Activator.CreateInstance(viewType, null, this.AssetLoader, this.gameObject, binding.config.viewName) as View;
+            this.viewType = viewType;
+            
         }
 
-        public override void UpdateValue(ObservableObject value) => view.UpdateValue(value);
+        public override void UpdateValue(ObservableObject value)
+        {
+            if (view == null)
+            {
+                if(viewType == null)
+                {
+                    return;
+                }
+
+                view = Activator.CreateInstance(viewType, value, this.AssetLoader, this.gameObject, binding.config.viewName) as View;
+            }
+            else
+            {
+                view.UpdateValue(value);
+            }
+
+            SynchronizeProperties(value);
+        }
+
+        void SynchronizeProperties(ObservableObject viewModel)
+        {
+            if(viewModel is ISynchronizeProperties synchronizeProperties)
+            {
+                synchronizeProperties.Synchronize();
+            }
+        }
     }
 }

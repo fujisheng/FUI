@@ -16,7 +16,7 @@ namespace FUI.UGUI
             this.assetLoaderCreator = assetLoaderCreator;
         }
 
-        public View BuildView(ViewBuildParam param, out ObservableObject viewModel, out ViewBehavior behavior)
+        public IView BuildView(ViewBuildParam param, out ObservableObject viewModel, out ViewBehavior behavior)
         {
             viewModel = null;
             behavior = null;
@@ -49,12 +49,24 @@ namespace FUI.UGUI
             var assetLoader = assetLoaderCreator?.Invoke();
             var viewObj = assetLoader.CreateGameObject(param.viewName);
             viewModel = Activator.CreateInstance(viewModelType) as ObservableObject;
-            var view = Activator.CreateInstance(viewType, viewModel, assetLoader, viewObj, param.viewName) as View;
+            var view = Activator.CreateInstance(viewType, viewModel, assetLoader, viewObj, param.viewName) as IView;
             behavior = Activator.CreateInstance(behaviorType) as ViewBehavior;
             return view;
         }
 
-        public Task<View> BuildViewAsync(ViewBuildParam param, CancellationToken cancellationToken, out ObservableObject viewModel, out ViewBehavior behavior)
+        public IView BuildView(ViewBuildParam param, ObservableObject viewModel)
+        {
+            if(string.IsNullOrEmpty(param.viewName) || param.viewType == null || viewModel == null)
+            {
+                return null;
+            }
+            var assetLoader = assetLoaderCreator?.Invoke();
+            var viewObj = assetLoader.CreateGameObject(param.viewName);
+            var view = Activator.CreateInstance(param.viewType, viewModel, assetLoader, viewObj, param.viewName) as IView;
+            return view;
+        }
+
+        public Task<IView> BuildViewAsync(ViewBuildParam param, CancellationToken cancellationToken, out ObservableObject viewModel, out ViewBehavior behavior)
         {
             throw new NotImplementedException();
         }

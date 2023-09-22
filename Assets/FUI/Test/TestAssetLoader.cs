@@ -13,14 +13,15 @@ namespace FUI.Test
             return UnityEngine.Object.Instantiate(prefab);
         }
 
-        public Task<GameObject> CreateGameObjectAsync(string path)
+        public async Task<GameObject> CreateGameObjectAsync(string path)
         {
-            throw new NotImplementedException();
+            var prefab = await LoadAsync<GameObject>(path);
+            return UnityEngine.Object.Instantiate(prefab);
         }
 
         public void DestroyGameObject(GameObject gameObject)
         {
-            throw new NotImplementedException();
+            UnityEngine.Object.DestroyImmediate(gameObject, false);
         }
 
         public T Load<T>(string path) where T : UnityEngine.Object
@@ -30,7 +31,7 @@ namespace FUI.Test
 
         public async Task<T> LoadAsync<T>(string path) where T : UnityEngine.Object
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public void Release()

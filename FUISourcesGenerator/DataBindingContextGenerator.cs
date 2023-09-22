@@ -91,6 +91,7 @@ namespace FUISourcesGenerator
         {
             var convertBuilder = new StringBuilder();
             var elementValueType = Utility.GetGenericTypeName(property.elementValueType);
+            //TODO 如果引用类型为空的时候要加判断
             if (string.IsNullOrEmpty(property.converterType))
             {
                 convertBuilder.AppendLine($"if(!(@value is {elementValueType} convertedValue))");

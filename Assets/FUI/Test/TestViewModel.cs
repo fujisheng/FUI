@@ -29,31 +29,22 @@ namespace FUI.Test
     public partial class TestViewModel : ViewModel
     {
         [ObservableProperty]
-        public Name Name { get; set; }
+        public Name Name { get; set; } = new Name { firstName = "test", lastName = "Ctor" };
 
         [ObservableProperty]
-        public int ID { get; set; }
+        public int ID { get; set; } = 0;
 
         [ObservableProperty]
-        public int Age { get; set; }
+        public int Age { get; set; } = 0;
 
         [ObservableProperty]
-        public Action Submit { get; set; }
+        public Action Submit { get; set; } = OnSubmit;
 
         [ObservableProperty]
         public ObservableList<ItemData> List { get; set; }
 
-        //public override void Initialize()
-        //{
-        //    Name = new Name { firstName = "Test", lastName = "1" };
-        //    ID = 0;
-        //    Age = 0;
-        //    Submit = OnSubmit;
-        //    List = new ObservableList<ItemData> { 1, 2, 3 };
-        //}
-
         [Command]
-        public virtual void OnSubmit()
+        public static void OnSubmit()
         {
             UnityEngine.Debug.Log("ClickBtn TestViewModel....");
         }

@@ -29,7 +29,7 @@ namespace FUISourcesGenerator
                 propertyDelegateBuilder.AppendLine("{");
             }
             
-            propertyDelegateBuilder.AppendLine($"public partial class {typeDefinition.Name}");
+            propertyDelegateBuilder.AppendLine($"public partial class {typeDefinition.Name} : {Utility.SynchronizePropertiesFullName}");
             propertyDelegateBuilder.AppendLine("{");
 
             var observableProperties = new List<PropertyDefinition>();
@@ -49,6 +49,7 @@ namespace FUISourcesGenerator
             }
 
             var generatedTypes = new HashSet<string>();
+            var syncPropertiesBuilder = new StringBuilder();
             foreach(var property in observableProperties)
             {
                 var propertyType = Utility.GetGenericTypeName(property.PropertyType.FullName);
@@ -64,7 +65,16 @@ namespace FUISourcesGenerator
                 //生成对应的委托
                 var delegateName = Utility.GetPropertyChangedDelegateName(property.Name);
                 propertyDelegateBuilder.AppendLine($"public {delegateType} {delegateName};");
+
+                //生成对应的委托调用
+                syncPropertiesBuilder.AppendLine($"{delegateName}?.Invoke(this, this.{property.Name}, this.{property.Name});");
             }
+
+            //生成同步所有属性的方法
+            propertyDelegateBuilder.AppendLine($"void {Utility.SynchronizePropertiesFullName}.{Utility.SynchronizePropertiesMethodName}()");
+            propertyDelegateBuilder.AppendLine("{");
+            propertyDelegateBuilder.AppendLine(syncPropertiesBuilder.ToString());
+            propertyDelegateBuilder.AppendLine("}");
 
             propertyDelegateBuilder.AppendLine("}");
             if (hasNamespace)

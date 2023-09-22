@@ -19,6 +19,11 @@ namespace FUI.Test
             UnityEngine.Debug.Log($"uiManager  initialize........");
         }
 
+        void Update()
+        {
+            uiManager.OnUpdate();
+        }
+
         void Start()
         {
             uiManager.Open(Views.TestView);

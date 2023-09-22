@@ -17,6 +17,11 @@ namespace FUI
         public string viewName;
 
         /// <summary>
+        /// 界面类型
+        /// </summary>
+        public Type viewType;
+
+        /// <summary>
         /// 指定的ViewModel类型
         /// </summary>
         public Type viewModelType;
@@ -29,8 +34,17 @@ namespace FUI
         public ViewBuildParam(string viewName, Type viewModelType = null, Type viewBehaviorType = null)
         {
             this.viewName = viewName;
+            this.viewType = null;
             this.viewModelType = viewModelType;
             this.viewBehaviorType = viewBehaviorType;
+        }
+
+        public ViewBuildParam(string viewName, Type viewType)
+        {
+            this.viewName = viewName;
+            this.viewType = viewType;
+            this.viewModelType = null;
+            this.viewBehaviorType = null;
         }
     }
 
@@ -46,7 +60,15 @@ namespace FUI
         /// <param name="viewModel">返回的ViewModel</param>
         /// <param name="behavior">返回的ViewBehavior</param>
         /// <returns>要打开的View</returns>
-        View BuildView(ViewBuildParam param, out ObservableObject viewModel, out ViewBehavior behavior);
+        IView BuildView(ViewBuildParam param, out ObservableObject viewModel, out ViewBehavior behavior);
+
+        /// <summary>
+        /// 构建一个界面
+        /// </summary>
+        /// <param name="param">界面参数</param>
+        /// <param name="viewModel">viewModel实例</param>
+        /// <returns></returns>
+        IView BuildView(ViewBuildParam param, ObservableObject viewModel);
 
         /// <summary>
         /// 异步创建一个界面
@@ -56,6 +78,6 @@ namespace FUI
         /// <param name="viewModel">返回的ViewModel</param>
         /// <param name="behavior">返回的ViewBehavior</param>
         /// <returns>要打开的View</returns>
-        Task<View> BuildViewAsync(ViewBuildParam param, CancellationToken cancellationToken, out ObservableObject viewModel, out ViewBehavior behavior);
+        Task<IView> BuildViewAsync(ViewBuildParam param, CancellationToken cancellationToken, out ObservableObject viewModel, out ViewBehavior behavior);
     }
 }
