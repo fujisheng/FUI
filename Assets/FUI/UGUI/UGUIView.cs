@@ -56,7 +56,6 @@ namespace FUI.UGUI
         /// </summary>
         protected override void Enable()
         {
-            base.Enable();
             gameObject.SetActive(true);
         }
 
@@ -65,7 +64,6 @@ namespace FUI.UGUI
         /// </summary>
         protected override void Disable()
         {
-            base.Disable();
             gameObject.SetActive(false);
         }
 
@@ -74,7 +72,6 @@ namespace FUI.UGUI
         /// </summary>
         protected override void Destroy()
         {
-            base.Destroy();
             assetLoader.DestroyGameObject(gameObject);
             assetLoader.Release();
         }

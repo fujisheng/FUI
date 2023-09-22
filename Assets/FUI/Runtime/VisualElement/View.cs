@@ -36,7 +36,7 @@ namespace FUI
         /// <param name="bindingContext"></param>
         public View(ObservableObject bindingContext, string name) : this(name)
         {
-            Binding(bindingContext);
+            (this as IView).Binding(bindingContext);
         }
 
         /// <summary>
@@ -108,56 +108,7 @@ namespace FUI
         }
         #endregion
 
-        /// <summary>
-        /// 绑定一个上下文
-        /// </summary>
-        /// <param name="bindingContext"></param>
-        /// <exception cref="System.Exception"></exception>
-        protected virtual void Binding(ObservableObject bindingContext)
-        {
-            if(this.BindingContext != null)
-            {
-                throw new System.Exception($"{Name} binding error: bindingContext not null, you must unbinding first");
-            }
-
-            this.BindingContext = bindingContext ?? throw new System.Exception($"{Name} binding error: bindingContext is null");
-            this.BindingContext.PropertyChanged += OnPropertyChanged;
-        }
-
-        /// <summary>
-        /// 解绑上下文
-        /// </summary>
-        protected virtual void Unbinding()
-        {
-            if(this.BindingContext == null)
-            {
-                return;
-            }
-
-            this.BindingContext.PropertyChanged -= OnPropertyChanged;
-            this.BindingContext = null;
-        }
-
-        /// <summary>
-        /// 激活这个界面
-        /// </summary>
-        protected virtual void Enable() { }
-
-        /// <summary>
-        /// 反激活这个界面
-        /// </summary>
-        protected virtual void Disable() { }
-
-        /// <summary>
-        /// 销毁这个界面
-        /// </summary>
-        protected virtual void Destroy()
-        {
-            Unbinding();
-            RemoveVisualElements();
-        }
-
-        #region IView适配
+        #region IView
         /// <summary>
         /// 当前绑定的上下文
         /// </summary>
@@ -166,13 +117,39 @@ namespace FUI
         /// <summary>
         /// 绑定一个上下文
         /// </summary>
-        /// <param name="observableObject"></param>
-        void IView.Binding(ObservableObject observableObject) => Binding(observableObject);
+        /// <param name="bindingContext"></param>
+        /// <exception cref="System.Exception"></exception>
+        void IView.Binding(ObservableObject bindingContext)
+        {
+            if(this.BindingContext != null)
+            {
+                throw new System.Exception($"{Name} binding error: bindingContext not null, you must unbinding first");
+            }
+
+            if(this.BindingContext == bindingContext)
+            {
+                return;
+            }
+
+            this.BindingContext = bindingContext ?? throw new System.Exception($"{Name} binding error: bindingContext is null");
+            this.BindingContext.PropertyChanged += OnPropertyChanged;
+            Binding(bindingContext);
+        }
 
         /// <summary>
         /// 解绑上下文
         /// </summary>
-        void IView.Unbinding() => Unbinding();
+        void IView.Unbinding()
+        {
+            if(this.BindingContext == null)
+            {
+                return;
+            }
+
+            Unbinding();
+            this.BindingContext.PropertyChanged -= OnPropertyChanged;
+            this.BindingContext = null;
+        }
 
         /// <summary>
         /// 激活这个界面
@@ -187,7 +164,23 @@ namespace FUI
         /// <summary>
         /// 销毁这个界面
         /// </summary>
-        void IView.Destroy() => Destroy();
+        void IView.Destroy()
+        {
+            Unbinding();
+            RemoveVisualElements();
+            Destroy();
+        }
+        #endregion
+
+        #region 子类接口
+        protected virtual void Binding(ObservableObject bindingContext) { }
+        protected virtual void Unbinding() { }
+
+        protected virtual void Enable() { }
+
+        protected virtual void Disable() { }
+
+        protected virtual void Destroy() { }
         #endregion
     }
 }

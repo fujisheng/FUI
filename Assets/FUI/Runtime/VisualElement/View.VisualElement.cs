@@ -19,6 +19,11 @@ namespace FUI
 
         public void UpdateValue(ObservableObject value)
         {
+            if(value == BindingContext)
+            {
+                return;
+            }
+
             Unbinding();
             Binding(value);
         }
