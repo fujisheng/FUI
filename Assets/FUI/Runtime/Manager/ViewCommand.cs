@@ -137,7 +137,7 @@ namespace FUI
 
             if (isAsync)
             {
-                view = await builder.BuildViewAsync(param, cancellationTokenSource.Token, out viewModel, out viewBehavior);
+                (view, viewModel, viewBehavior) = await builder.BuildViewAsync(param, cancellationTokenSource.Token);
             }
             else
             {

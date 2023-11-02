@@ -75,9 +75,7 @@ namespace FUI
         /// </summary>
         /// <param name="param">界面参数</param>
         /// <param name="cancellationToken">取消标记</param>
-        /// <param name="viewModel">返回的ViewModel</param>
-        /// <param name="behavior">返回的ViewBehavior</param>
         /// <returns>要打开的View</returns>
-        Task<IView> BuildViewAsync(ViewBuildParam param, CancellationToken cancellationToken, out ObservableObject viewModel, out ViewBehavior behavior);
+        Task<(IView view, ObservableObject viewModel, ViewBehavior behavior)> BuildViewAsync(ViewBuildParam param, CancellationToken cancellationToken);
     }
 }

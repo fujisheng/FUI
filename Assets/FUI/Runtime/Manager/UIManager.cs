@@ -97,7 +97,6 @@ namespace FUI
         /// <param name="param">打开时的参数</param>
         public void Open(string viewName, object param = null)
         {
-            EnsureBuilder();
             OpenView(new OpenViewCommand(new ViewBuildParam(viewName), builder, false));
         }
 
@@ -105,10 +104,10 @@ namespace FUI
         /// 通过默认的ViewModel异步打开一个界面
         /// </summary>
         /// <param name="viewName">界面名字</param>
-        public void OpenAsync(string viewName, object param = null)
+        public async Task OpenAsync(string viewName, object param = null)
         {
-            EnsureBuilder();
             OpenView(new OpenViewCommand(new ViewBuildParam(viewName), builder, true));
+            await WaitingForAllCommandExecuteComplete();
         }
 
         /// <summary>
@@ -118,7 +117,6 @@ namespace FUI
         /// <param name="viewName">要打开的界面名字</param>
         public void Open<TViewModel>(string viewName, object param) where TViewModel : ObservableObject
         {
-            EnsureBuilder();
             OpenView(new OpenViewCommand(new ViewBuildParam(viewName, typeof(TViewModel)), builder, false));
         }
 
@@ -127,10 +125,10 @@ namespace FUI
         /// </summary>
         /// <typeparam name="TViewModel">指定的ViewModel类型</typeparam>
         /// <param name="viewName">要打开的界面名字</param>
-        public void OpenAsync<TViewModel>(string viewName, object param) where TViewModel : ObservableObject
+        public async Task OpenAsync<TViewModel>(string viewName, object param) where TViewModel : ObservableObject
         {
-            EnsureBuilder();
             OpenView(new OpenViewCommand(new ViewBuildParam(viewName, typeof(TViewModel)), builder, true));
+            await WaitingForAllCommandExecuteComplete();
         }
 
         /// <summary>
@@ -141,7 +139,6 @@ namespace FUI
         /// <param name="viewName">要打开的界面名字</param>
         public void Open<TViewModel, TBehavior>(string viewName, object param) where TViewModel : ObservableObject where TBehavior : ViewBehavior<TViewModel>
         {
-            EnsureBuilder();
             OpenView(new OpenViewCommand(new ViewBuildParam(viewName, typeof(TViewModel), typeof(TBehavior)), builder, false));
         }
 
@@ -151,17 +148,18 @@ namespace FUI
         /// <typeparam name="TViewModel">指定的ViewModel类型</typeparam>
         /// <typeparam name="TBehavior">指定的ViewBehavior类型</typeparam>
         /// <param name="viewName">要打开的界面名字</param>
-        public void OpenAsync<TViewModel, TBehavior>(string viewName, object param) where TViewModel : ObservableObject where TBehavior : ViewBehavior<TViewModel>
+        public async Task OpenAsync<TViewModel, TBehavior>(string viewName, object param) where TViewModel : ObservableObject where TBehavior : ViewBehavior<TViewModel>
         {
-            EnsureBuilder();
             OpenView(new OpenViewCommand(new ViewBuildParam(viewName, typeof(TViewModel), typeof(TBehavior)), builder, true));
+            await WaitingForAllCommandExecuteComplete();
         }
 
         void OpenView(OpenViewCommand command)
         {
-            foreach(var item in commandQueue.Commands)
+            EnsureBuilder();
+            foreach (var item in commandQueue.Commands)
             {
-                //已经在打开中了 直接取消
+                //已经在打开中了 直接返回
                 if((item is OpenViewCommand) && item.ViewName == command.ViewName)
                 {
                     return;
@@ -179,6 +177,7 @@ namespace FUI
 
             command.Execute(viewStack);
             commandQueue.Enqueue(command);
+            OnUpdate();
         }
 
         /// <summary>
@@ -238,6 +237,7 @@ namespace FUI
             }
 
             commandQueue.Enqueue(new CloseViewCommand(viewName));
+            OnUpdate();
         }
 
         void EnsureBuilder()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using UnityEngine;
@@ -13,9 +14,9 @@ namespace FUI.Test
             return UnityEngine.Object.Instantiate(prefab);
         }
 
-        public async Task<GameObject> CreateGameObjectAsync(string path)
+        public async Task<GameObject> CreateGameObjectAsync(string path, CancellationToken? cancellationToken)
         {
-            var prefab = await LoadAsync<GameObject>(path);
+            var prefab = await LoadAsync<GameObject>(path, cancellationToken);
             return UnityEngine.Object.Instantiate(prefab);
         }
 
@@ -29,9 +30,10 @@ namespace FUI.Test
             return Resources.Load<T>(path);
         }
 
-        public async Task<T> LoadAsync<T>(string path) where T : UnityEngine.Object
+        public async Task<T> LoadAsync<T>(string path, CancellationToken? cancellationToken) where T : UnityEngine.Object
         {
-            return null;
+            await Task.Delay(1000);
+            return Resources.Load<T>(path);
         }
 
         public void Release()

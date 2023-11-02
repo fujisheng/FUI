@@ -24,9 +24,10 @@ namespace FUI.Test
             uiManager.OnUpdate();
         }
 
-        void Start()
+        async void Start()
         {
-            uiManager.Open(Views.TestView);
+           await  uiManager.OpenAsync(Views.TestView);
+            UnityEngine.Debug.Log($"open async testView");
         }
     }
 }

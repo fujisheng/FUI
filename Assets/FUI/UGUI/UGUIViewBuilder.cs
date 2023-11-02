@@ -66,9 +66,42 @@ namespace FUI.UGUI
             return view;
         }
 
-        public Task<IView> BuildViewAsync(ViewBuildParam param, CancellationToken cancellationToken, out ObservableObject viewModel, out ViewBehavior behavior)
+        public async Task<(IView, ObservableObject, ViewBehavior)> BuildViewAsync(ViewBuildParam param, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            ObservableObject viewModel = null;
+            ViewBehavior behavior = null;
+            var hasView = UGUIViewTypeCache.TryGetViewType(param.viewName, out var viewType);
+            UnityEngine.Debug.Log($"createView:{param.viewName}  viewType:{viewType}");
+            if (!hasView)
+            {
+                return default;
+            }
+
+            if (assetLoaderCreator == null)
+            {
+                return default;
+            }
+
+            var viewModelType = param.viewModelType ?? viewType.GetCustomAttribute<DefaultViewModelAttribute>()?.type;
+            UnityEngine.Debug.Log($"viewModelType:{viewModelType}");
+            var behaviorType = param.viewBehaviorType;
+            if (behaviorType == null && UGUIViewTypeCache.TryGetDefaultBehaviorType(viewModelType, out var bt))
+            {
+                behaviorType = bt;
+            }
+            UnityEngine.Debug.Log($"behaviorType:{behaviorType}");
+
+            if (behaviorType == null)
+            {
+                return default;
+            }
+
+            var assetLoader = assetLoaderCreator?.Invoke();
+            var viewObj = await assetLoader.CreateGameObjectAsync(param.viewName);
+            viewModel = Activator.CreateInstance(viewModelType) as ObservableObject;
+            var view = Activator.CreateInstance(viewType, viewModel, assetLoader, viewObj, param.viewName) as IView;
+            behavior = Activator.CreateInstance(behaviorType) as ViewBehavior;
+            return (view, viewModel, behavior);
         }
     }
 }
