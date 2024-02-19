@@ -5,9 +5,9 @@ using System;
 namespace FUI
 {
     /// <summary>
-    /// 界面容器
+    /// 界面上下文
     /// </summary>
-    class ViewContainer
+    class UIContext : IPresentation
     {
         internal string Name { get; private set; }
 
@@ -16,17 +16,17 @@ namespace FUI
         ObservableObject viewModel;
         ViewBehavior behavior;
 
-        private ViewContainer() { }
+        private UIContext() { }
 
         /// <summary>
-        /// 构建一个容器
+        /// 构建一个上下文
         /// </summary>
         /// <param name="view">对应的View</param>
         /// <param name="viewModel">对应的ViewModel</param>
         /// <param name="behavior">对应的Behavior</param></param>
-        internal static ViewContainer Create(IView view, ObservableObject viewModel, ViewBehavior behavior)
+        internal static UIContext Create(IView view, ObservableObject viewModel, ViewBehavior behavior)
         {
-            var container = new ViewContainer
+            var context = new UIContext
             {
                 Name = view.Name,
 
@@ -36,10 +36,10 @@ namespace FUI
                 behavior = behavior
             };
 
-            container.SynchronizeProperties();
+            context.SynchronizeProperties();
 
             behavior.InternalOnCreate(viewModel);
-            return container;
+            return context;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace FUI
         }
 
         /// <summary>
-        /// 打开这个容器
+        /// 打开这个上下文
         /// </summary>
         internal void Open(object param)
         {
@@ -76,7 +76,7 @@ namespace FUI
         }
 
         /// <summary>
-        /// 关闭这个容器
+        /// 关闭这个上下文
         /// </summary>
         internal void Close()
         {
@@ -86,7 +86,7 @@ namespace FUI
         }
 
         /// <summary>
-        /// 聚焦这个容器
+        /// 聚焦这个上下文
         /// </summary>
         internal void Focus()
         {
@@ -94,7 +94,7 @@ namespace FUI
         }
 
         /// <summary>
-        /// 失焦这个容器
+        /// 失焦这个上下文
         /// </summary>
         internal void Unfocus()
         {
@@ -102,7 +102,7 @@ namespace FUI
         }
 
         /// <summary>
-        /// 销毁这个容器
+        /// 销毁这个上下文
         /// </summary>
         internal void Destroy()
         {
@@ -116,7 +116,7 @@ namespace FUI
         }
 
         /// <summary>
-        /// 冻结这个容器 只保留逻辑和数据
+        /// 冻结这个上下文 只保留逻辑和数据
         /// </summary>
         internal void Freeze()
         {
@@ -126,11 +126,11 @@ namespace FUI
         }
 
         /// <summary>
-        /// 解冻这个容器 重新根据现有的逻辑和数据构建界面
+        /// 解冻这个上下文 重新根据现有的逻辑和数据构建界面
         /// </summary>
-        internal void Unfreeze(IViewBuilder builder)
+        internal void Unfreeze(IUIBuilder builder)
         {
-            var view = builder.BuildView(new ViewBuildParam(Name, viewType), this.viewModel);
+            var view = builder.BuildView(new UIBuildParam(Name, viewType), this.viewModel);
             if(view == null)
             {
                 throw new Exception($"Unfreeze ViewBuilder.BuildView failed, viewName: {Name}, viewType: {viewType} viewModel:{this.viewModel}");
@@ -139,6 +139,17 @@ namespace FUI
             this.view = view;
             this.view.Binding(this.viewModel);
             SynchronizeProperties();
+        }
+
+        void IPresentation.Initialize()
+        {
+            SynchronizeProperties();
+            behavior.InternalOnCreate(viewModel);
+        }
+
+        void IPresentation.Destroy()
+        {
+            this.Destroy();
         }
     }
 }

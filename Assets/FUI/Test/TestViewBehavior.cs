@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace Assets.FUI.Test
 {
+    [Feature("Test")]
     [DefaultViewConfig(asset = "TestView.prefab", layer = Layer.Common, viewType = ViewType.Normal)]
     internal class TestViewBehavior : ViewBehavior<TestViewModel>
     {

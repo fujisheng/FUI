@@ -55,7 +55,7 @@ namespace FUI
         /// <summary>
         /// 所有打开的界面
         /// </summary>
-        ViewStack viewStack;
+        UIStack uiStack;
         /// <summary>
         /// 界面命令队列  保证界面打开关闭的顺序的同时可以同时加载多个界面
         /// </summary>
@@ -64,12 +64,12 @@ namespace FUI
         /// <summary>
         /// View构造器
         /// </summary>
-        IViewBuilder builder;
+        IUIBuilder builder;
 
-        public UIManager(IViewBuilder builder)
+        public UIManager(IUIBuilder builder)
         {
             this.builder = builder;
-            this.viewStack = new ViewStack();
+            this.uiStack = new UIStack();
             this.commandQueue = new ViewCommandQueue();
         }
 
@@ -85,7 +85,7 @@ namespace FUI
         /// 设置View构造器
         /// </summary>
         /// <param name="builder"></param>
-        public void SetViewBuilder(IViewBuilder builder)
+        public void SetViewBuilder(IUIBuilder builder)
         {
             this.builder = builder;
         }
@@ -97,7 +97,7 @@ namespace FUI
         /// <param name="param">打开时的参数</param>
         public void Open(string viewName, object param = null)
         {
-            OpenView(new OpenViewCommand(new ViewBuildParam(viewName), builder, false));
+            OpenView(new OpenViewCommand(new UIBuildParam(viewName), builder, false));
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace FUI
         /// <param name="viewName">界面名字</param>
         public async Task OpenAsync(string viewName, object param = null)
         {
-            OpenView(new OpenViewCommand(new ViewBuildParam(viewName), builder, true));
+            OpenView(new OpenViewCommand(new UIBuildParam(viewName), builder, true));
             await WaitingForAllCommandExecuteComplete();
         }
 
@@ -117,7 +117,7 @@ namespace FUI
         /// <param name="viewName">要打开的界面名字</param>
         public void Open<TViewModel>(string viewName, object param) where TViewModel : ObservableObject
         {
-            OpenView(new OpenViewCommand(new ViewBuildParam(viewName, typeof(TViewModel)), builder, false));
+            OpenView(new OpenViewCommand(new UIBuildParam(viewName, typeof(TViewModel)), builder, false));
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace FUI
         /// <param name="viewName">要打开的界面名字</param>
         public async Task OpenAsync<TViewModel>(string viewName, object param) where TViewModel : ObservableObject
         {
-            OpenView(new OpenViewCommand(new ViewBuildParam(viewName, typeof(TViewModel)), builder, true));
+            OpenView(new OpenViewCommand(new UIBuildParam(viewName, typeof(TViewModel)), builder, true));
             await WaitingForAllCommandExecuteComplete();
         }
 
@@ -139,7 +139,7 @@ namespace FUI
         /// <param name="viewName">要打开的界面名字</param>
         public void Open<TViewModel, TBehavior>(string viewName, object param) where TViewModel : ObservableObject where TBehavior : ViewBehavior<TViewModel>
         {
-            OpenView(new OpenViewCommand(new ViewBuildParam(viewName, typeof(TViewModel), typeof(TBehavior)), builder, false));
+            OpenView(new OpenViewCommand(new UIBuildParam(viewName, typeof(TViewModel), typeof(TBehavior)), builder, false));
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace FUI
         /// <param name="viewName">要打开的界面名字</param>
         public async Task OpenAsync<TViewModel, TBehavior>(string viewName, object param) where TViewModel : ObservableObject where TBehavior : ViewBehavior<TViewModel>
         {
-            OpenView(new OpenViewCommand(new ViewBuildParam(viewName, typeof(TViewModel), typeof(TBehavior)), builder, true));
+            OpenView(new OpenViewCommand(new UIBuildParam(viewName, typeof(TViewModel), typeof(TBehavior)), builder, true));
             await WaitingForAllCommandExecuteComplete();
         }
 
@@ -175,7 +175,7 @@ namespace FUI
                 }
             }
 
-            command.Execute(viewStack);
+            command.Execute(uiStack);
             commandQueue.Enqueue(command);
             OnUpdate();
         }
@@ -186,7 +186,7 @@ namespace FUI
         /// <param name="viewName"></param>
         public void Topping(string viewName)
         {
-            viewStack.Topping(viewName);
+            uiStack.Topping(viewName);
             //TODO 层级调整
         }
 
@@ -204,7 +204,7 @@ namespace FUI
             }
 
             var command = commandQueue.Dequeue();
-            command.Complete(viewStack);
+            command.Complete(uiStack);
         }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace FUI
             }
 
             //要关闭的界面没有被打开
-            var container = viewStack.GetContainer(viewName);
+            var container = uiStack.GetContext(viewName);
             if(container == null)
             {
                 return;
@@ -253,7 +253,7 @@ namespace FUI
         /// </summary>
         public void Back()
         {
-            var peek = viewStack.Peek();
+            var peek = uiStack.Peek();
             if(peek == null)
             {
                 return;

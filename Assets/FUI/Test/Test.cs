@@ -9,12 +9,25 @@ namespace FUI.Test
         public const string TestView = "TestView";
     }
 
+    [Feature("Test")]
+    [AutoConstructOnInitialization]
+    public class TestData : IData
+    {
+        public void Initialize()
+        {
+            UnityEngine.Debug.Log($"TestData Initialization");
+        }
+    }
+
     public class Test : MonoBehaviour
     {
         UIManager uiManager;
+        DataManager dataManager;
         void Awake()
         {
-            uiManager = new UIManager(new UGUIViewBuilder(()=>new TestAssetLoader()));
+            dataManager = new DataManager();
+            dataManager.Initialize();
+            uiManager = new UIManager(new UGUIBuilder(()=>new TestAssetLoader()));
             uiManager.Initialize();
             UnityEngine.Debug.Log($"uiManager  initialize........");
         }

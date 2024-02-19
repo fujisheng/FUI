@@ -102,24 +102,24 @@ namespace FUI
     {
         internal abstract string ViewName { get; set; }
         internal abstract bool IsCompleted { get; set; }
-        internal abstract ViewContainer Result { get; set; }
-        internal abstract void Execute(ViewStack viewStack);
-        internal abstract void Complete(ViewStack viewStack);
+        internal abstract UIContext Result { get; set; }
+        internal abstract void Execute(UIStack viewStack);
+        internal abstract void Complete(UIStack viewStack);
         internal abstract void Cancel();
     }
 
     class OpenViewCommand : ViewCommand
     {
-        ViewBuildParam param;
-        IViewBuilder builder;
+        UIBuildParam param;
+        IUIBuilder builder;
         CancellationTokenSource cancellationTokenSource;
 
         internal override string ViewName { get; set; }
-        internal override ViewContainer Result { get; set; }
+        internal override UIContext Result { get; set; }
         internal override bool IsCompleted { get; set; }
         bool isAsync;
 
-        internal OpenViewCommand(ViewBuildParam param, IViewBuilder builder, bool isAsync)
+        internal OpenViewCommand(UIBuildParam param, IUIBuilder builder, bool isAsync)
         {
             this.ViewName = param.viewName;
             this.param = param;
@@ -129,7 +129,7 @@ namespace FUI
             this.isAsync = isAsync;
         }
 
-        internal async override void Execute(ViewStack viewStack)
+        internal async override void Execute(UIStack viewStack)
         {
             IView view;
             ObservableObject viewModel;
@@ -150,11 +150,11 @@ namespace FUI
                 UnityEngine.Debug.LogWarning($"open view:{param.viewName} failed");
                 return;
             }
-            Result = ViewContainer.Create(view, viewModel, viewBehavior);
+            Result = UIContext.Create(view, viewModel, viewBehavior);
             IsCompleted = true;
         }
 
-        internal override void Complete(ViewStack viewStack)
+        internal override void Complete(UIStack viewStack)
         {
             if (!IsCompleted)
             {
@@ -188,15 +188,15 @@ namespace FUI
     {
         internal override string ViewName { get; set; }
         internal override bool IsCompleted { get; set; }
-        internal override ViewContainer Result { get; set; }
+        internal override UIContext Result { get; set; }
         internal CloseViewCommand(string viewName)
         {
             this.ViewName = viewName;
         }
 
-        internal override void Execute(ViewStack viewStack)
+        internal override void Execute(UIStack viewStack)
         {
-            Result = viewStack.GetContainer(ViewName);
+            Result = viewStack.GetContext(ViewName);
             IsCompleted = true;
         }
 
@@ -206,7 +206,7 @@ namespace FUI
             UnityEngine.Debug.Log($"取消关闭界面：{ViewName}");
         }
 
-        internal override void Complete(ViewStack viewStack)
+        internal override void Complete(UIStack viewStack)
         {
             if (Result == null)
             {

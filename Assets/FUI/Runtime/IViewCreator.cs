@@ -9,7 +9,7 @@ namespace FUI
     /// <summary>
     /// 界面创建参数
     /// </summary>
-    public struct ViewBuildParam
+    public struct UIBuildParam
     {
         /// <summary>
         /// 界面名字
@@ -31,7 +31,7 @@ namespace FUI
         /// </summary>
         public Type viewBehaviorType;
 
-        public ViewBuildParam(string viewName, Type viewModelType = null, Type viewBehaviorType = null)
+        public UIBuildParam(string viewName, Type viewModelType = null, Type viewBehaviorType = null)
         {
             this.viewName = viewName;
             this.viewType = null;
@@ -39,7 +39,7 @@ namespace FUI
             this.viewBehaviorType = viewBehaviorType;
         }
 
-        public ViewBuildParam(string viewName, Type viewType)
+        public UIBuildParam(string viewName, Type viewType)
         {
             this.viewName = viewName;
             this.viewType = viewType;
@@ -51,7 +51,7 @@ namespace FUI
     /// <summary>
     /// 界面构造器
     /// </summary>
-    public interface IViewBuilder
+    public interface IUIBuilder
     {
         /// <summary>
         /// 创建一个界面
@@ -60,7 +60,7 @@ namespace FUI
         /// <param name="viewModel">返回的ViewModel</param>
         /// <param name="behavior">返回的ViewBehavior</param>
         /// <returns>要打开的View</returns>
-        IView BuildView(ViewBuildParam param, out ObservableObject viewModel, out ViewBehavior behavior);
+        IView BuildView(UIBuildParam param, out ObservableObject viewModel, out ViewBehavior behavior);
 
         /// <summary>
         /// 构建一个界面
@@ -68,7 +68,7 @@ namespace FUI
         /// <param name="param">界面参数</param>
         /// <param name="viewModel">viewModel实例</param>
         /// <returns></returns>
-        IView BuildView(ViewBuildParam param, ObservableObject viewModel);
+        IView BuildView(UIBuildParam param, ObservableObject viewModel);
 
         /// <summary>
         /// 异步创建一个界面
@@ -76,6 +76,6 @@ namespace FUI
         /// <param name="param">界面参数</param>
         /// <param name="cancellationToken">取消标记</param>
         /// <returns>要打开的View</returns>
-        Task<(IView view, ObservableObject viewModel, ViewBehavior behavior)> BuildViewAsync(ViewBuildParam param, CancellationToken cancellationToken);
+        Task<(IView view, ObservableObject viewModel, ViewBehavior behavior)> BuildViewAsync(UIBuildParam param, CancellationToken cancellationToken);
     }
 }

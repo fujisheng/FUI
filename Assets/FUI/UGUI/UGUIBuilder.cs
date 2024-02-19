@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace FUI.UGUI
 {
-    public class UGUIViewBuilder : IViewBuilder
+    public class UGUIBuilder : IUIBuilder
     {
         readonly Func<IAssetLoader> assetLoaderCreator;
 
-        public UGUIViewBuilder(Func<IAssetLoader> assetLoaderCreator)
+        public UGUIBuilder(Func<IAssetLoader> assetLoaderCreator)
         {
             this.assetLoaderCreator = assetLoaderCreator;
         }
 
-        public IView BuildView(ViewBuildParam param, out ObservableObject viewModel, out ViewBehavior behavior)
+        public IView BuildView(UIBuildParam param, out ObservableObject viewModel, out ViewBehavior behavior)
         {
             viewModel = null;
             behavior = null;
@@ -54,7 +54,7 @@ namespace FUI.UGUI
             return view;
         }
 
-        public IView BuildView(ViewBuildParam param, ObservableObject viewModel)
+        public IView BuildView(UIBuildParam param, ObservableObject viewModel)
         {
             if(string.IsNullOrEmpty(param.viewName) || param.viewType == null || viewModel == null)
             {
@@ -66,7 +66,7 @@ namespace FUI.UGUI
             return view;
         }
 
-        public async Task<(IView, ObservableObject, ViewBehavior)> BuildViewAsync(ViewBuildParam param, CancellationToken cancellationToken)
+        public async Task<(IView, ObservableObject, ViewBehavior)> BuildViewAsync(UIBuildParam param, CancellationToken cancellationToken)
         {
             ObservableObject viewModel = null;
             ViewBehavior behavior = null;
