@@ -1,7 +1,0 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <uie:ObjectField name="uss-object-field" label="USS Asset" class="unity-ui-asset-manipulators-test__asset-field" />
-    <VisualElement name="uss-contents" class="unity-ui-asset-manipulators-test__container" />
-    <uie:ObjectField name="uxml-object-field" label="UXML Asset" class="unity-ui-asset-manipulators-test__asset-field" />
-    <VisualElement name="uxml-contents" class="unity-ui-asset-manipulators-test__container" />
-    <VisualElement name="container" />
-</UXML>

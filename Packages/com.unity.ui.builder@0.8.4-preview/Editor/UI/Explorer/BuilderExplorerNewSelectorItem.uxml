@@ -1,9 +1,0 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <VisualElement name="new-selector-item" class="unity-builder-explorer__new-selector-item">
-        <VisualElement class="unity-builder-explorer__new-selector-field-container">
-            <TextField name="new-selector-field" class="unity-builder-explorer__new-selector-field" />
-        </VisualElement>
-        <uie:MaskField name="state-mask-field" class="unity-builder-explorer__new-selector-state-mask" />
-        <uie:EnumField name="mode-enum-field" class="unity-builder-explorer__new-selector-mode-enum" />
-    </VisualElement>
-</UXML>

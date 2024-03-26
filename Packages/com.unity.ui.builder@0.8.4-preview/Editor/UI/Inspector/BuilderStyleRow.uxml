@@ -1,4 +1,0 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:uib="Unity.UI.Builder">
-    <VisualElement name="blue-override-box" class="unity-builder-inspector-blue-override-box" />
-    <VisualElement name="content-container" class="unity-builder-style-row__content-container" />
-</UXML>

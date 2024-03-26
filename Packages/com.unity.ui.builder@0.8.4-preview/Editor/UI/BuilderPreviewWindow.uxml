@@ -1,4 +1,0 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <uie:ObjectField name="uxml-object-field" label="UXML Asset" class="unity-builder-preview__uxml-asset-field" />
-    <VisualElement name="container" class="unity-builder-preview__container" />
-</UXML>

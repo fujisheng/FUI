@@ -1,6 +1,0 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <VisualElement class="unity-builder-class-pill">
-        <Label name="class-name-label" class="unity-builder-class-pill__label" />
-        <Button text="x" name="delete-class-button" class="unity-builder-class-pill__delete-button" />
-    </VisualElement>
-</UXML>
