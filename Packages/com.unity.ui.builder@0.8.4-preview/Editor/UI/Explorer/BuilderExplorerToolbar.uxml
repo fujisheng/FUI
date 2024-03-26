@@ -1,6 +1,0 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <uie:Toolbar class="unity-builder-toolbar">
-        <uie:ToolbarSpacer class="unity-builder__toolbar-flex-space" />
-        <uie:ToolbarMenu name="hierarchy-visibility-toolbar-menu" class="unity-builder__toolbar-setting-menu" />
-    </uie:Toolbar>
-</UXML>

@@ -1,6 +1,0 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:uib="Unity.UI.Builder">
-    <!-- Cursor -->
-    <uib:BuilderStyleRow binding-path="cursor">
-        <uie:ObjectField label="Cursor Image" tooltip="cursor" />
-    </uib:BuilderStyleRow>
-</UXML>

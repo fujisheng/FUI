@@ -1,6 +1,0 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <VisualElement style="flex-direction: row">
-        <Label text="Section Text: " class="section-text" />
-        <TextField name="section-text-field" class="section-field" label="{label to override}" text="{value to override}" />
-    </VisualElement>
-</UXML>

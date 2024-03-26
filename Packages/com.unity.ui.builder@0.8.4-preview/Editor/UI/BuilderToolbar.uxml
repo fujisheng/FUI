@@ -1,8 +1,0 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <uie:Toolbar class="unity-builder-toolbar">
-        <uie:ToolbarMenu name="file-menu" text="File" />
-        <uie:ToolbarSpacer class="unity-builder__toolbar-flex-space" />
-        <uie:ToolbarMenu name="canvas-theme-menu" text="Canvas Theme" class="unity-builder__theme-toolbar-menu" />
-        <uie:ToolbarToggle name="preview-button" text="Preview" />
-    </uie:Toolbar>
-</UXML>
