@@ -29,7 +29,7 @@ namespace FUI.Test
             dataManager.Initialize();
             uiManager = new UIManager(new UGUIBuilder(()=>new TestAssetLoader()));
             uiManager.Initialize();
-            UnityEngine.Debug.Log($"uiManager  initialize........");
+            UnityEngine.Debug.Log($"uiManager  initialize.......");
         }
 
         void Update()

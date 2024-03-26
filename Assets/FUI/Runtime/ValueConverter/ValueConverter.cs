@@ -94,7 +94,7 @@ namespace FUI
         /// <returns></returns>
         public abstract TValueType ConvertBack(TTargetType value, TParamType param);
 
-        public override object Convert(object value, Type targetType, object param)
+        public override sealed object Convert(object value, Type targetType, object param)
         {
             if(targetType != typeof(TTargetType))
             {
@@ -103,7 +103,7 @@ namespace FUI
             return Convert((TValueType)value, (TParamType)param);
         }
 
-        public override object ConvertBack(object value, Type targetType, object param)
+        public override sealed object ConvertBack(object value, Type targetType, object param)
         {
             if(targetType != typeof(TValueType))
             {

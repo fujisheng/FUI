@@ -45,7 +45,7 @@ namespace FUI.UGUI
         /// </summary>
         /// <param name="value">值</param>
         /// <exception cref="System.Exception"></exception>
-        public override void UpdateValue(object value)
+        public override sealed void UpdateValue(object value)
         {
             if(!(value is TValue genericValue))
             {
