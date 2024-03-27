@@ -7,7 +7,7 @@ namespace FUI
     /// <summary>
     /// 界面上下文
     /// </summary>
-    class UIContext : IPresentation
+    class UIContext
     {
         internal string Name { get; private set; }
 
@@ -139,17 +139,6 @@ namespace FUI
             this.view = view;
             this.view.Binding(this.viewModel);
             SynchronizeProperties();
-        }
-
-        void IPresentation.Initialize()
-        {
-            SynchronizeProperties();
-            behavior.InternalOnCreate(viewModel);
-        }
-
-        void IPresentation.Destroy()
-        {
-            this.Destroy();
         }
     }
 }

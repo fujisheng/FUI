@@ -1,6 +1,7 @@
 ﻿using FUI.UGUI;
 
 using UnityEngine;
+using Feature;
 
 namespace FUI.Test
 {
@@ -9,24 +10,29 @@ namespace FUI.Test
         public const string TestView = "TestView";
     }
 
-    [Feature("Test")]
     [AutoConstructOnInitialization]
-    public class TestData : IData
+    public class TestModel : IModel
     {
+        public int id;
+        public string name;
+        public int age;
         public void Initialize()
         {
-            UnityEngine.Debug.Log($"TestData Initialization");
+            UnityEngine.Debug.Log($"TestModel Init");
+        }
+
+        public void Release()
+        {
+            UnityEngine.Debug.Log($"TestModel Release");
         }
     }
 
     public class Test : MonoBehaviour
     {
         UIManager uiManager;
-        DataManager dataManager;
         void Awake()
         {
-            dataManager = new DataManager();
-            dataManager.Initialize();
+            Models.Instance.Initialize();
             uiManager = new UIManager(new UGUIBuilder(()=>new TestAssetLoader()));
             uiManager.Initialize();
             UnityEngine.Debug.Log($"uiManager  initialize.......");
