@@ -31,7 +31,7 @@ namespace Feature
                 .SelectMany(a => a.GetTypes())
                 .Where(t => !t.IsAbstract
                     && !t.IsInterface
-                    && t.IsAssignableFrom(typeof(GroupAttribute)))
+                    && typeof(GroupAttribute).IsAssignableFrom(t))
                 .Distinct();
 
             //查找所有的Model类型
@@ -39,7 +39,7 @@ namespace Feature
                 .SelectMany(a => a.GetTypes())
                 .Where(t => !t.IsAbstract
                     && !t.IsInterface
-                    && t.IsAssignableFrom(typeof(IModel)));
+                    && typeof(IModel).IsAssignableFrom(t));
 
             //初始化公共Model组
             var publicGroup = AddGroup(typeof(PublicGroup));
@@ -48,7 +48,7 @@ namespace Feature
                 var groupAttribute = t.GetCustomAttribute<GroupAttribute>();
                 return groupAttribute == null || groupAttribute.GetType() == typeof(PublicGroup);
             });
-
+            
             publicGroup.Initialize(publicGroupModelTypes);
 
             //初始化其它Model组

@@ -2,6 +2,7 @@
 
 using UnityEngine;
 using Feature;
+using System.Threading.Tasks;
 
 namespace FUI.Test
 {
@@ -36,6 +37,13 @@ namespace FUI.Test
             uiManager = new UIManager(new UGUIBuilder(()=>new TestAssetLoader()));
             uiManager.Initialize();
             UnityEngine.Debug.Log($"uiManager  initialize.......");
+
+            Models.Instance.GetGroup<PublicGroup>().AddModifyListener<TestModel>(OnTestModelChanged);
+        }
+
+        void OnTestModelChanged(TestModel t)
+        {
+            UnityEngine.Debug.Log($"id:{t.id} name:{t.name} age:{t.age}");
         }
 
         void Update()
@@ -47,6 +55,27 @@ namespace FUI.Test
         {
            await  uiManager.OpenAsync(Views.TestView);
             UnityEngine.Debug.Log($"open async testView");
+
+            using (Models.Instance.GetGroup<PublicGroup>().Get<TestModel>(out var testModel))
+            {
+                testModel.id = 2;
+                testModel.name = "sss";
+                testModel.age = 40;
+            }
+            await Task.Delay(1000);
+            using (Models.Instance.GetGroup<PublicGroup>().Get<TestModel>(out var testModel))
+            {
+                testModel.id = 3;
+                testModel.name = "sss2";
+                testModel.age = 402;
+            }
+            await Task.Delay(1000);
+            using (Models.Instance.GetGroup<PublicGroup>().Get<TestModel>(out var testModel))
+            {
+                testModel.id = 4;
+                testModel.name = "sss3";
+                testModel.age = 403;
+            }
         }
     }
 }

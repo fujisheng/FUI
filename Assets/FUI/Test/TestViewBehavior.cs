@@ -18,12 +18,13 @@ namespace Assets.FUI.Test
 
         protected override async void OnOpen(object param)
         {
+            UnityEngine.Debug.Log($"OnOpen TestView。。。。。。。。。。。。");
             await Task.Delay(2000);
             VM.Name = new Name { firstName = "test", lastName = "OnOpen" };
             VM.ID = 2;
             VM.Age = 22;
 
-            UnityEngine.Debug.Log($"OnOpen TestView。。。。。。。。。。。。");
+
         }
     }
 }

@@ -54,11 +54,12 @@ namespace Feature
             foreach (var type in types)
             {
                 var model = (IModel)Activator.CreateInstance(type);
+                UnityEngine.Debug.Log($"{groupType} addModel:{model}");
                 Add(model);
             }
         }
 
-        internal void AddModifyListener<T>(Action<T> listener)
+        public void AddModifyListener<T>(Action<T> listener)
         {
             if(modifyListeners.TryGetValue(typeof(T), out var onModify))
             {
@@ -80,9 +81,9 @@ namespace Feature
             onModify?.Invoke(model);
         }
 
-        internal void Add<T>(T model, bool autoConstruct = false) where T : IModel
+        public void Add<T>(T model, bool autoConstruct = false) where T : IModel
         {
-            if(models.Exists(m => m.GetType() == model.GetType()))
+            if(models.Exists(m => m.value.GetType() == model.GetType()))
             {
                 return;
             }
@@ -91,9 +92,9 @@ namespace Feature
             TriggerModifyEvent(model);
         }
 
-        internal void Remove<T>() where T : IModel
+        public void Remove<T>() where T : IModel
         {
-            var model = models.FirstOrDefault(m => m.GetType() == typeof(T));
+            var model = models.FirstOrDefault(m => m.value.GetType() == typeof(T));
             if(model.IsEmpty)
             {
                 return;
@@ -102,9 +103,9 @@ namespace Feature
             models.Remove(model);
         }
 
-        internal ModifySignal<T> Get<T>(out T model) where T : IModel
+        public ModifySignal<T> Get<T>(out T model) where T : IModel
         {
-            var exsitsModel = models.FirstOrDefault(m => m.GetType() == typeof(T));
+            var exsitsModel = models.FirstOrDefault(m => m.value.GetType() == typeof(T));
             if(exsitsModel.IsEmpty)
             {
                 throw new Exception($"get model exception, {groupType.Name} dont have {typeof(T)}, please call add first");
