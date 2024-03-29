@@ -2,11 +2,9 @@
 Temp/
 Library/
 Library/
-FUPMPackages/*
-!FUPMPackages/manifest.json
 Logs/
-*.csproj
-*.sln
+/*.csproj
+/*.sln
 .vs/
 obj/
 

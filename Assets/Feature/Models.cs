@@ -22,6 +22,9 @@ namespace Feature
 
         Dictionary<Type, Group> groups;
 
+        /// <summary>
+        /// 初始化所有Model
+        /// </summary>
         public void Initialize()
         {
             groups = new Dictionary<Type, Group>();
@@ -69,6 +72,11 @@ namespace Feature
             }
         }
 
+        /// <summary>
+        /// 添加一个Model组
+        /// </summary>
+        /// <param name="groupType">组类型</param>
+        /// <returns></returns>
         Group AddGroup(Type groupType)
         {
             if(!groups.TryGetValue(groupType, out var group))
@@ -80,6 +88,11 @@ namespace Feature
             return group;
         }
 
+        /// <summary>
+        /// 获取一个Model组
+        /// </summary>
+        /// <typeparam name="T">组类型</typeparam>
+        /// <returns></returns>
         public Group GetGroup<T>() where T : GroupAttribute
         {
             if(!groups.TryGetValue(typeof(T), out var group))
