@@ -4,9 +4,37 @@ using System.Threading.Tasks;
 
 using UnityEngine;
 using FUI.UGUI;
+using System.Runtime.CompilerServices;
 
 namespace FUI.Test
 {
+    public class ResourceRequestAwaiter : INotifyCompletion
+    {
+        public Action Continuation;
+        public ResourceRequest resourceRequest;
+        public bool IsCompleted => resourceRequest.isDone;
+        public ResourceRequestAwaiter(ResourceRequest resourceRequest)
+        {
+            this.resourceRequest = resourceRequest;
+
+            this.resourceRequest.completed += Accomplish;
+        }
+
+        public void OnCompleted(Action continuation) => this.Continuation = continuation;
+
+        public void Accomplish(AsyncOperation asyncOperation) => Continuation?.Invoke();
+
+        public void GetResult() { }
+    }
+
+    public static class ResourceRequestExtensions
+    {
+        public static ResourceRequestAwaiter GetAwaiter(this ResourceRequest resourceRequest)
+        {
+            return new ResourceRequestAwaiter(resourceRequest);
+        }
+    }
+
     internal class TestAssetLoader : IAssetLoader
     {
         public GameObject CreateGameObject(string path)
@@ -33,8 +61,9 @@ namespace FUI.Test
 
         public async Task<T> LoadAsync<T>(string path, CancellationToken? cancellationToken) where T : UnityEngine.Object
         {
-            await Task.Delay(1000);
-            return Resources.Load<T>(path);
+            var request = Resources.LoadAsync(path);
+            await request;
+            return request.asset as T;
         }
 
         public void Release()

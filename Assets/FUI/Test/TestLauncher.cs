@@ -7,12 +7,12 @@ using FUI.Manager;
 
 namespace FUI.Test
 {
-    public class Test : MonoBehaviour
+    public class TestLauncher : MonoBehaviour
     {
         public UIManager UIManager { get; private set; }
 
-        static Test instance;
-        public static Test Instance
+        static TestLauncher instance;
+        public static TestLauncher Instance
         {
             get
             {
@@ -21,11 +21,11 @@ namespace FUI.Test
                     if(GameObject.Find("[Test]") == null)
                     {
                         GameObject go = new GameObject("[Test]");
-                        instance = go.AddComponent<Test>();
+                        instance = go.AddComponent<TestLauncher>();
                     }
                     else
                     {
-                        instance = GameObject.Find("[Test]").GetComponent<Test>();
+                        instance = GameObject.Find("[Test]").GetComponent<TestLauncher>();
                     }
                 }
                 return instance;

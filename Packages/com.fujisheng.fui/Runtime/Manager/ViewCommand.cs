@@ -211,7 +211,7 @@ namespace FUI.Manager
             OnComplete(viewStack, Result, viewConfig);
             viewStack.Push(Result);
             cancellationTokenSource?.Dispose();
-            UnityEngine.Debug.Log($"打开界面完成：{ViewName}");
+
         }
 
         internal override void Cancel()
@@ -275,6 +275,7 @@ namespace FUI.Manager
         {
             Result = viewStack.GetUIEntity(ViewName);
             IsCompleted = true;
+            UnityEngine.Debug.Log($"关闭界面：{ViewName}");
         }
 
         internal override void Cancel()
@@ -291,7 +292,7 @@ namespace FUI.Manager
             }
 
             OnComplete(viewStack, Result, ViewConfigCache.Get(Result.ViewModel));
-            Result.Disable();
+            Result.Destroy();
             viewStack.Remove(Result);
             UnityEngine.Debug.Log($"关闭界面完成：{ViewName}");
             //TODO是否缓存被关闭的界面

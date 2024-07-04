@@ -187,20 +187,14 @@ namespace FUI.Manager
         public void Close(string viewName)
         {
             //如果要关闭的这个界面正在打开中 则直接取消要打开的那个界面
-            bool isOpening = false;
             foreach (var command in commandQueue.Commands)
             {
                 if ((command is OpenViewCommand) && command.ViewName == viewName)
                 {
                     command.Cancel();
                     commandQueue.Remove(command);
-                    isOpening = true;
-                    break;
+                    return;
                 }
-            }
-            if(isOpening)
-            {
-                return;
             }
 
             //要关闭的界面没有被打开
@@ -210,7 +204,9 @@ namespace FUI.Manager
                 return;
             }
 
-            commandQueue.Enqueue(new CloseViewCommand(viewName));
+            var closeCommand = new CloseViewCommand(viewName);
+            closeCommand.Execute(uiStack);
+            commandQueue.Enqueue(closeCommand);
             OnUpdate();
         }
 

@@ -4,38 +4,41 @@ using FUI.UGUI.VisualElement;
 
 using UnityEngine;
 
-[Binding("TestCodeBindingView")]
-public class TestCodeBindingViewModel : ViewModel
+namespace Test.CodeBinding
 {
-    [Binding("txt_int", typeof(IntToStringConverter), typeof(TextElement))]
-    public int TestInt { get; set; }
-
-    [Binding("txt_string", elementType: typeof(TextElement))]
-    public string TestString { get; set; }
-
-    [Binding("txt_float", converterType: typeof(FloatToStringConverter))]
-    public float TestFloat { get; set; }
-
-    [Binding("txt_bool")]
-    public bool TestBool { get; set; }
-}
-
-public class TestCodeBindingViewBehavior : ViewBehavior<TestCodeBindingViewModel>
-{
-    protected override void OnOpen(object param)
+    [Binding("TestCodeBindingView")]
+    public class TestCodeBindingViewModel : ViewModel
     {
-        UnityEngine.Debug.Log("OnOpen  TestCodeBindingView");
-        VM.TestInt = 1;
-        VM.TestString = "Hello, code binding";
-        VM.TestFloat = 3.14f;
-        VM.TestBool = true;
+        [Binding("txt_int", typeof(IntToStringConverter), typeof(TextElement))]
+        public int TestInt { get; set; }
+
+        [Binding("txt_string", elementType: typeof(TextElement))]
+        public string TestString { get; set; }
+
+        [Binding("txt_float", converterType: typeof(FloatToStringConverter))]
+        public float TestFloat { get; set; }
+
+        [Binding("txt_bool")]
+        public bool TestBool { get; set; }
     }
-}
 
-public class TestCodeBinding : MonoBehaviour
-{
-    void Start()
+    public class TestCodeBindingViewBehavior : ViewBehavior<TestCodeBindingViewModel>
     {
-        Test.Instance.UIManager.OpenAsync("TestCodeBindingView");
+        protected override void OnOpen(object param)
+        {
+            UnityEngine.Debug.Log("OnOpen  TestCodeBindingView");
+            VM.TestInt = 1;
+            VM.TestString = "Hello, code binding";
+            VM.TestFloat = 3.14f;
+            VM.TestBool = true;
+        }
+    }
+
+    public class TestCodeBinding : MonoBehaviour
+    {
+        void Start()
+        {
+            TestLauncher.Instance.UIManager.OpenAsync("TestCodeBindingView");
+        }
     }
 }

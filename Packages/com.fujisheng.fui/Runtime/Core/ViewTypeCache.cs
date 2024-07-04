@@ -49,13 +49,16 @@ namespace FUI
                         continue;
                     }
 
-                    if(!viewBindingContextMapping.TryGetValue(view.viewName, out var contextList))
+                    if (!string.IsNullOrEmpty(view.viewName))
                     {
-                        contextList = new List<BindingContextInfo>();
+                        if (!viewBindingContextMapping.TryGetValue(view.viewName, out var contextList))
+                        {
+                            contextList = new List<BindingContextInfo>();
+                        }
+                        contextList.Add(new BindingContextInfo(context, viewModel.type));
+                        viewBindingContextMapping[view.viewName] = contextList;
                     }
-                    contextList.Add(new BindingContextInfo(context, viewModel.type));
-                    viewBindingContextMapping[view.viewName] = contextList;
-
+                    
                     if(!viewModelBindingContextMapping.TryGetValue(viewModel.type, out var viewModelContexts))
                     {
                         viewModelContexts = new List<Type>();

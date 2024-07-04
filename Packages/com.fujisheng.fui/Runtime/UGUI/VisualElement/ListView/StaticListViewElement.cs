@@ -65,7 +65,6 @@ namespace FUI.UGUI.VisualElement
             for (int index = 0; index < List.Count; index++)
             {
                 var item = List[index];
-                UnityEngine.Debug.Log($"OnUpdate  index:{index}   items:{items}");
                 if (index < items.Count)
                 {
                     items[index].entity.SynchronizeProperties();

@@ -2,7 +2,7 @@
     "viewName": "TestEditorBindingView",
     "contexts": [
         {
-            "type": "TestEditorBindingViewModel",
+            "type": "Test.EditorBinding.TestEditorBindingViewModel",
             "properties": [
                 {
                     "name": "Title",

@@ -25,7 +25,6 @@ namespace FUI
                 viewType = bindingContext.View.GetType(),
             };
 
-            UnityEngine.Debug.Log($"Create {entity}");
             behavior.InternalOnCreate(entity.ViewModel);
             return entity;
         }

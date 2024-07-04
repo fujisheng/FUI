@@ -4,34 +4,35 @@ using FUI.Test;
 
 using UnityEngine;
 
-[ObservableObject]
-public class TestListItemViewModel : ViewModel
+namespace Test.List
 {
-    [ObservableProperty]
-    public int ID { get; set; }
-
-    [ObservableProperty]
-    public string Name { get; set; }
-}
-
-[ObservableObject]
-public class TestListViewModel : ViewModel
-{
-    [ObservableProperty]
-    public ObservableList<TestListItemViewModel> List { get; set; }
-
-    [ObservableProperty]
-    public System.Action AddItem { get; set; }
-
-    [ObservableProperty]
-    public System.Action RemoveItem { get; set; }
-}
-
-public class TestListBehavior : ViewBehavior<TestListViewModel>
-{
-    protected override void OnOpen(object param)
+    public class TestListItemViewModel : ViewModel
     {
-        VM.List = new ObservableList<TestListItemViewModel>()
+        [Binding("txt_id", converterType:typeof(IntToStringConverter))]
+        public int ID { get; set; }
+
+        [Binding("txt_name")]
+        public string Name { get; set; }
+    }
+
+    [Binding("TestListView")]
+    public class TestListViewModel : ViewModel
+    {
+        [Binding("Scroll View")]
+        public ObservableList<TestListItemViewModel> List { get; set; }
+
+        [Binding("btn_Add")]
+        public System.Action AddItem { get; set; }
+
+        [Binding("btn_Remove")]
+        public System.Action RemoveItem { get; set; }
+    }
+
+    public class TestListBehavior : ViewBehavior<TestListViewModel>
+    {
+        protected override void OnOpen(object param)
+        {
+            VM.List = new ObservableList<TestListItemViewModel>()
         {
             new TestListItemViewModel() { ID = 1, Name = "Test1" },
             new TestListItemViewModel() { ID = 2, Name = "Test2" },
@@ -40,36 +41,37 @@ public class TestListBehavior : ViewBehavior<TestListViewModel>
             new TestListItemViewModel() { ID = 5, Name = "Test5" },
         };
 
-        VM.AddItem = OnAddItem;
-        VM.RemoveItem = OnRemoveItem;
-    }
+            VM.AddItem = OnAddItem;
+            VM.RemoveItem = OnRemoveItem;
+        }
 
-    void OnAddItem()
-    {
-        var id = VM.List.Count + 1;
-        VM.List.Add(new TestListItemViewModel() { ID = id, Name = "Test" + (id) });
-    }
-
-    void OnRemoveItem()
-    {
-        if (VM.List.Count > 0)
+        void OnAddItem()
         {
-            VM.List.RemoveAt(VM.List.Count - 1);
+            var id = VM.List.Count + 1;
+            VM.List.Add(new TestListItemViewModel() { ID = id, Name = "Test" + (id) });
+        }
+
+        void OnRemoveItem()
+        {
+            if (VM.List.Count > 0)
+            {
+                VM.List.RemoveAt(VM.List.Count - 1);
+            }
         }
     }
-}
 
-public class TestList : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
+    public class TestList : MonoBehaviour
     {
-        Test.Instance.UIManager.OpenAsync("TestListView");
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
+            TestLauncher.Instance.UIManager.OpenAsync("TestListView");
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
     }
 }

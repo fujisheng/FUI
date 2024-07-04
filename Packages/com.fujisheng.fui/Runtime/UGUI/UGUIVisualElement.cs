@@ -60,9 +60,15 @@ namespace FUI.UGUI
         /// <exception cref="System.Exception"></exception>
         public override void UpdateValue(object value)
         {
+            if(value == null)
+            {
+                UpdateValue(default);
+                return;
+            }
+
             if(!(value is TValue genericValue))
             {
-                throw new System.Exception($"can not convert {value.GetType()} to {typeof(TValue)}");
+                throw new System.Exception($"{this.GetType()} can not convert {value?.GetType()} to {typeof(TValue)}");
             }
 
             UpdateValue(genericValue);

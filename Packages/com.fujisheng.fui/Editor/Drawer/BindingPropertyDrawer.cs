@@ -18,7 +18,7 @@ namespace FUI.Editor.Drawer
     [CustomEditor(typeof(Binding))]
     public class BindingPropertyEditor : UnityEditor.Editor
     {
-        const string BindingOutputPath = "./Library/Binding";
+        const string BindingOutputPath = "./Binding";
         
         public override VisualElement CreateInspectorGUI()
         {
