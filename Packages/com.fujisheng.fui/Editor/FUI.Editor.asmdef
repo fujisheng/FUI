@@ -1,0 +1,19 @@
+{
+    "name": "FUI.Editor",
+    "references": [
+        "GUID:fe318fd709c916649a3aac24f866ab0b",
+        "GUID:b8dfc198079bdaf4d9ff09de6b519c0f",
+        "GUID:4a489db1f91f9b443903b7412c838542"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

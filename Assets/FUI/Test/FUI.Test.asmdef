@@ -1,0 +1,19 @@
+{
+    "name": "FUI.Test",
+    "references": [
+        "GUID:fe318fd709c916649a3aac24f866ab0b",
+        "GUID:2bafac87e7f4b9b418d9448d219b01ab",
+        "GUID:b8dfc198079bdaf4d9ff09de6b519c0f",
+        "GUID:1e4a7bd9cac3cd647bdc417510244ce4",
+        "GUID:5b770071175304b44bca4be737e87220"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,15 @@
+{
+    "name": "FUI.Core",
+    "references": [
+        "GUID:1e4a7bd9cac3cd647bdc417510244ce4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
