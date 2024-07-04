@@ -1,2 +1,2 @@
-Call .\FUICompiler\bin\Release\net6.0\win-x64\FUICompiler.exe --sln=.\FUI.sln --project=FUI.Test --output=.\Library\ScriptAssemblies\FUI.Test.dll --binding=.\Library\Binding\ --generated=.\Temp\BindingGenerated\ --ctx_type=Mix
+Call .\FUICompiler\bin\Release\net6.0\win-x64\FUICompiler.exe --sln=.\FUI.sln --project=FUI.Test --output=.\Library\ScriptAssemblies\FUI.Test.dll --binding=.\Binding\ --generated=.\Temp\BindingGenerated\ --ctx_type=Mix
 pause

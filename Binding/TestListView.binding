@@ -1,0 +1,164 @@
+{
+    "viewName": "TestListView",
+    "contexts": [
+        {
+            "type": "TestListViewModel",
+            "properties": [
+                {
+                    "name": "List",
+                    "type": {
+                        "name": "ObservableList`1",
+                        "fullName": "FUI.Bindable.ObservableList`1[[TestListItemViewModel, FUI.Test, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+                        "isGenericType": true,
+                        "isValueType": false,
+                        "genericArguments": [
+                            {
+                                "name": "TestListItemViewModel",
+                                "fullName": "TestListItemViewModel",
+                                "isGenericType": false,
+                                "isValueType": false,
+                                "genericArguments": []
+                            }
+                        ]
+                    },
+                    "converterType": {
+                        "name": "",
+                        "fullName": "",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "elementPath": "Scroll View",
+                    "elementType": {
+                        "name": "ScrollViewElement",
+                        "fullName": "FUI.UGUI.VisualElement.ScrollViewElement",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "converterValueType": {
+                        "name": "",
+                        "fullName": "",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "converterTargetType": {
+                        "name": "",
+                        "fullName": "",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "elementValueType": {
+                        "name": "IReadOnlyObservableList`1",
+                        "fullName": "FUI.Bindable.IReadOnlyObservableList`1[[FUI.Bindable.ObservableObject, FUI.Core, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+                        "isGenericType": true,
+                        "isValueType": false,
+                        "genericArguments": [
+                            {
+                                "name": "ObservableObject",
+                                "fullName": "FUI.Bindable.ObservableObject",
+                                "isGenericType": false,
+                                "isValueType": false,
+                                "genericArguments": []
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "AddItem",
+                    "type": {
+                        "name": "Action",
+                        "fullName": "System.Action",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "converterType": {
+                        "name": "",
+                        "fullName": "",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "elementPath": "btn_Add",
+                    "elementType": {
+                        "name": "ButtonEventElement",
+                        "fullName": "FUI.UGUI.VisualElement.ButtonEventElement",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "converterValueType": {
+                        "name": "",
+                        "fullName": "",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "converterTargetType": {
+                        "name": "",
+                        "fullName": "",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "elementValueType": {
+                        "name": "Action",
+                        "fullName": "System.Action",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    }
+                },
+                {
+                    "name": "RemoveItem",
+                    "type": {
+                        "name": "Action",
+                        "fullName": "System.Action",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "converterType": {
+                        "name": "",
+                        "fullName": "",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "elementPath": "btn_Remove",
+                    "elementType": {
+                        "name": "ButtonEventElement",
+                        "fullName": "FUI.UGUI.VisualElement.ButtonEventElement",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "converterValueType": {
+                        "name": "",
+                        "fullName": "",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "converterTargetType": {
+                        "name": "",
+                        "fullName": "",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    },
+                    "elementValueType": {
+                        "name": "Action",
+                        "fullName": "System.Action",
+                        "isGenericType": false,
+                        "isValueType": false,
+                        "genericArguments": []
+                    }
+                }
+            ]
+        }
+    ]
+}
