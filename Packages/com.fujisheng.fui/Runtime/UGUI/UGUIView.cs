@@ -174,17 +174,17 @@ namespace FUI.UGUI
             return visualElement;
         }
 
-        void IView.Enable()
+        public virtual void Enable()
         {
             gameObject.SetActive(true);
         }
 
-        void IView.Disable()
+        public virtual void Disable()
         {
             gameObject.SetActive(false);
         }
 
-        void IView.Destroy()
+        public virtual void Destroy()
         {
             assetLoader.DestroyGameObject(gameObject);
             assetLoader.Release();
@@ -192,7 +192,7 @@ namespace FUI.UGUI
 
         protected virtual void SetLayer(int layer)
         {
-            
+            gameObject.GetComponent<Canvas>().sortingOrder = layer;
         }
 
         protected virtual void SetOrder(int order)
