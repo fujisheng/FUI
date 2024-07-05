@@ -5,112 +5,114 @@ using System.Threading;
 namespace FUI.Manager
 {
     /// <summary>
-    /// 界面命令队列
+    /// 界面任务队列
     /// </summary>
-    class ViewCommandQueue
+    class ViewTaskQueue
     {
-        readonly List<ViewCommand> commands;
+        readonly List<ViewTask> tasks;
 
         /// <summary>
-        /// 所有的命令
+        /// 所有的任务
         /// </summary>
-        internal IEnumerable<ViewCommand> Commands => commands;
+        internal IEnumerable<ViewTask> Tasks => tasks;
 
         /// <summary>
         /// 初始化一个队列
         /// </summary>
-        internal ViewCommandQueue()
+        internal ViewTaskQueue()
         {
-            commands = new List<ViewCommand>();
+            tasks = new List<ViewTask>();
         }
 
         /// <summary>
         /// 入队
         /// </summary>
-        /// <param name="command">入队的命令</param>
-        internal void Enqueue(ViewCommand command)
+        /// <param name="task">入队的任务</param>
+        internal void Execute(ViewTask task)
         {
-            commands.Add(command);
+            task.Execute();
+            tasks.Add(task);
         }
 
         /// <summary>
         /// 出队
         /// </summary>
-        /// <returns>出队的命令</returns>
-        internal ViewCommand Dequeue()
+        /// <returns>出队的任务</returns>
+        internal ViewTask Complete()
         {
-            if (commands.Count == 0)
+            if (tasks.Count == 0)
             {
                 return null;
             }
-            var command = commands[0];
-            commands.RemoveAt(0);
-            return command;
+            var task = tasks[0];
+            tasks.RemoveAt(0);
+            task.Complete();
+            return task;
         }
 
         /// <summary>
-        /// 获取最前面的命令
+        /// 获取最前面的任务
         /// </summary>
         /// <returns></returns>
-        internal ViewCommand Peek()
+        internal ViewTask Peek()
         {
-            if (commands.Count == 0)
+            if (tasks.Count == 0)
             {
                 return null;
             }
-            return commands[0];
+            return tasks[0];
         }
 
         /// <summary>
-        /// 移除一个命令
+        /// 移除一个任务
         /// </summary>
-        /// <param name="command"></param>
-        internal void Remove(ViewCommand command)
+        /// <param name="task"></param>
+        internal void Remove(ViewTask task)
         {
-            commands.Remove(command);
+            tasks.Remove(task);
         }
 
         /// <summary>
-        /// 清空所有命令
+        /// 清空所有任务
         /// </summary>
         internal void Clear()
         {
-            commands.Clear();
+            tasks.Clear();
         }
 
         /// <summary>
         /// 计数
         /// </summary>
-        internal int Count => commands.Count;
+        internal int Count => tasks.Count;
 
         /// <summary>
-        /// 是否存在某个命令
+        /// 是否存在某个任务
         /// </summary>
         /// <param name="viewName"></param>
         /// <returns></returns>
         internal bool Exist(string viewName)
         {
-            return commands.Exists(c => c.ViewName == viewName);
+            return tasks.Exists(c => c.ViewName == viewName);
         }
     }
 
     /// <summary>
-    /// 界面命令
+    /// 界面任务
     /// </summary>
-    abstract class ViewCommand
+    abstract class ViewTask
     {
         internal abstract string ViewName { get; set; }
         internal abstract bool IsCompleted { get; set; }
         internal abstract UIEntity Result { get; set; }
-        internal abstract void Execute(UIStack viewStack);
-        internal abstract void Complete(UIStack viewStack);
+        internal abstract void Execute();
+        internal abstract void Complete();
         internal abstract void Cancel();
     }
 
     /// <summary>
     /// 界面创建参数
     /// </summary>
-    internal struct UIOpenParam
+    internal struct UIOpenTaskParam
     {
         /// <summary>
         /// 界面名字
@@ -142,7 +144,7 @@ namespace FUI.Manager
         /// </summary>
         internal readonly bool isAsync;
 
-        internal UIOpenParam(string viewName, IViewFactory factory, Type viewModelType = null, Type viewBehaviorType = null, object param = null, bool isAsync = false)
+        internal UIOpenTaskParam(string viewName, IViewFactory factory, Type viewModelType = null, Type viewBehaviorType = null, object param = null, bool isAsync = false)
         {
             this.viewName = viewName;
             this.factory = factory;
@@ -153,24 +155,26 @@ namespace FUI.Manager
         }
     }
 
-    class OpenViewCommand : ViewCommand
+    class OpenViewTask : ViewTask
     {
-        readonly UIOpenParam param;
+        readonly UIOpenTaskParam param;
         readonly CancellationTokenSource cancellationTokenSource;
+        readonly UIStack uiStack;
 
         internal override string ViewName { get; set; }
         internal override UIEntity Result { get; set; }
         internal override bool IsCompleted { get; set; }
 
-        internal OpenViewCommand(UIOpenParam param)
+        internal OpenViewTask(UIOpenTaskParam param, UIStack uiStack)
         {
             this.ViewName = param.viewName;
             this.param = param;
+            this.uiStack = uiStack;
             this.cancellationTokenSource = new CancellationTokenSource();
             this.IsCompleted = false;
         }
 
-        internal async override void Execute(UIStack viewStack)
+        internal async override void Execute()
         {
             UIEntity entity;
 
@@ -193,7 +197,7 @@ namespace FUI.Manager
             IsCompleted = true;
         }
 
-        internal override void Complete(UIStack viewStack)
+        internal override void Complete()
         {
             if (!IsCompleted)
             {
@@ -206,10 +210,10 @@ namespace FUI.Manager
             }
 
             var viewConfig = ViewConfigCache.Get(Result.ViewModel);
-            SetLayer(viewStack, Result, viewConfig);
+            SetLayer(uiStack, Result, viewConfig);
             Result.Enable(param.param);
-            OnComplete(viewStack, Result, viewConfig);
-            viewStack.Push(Result);
+            OnComplete(uiStack, Result, viewConfig);
+            uiStack.Push(Result);
             cancellationTokenSource?.Dispose();
 
         }
@@ -232,22 +236,16 @@ namespace FUI.Manager
         /// </summary>
         /// <param name="stack">当前ui栈</param>
         /// <param name="entity">当前ui实体</param>
-        void SetLayer(UIStack stack, UIEntity entity, DefaultViewConfigAttribute viewConfig)
+        void SetLayer(UIStack stack, UIEntity entity, ViewConfig viewConfig)
         {
-            var layer = viewConfig == null ? (int)Layer.Common : viewConfig.layer;
-            entity.SetLayer(layer);
+            entity.SetLayer(viewConfig.layer);
             entity.SetOrder(stack.Count == 0 ? 0 : stack.Peek().View.Order + 1);
         }
 
-        void OnComplete(UIStack stack, UIEntity entity, DefaultViewConfigAttribute viewConfig)
+        void OnComplete(UIStack stack, UIEntity entity, ViewConfig viewConfig)
         {
-            if(viewConfig == null)
-            {
-                return;
-            }
-
             //如果是全屏界面则使得背后的所有界面都不可见
-            if(viewConfig.viewType == ViewType.FullScreen)
+            if(viewConfig.flag.HasFlag(ViewFlag.FullScreen))
             {
                 for (int i = stack.Count - 1; i >= 0; i--)
                 {
@@ -261,19 +259,22 @@ namespace FUI.Manager
         }
     }
 
-    class CloseViewCommand : ViewCommand
+    class CloseViewTask : ViewTask
     {
+        readonly UIStack uiStack;
         internal override string ViewName { get; set; }
         internal override bool IsCompleted { get; set; }
         internal override UIEntity Result { get; set; }
-        internal CloseViewCommand(string viewName)
+
+        internal CloseViewTask(string viewName, UIStack uiStack)
         {
             this.ViewName = viewName;
+            this.uiStack = uiStack;
         }
 
-        internal override void Execute(UIStack viewStack)
+        internal override void Execute()
         {
-            Result = viewStack.GetUIEntity(ViewName);
+            Result = uiStack.GetUIEntity(ViewName);
             IsCompleted = true;
             UnityEngine.Debug.Log($"关闭界面：{ViewName}");
         }
@@ -284,29 +285,24 @@ namespace FUI.Manager
             UnityEngine.Debug.Log($"取消关闭界面：{ViewName}");
         }
 
-        internal override void Complete(UIStack viewStack)
+        internal override void Complete()
         {
             if (Result == null)
             {
                 return;
             }
 
-            OnComplete(viewStack, Result, ViewConfigCache.Get(Result.ViewModel));
+            OnComplete(uiStack, Result, ViewConfigCache.Get(Result.ViewModel));
             Result.Destroy();
-            viewStack.Remove(Result);
+            uiStack.Remove(Result);
             UnityEngine.Debug.Log($"关闭界面完成：{ViewName}");
             //TODO是否缓存被关闭的界面
         }
 
-        void OnComplete(UIStack viewStack, UIEntity entity, DefaultViewConfigAttribute viewConfig)
+        void OnComplete(UIStack viewStack, UIEntity entity, ViewConfig viewConfig)
         {
-            if(viewConfig == null)
-            {
-                return;
-            }
-
             //如果是全屏界面则使得背后的所有界面都可见直到遇到下一个全屏界面
-            if(viewConfig.viewType == ViewType.FullScreen)
+            if(viewConfig.flag.HasFlag(ViewFlag.FullScreen))
             {
                 for (int i = viewStack.Count - 1; i >= 0; i--)
                 {
@@ -323,12 +319,8 @@ namespace FUI.Manager
                     }
 
                     var cfg = ViewConfigCache.Get(view.ViewModel);
-                    if(cfg == null)
-                    {
-                        continue;
-                    }
 
-                    if(cfg.viewType == ViewType.FullScreen)
+                    if(cfg.flag.HasFlag(ViewFlag.FullScreen))
                     {
                         break;
                     }

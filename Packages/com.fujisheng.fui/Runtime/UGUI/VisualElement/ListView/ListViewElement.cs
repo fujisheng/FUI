@@ -9,7 +9,7 @@ namespace FUI.UGUI.VisualElement
     /// <summary>
     /// 列表视图元素基类
     /// </summary>
-    public abstract class ListViewElement : UGUIVisualElement<IReadOnlyObservableList<ObservableObject>>
+    public abstract class ListViewElement : UGUIVisualElement<IReadOnlyObservableList<ObservableObject>>, IContainerElement
     {
         protected IReadOnlyObservableList<ObservableObject> List;
         public sealed override void UpdateValue(IReadOnlyObservableList<ObservableObject> value)

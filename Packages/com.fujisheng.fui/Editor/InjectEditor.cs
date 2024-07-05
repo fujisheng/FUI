@@ -15,6 +15,7 @@ namespace FUI.Editor
     {
         static InjectEditor()
         {
+            CompilationPipeline.compilationStarted += OnCompilationStarted;
             CompilationPipeline.assemblyCompilationFinished += AssemblyCompilationFinishedCallback;
         }
 
@@ -33,6 +34,11 @@ namespace FUI.Editor
         {
             var batPath = Path.GetFullPath(Path.Combine(Application.dataPath, "../CompileUIProject.bat"));
             BatHelper.RunBat(batPath, (hasError) => { UnityEngine.Debug.Log($"注入绑定{(hasError ? "失败" : "成功")}"); });
+        }
+
+        static void OnCompilationStarted(object o)
+        {
+            UnityEngine.Debug.Log(o.GetType().FullName);
         }
     }
 }

@@ -115,12 +115,33 @@ namespace FUI.UGUI
                 defaultElements = new Dictionary<string, IVisualElement>();
             }
 
+            var openList = new Queue<Transform>();
+            openList.Enqueue(gameObject.transform);
+
             //获取所有的视觉元素组件
-            foreach (var element in gameObject.transform.GetComponentsInChildren<UGUIVisualElement>(true))
+            while (openList.Count > 0)
             {
-                element.SetAssetLoader(assetLoader);
-                AddVisualElement(element.name, element);
-                element.InternalInitialize();
+                var current = openList.Dequeue();
+
+                var visualElement = current.GetComponent<UGUIVisualElement>();
+                if (visualElement != null)
+                {
+                    visualElement.SetAssetLoader(assetLoader);
+                    visualElement.InternalInitialize();
+                    AddVisualElement(visualElement.name, visualElement);
+                }
+
+                //如果这个元素是容器元素且不是自身则不再继续向下查找
+                if (visualElement is IContainerElement && visualElement.gameObject != this.gameObject)
+                {
+                    continue;
+                }
+                
+                //否则继续向下查找
+                for (int i = 0; i < current.childCount; i++)
+                {
+                    openList.Enqueue(current.GetChild(i));
+                }
             }
         }
 

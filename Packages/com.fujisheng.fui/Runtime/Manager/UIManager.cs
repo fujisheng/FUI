@@ -17,7 +17,7 @@ namespace FUI.Manager
         /// <summary>
         /// 界面命令队列  保证界面打开关闭的顺序的同时可以同时加载多个界面
         /// </summary>
-        readonly ViewCommandQueue commandQueue;
+        readonly ViewTaskQueue taskQueue;
 
         /// <summary>
         /// View构造器
@@ -28,7 +28,7 @@ namespace FUI.Manager
         {
             this.viewFactory = viewFactory;
             this.uiStack = new UIStack();
-            this.commandQueue = new ViewCommandQueue();
+            this.taskQueue = new ViewTaskQueue();
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace FUI.Manager
         /// <param name="param">打开时的参数</param>
         public void Open(string viewName, object param = null)
         {
-            OpenView(new OpenViewCommand(new UIOpenParam(viewName, viewFactory, param: param)));
+            OpenView(new UIOpenTaskParam(viewName, viewFactory, param: param));
         }
 
         /// <summary>
@@ -64,8 +64,8 @@ namespace FUI.Manager
         /// <param name="viewName">界面名字</param>
         public async Task OpenAsync(string viewName, object param = null)
         {
-            OpenView(new OpenViewCommand(new UIOpenParam(viewName, viewFactory, param: param, isAsync: true)));
-            await WaitingForAllCommandExecuteComplete();
+            OpenView(new UIOpenTaskParam(viewName, viewFactory, param: param, isAsync: true));
+            await WaitingForAlltaskExecuteComplete();
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace FUI.Manager
         /// <param name="viewName">要打开的界面名字</param>
         public void Open<TViewModel>(string viewName, object param) where TViewModel : ObservableObject
         {
-            OpenView(new OpenViewCommand(new UIOpenParam(viewName, viewFactory, typeof(TViewModel), param : param)));
+            OpenView(new UIOpenTaskParam(viewName, viewFactory, typeof(TViewModel), param : param));
         }
 
         /// <summary>
@@ -85,8 +85,8 @@ namespace FUI.Manager
         /// <param name="viewName">要打开的界面名字</param>
         public async Task OpenAsync<TViewModel>(string viewName, object param) where TViewModel : ObservableObject
         {
-            OpenView(new OpenViewCommand(new UIOpenParam(viewName, viewFactory, typeof(TViewModel), param: param, isAsync: true)));
-            await WaitingForAllCommandExecuteComplete();
+            OpenView(new UIOpenTaskParam(viewName, viewFactory, typeof(TViewModel), param: param, isAsync: true));
+            await WaitingForAlltaskExecuteComplete();
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace FUI.Manager
         /// <param name="viewName">要打开的界面名字</param>
         public void Open<TViewModel, TBehavior>(string viewName, object param) where TViewModel : ObservableObject where TBehavior : ViewBehavior<TViewModel>
         {
-            OpenView(new OpenViewCommand(new UIOpenParam(viewName, viewFactory, typeof(TViewModel), typeof(TBehavior), param)));
+            OpenView(new UIOpenTaskParam(viewName, viewFactory, typeof(TViewModel), typeof(TBehavior), param));
         }
 
         /// <summary>
@@ -108,33 +108,47 @@ namespace FUI.Manager
         /// <param name="viewName">要打开的界面名字</param>
         public async Task OpenAsync<TViewModel, TBehavior>(string viewName, object param) where TViewModel : ObservableObject where TBehavior : ViewBehavior<TViewModel>
         {
-            OpenView(new OpenViewCommand(new UIOpenParam(viewName, viewFactory, typeof(TViewModel), typeof(TBehavior), param, true)));
-            await WaitingForAllCommandExecuteComplete();
+            OpenView(new UIOpenTaskParam(viewName, viewFactory, typeof(TViewModel), typeof(TBehavior), param, true));
+            await WaitingForAlltaskExecuteComplete();
         }
 
-        void OpenView(OpenViewCommand command)
+        void OpenView(UIOpenTaskParam param)
         {
             EnsureViewFactory();
-            foreach (var item in commandQueue.Commands)
+            var viewConfig = ViewConfigCache.GetDefault(param.viewName);
+
+            foreach (var item in taskQueue.Tasks)
             {
-                //已经在打开中了 直接返回
-                if((item is OpenViewCommand) && item.ViewName == command.ViewName)
+                if(item.ViewName != param.viewName)
+                {
+                    continue;
+                }
+
+                //不允许多个实例的界面 已经在打开中了 直接返回
+                if((item is OpenViewTask) && viewConfig != null && !viewConfig.Value.flag.HasFlag(ViewFlag.AllowMultiple))
                 {
                     return;
                 }
 
                 //已经在关闭中了 取消关闭 并直接打开已有的
-                if((item is CloseViewCommand) && item.ViewName == command.ViewName)
+                if((item is CloseViewTask) && item.ViewName == param.viewName)
                 {
-                    Topping(command.ViewName);
+                    Topping(param.viewName);
                     item.Cancel();
-                    commandQueue.Remove(item);
+                    taskQueue.Remove(item);
                     return;
                 }
             }
 
-            command.Execute(uiStack);
-            commandQueue.Enqueue(command);
+            //要打开的界面已经被打开了 且标记为不允许多个实例 则直接置顶
+            if(viewConfig!= null && !viewConfig.Value.flag.HasFlag(ViewFlag.AllowMultiple) && uiStack.GetUIEntity(param.viewName)!=null)
+            {
+                Topping(param.viewName);
+                return;
+            }
+
+            //否则执行打开界面的任务
+            taskQueue.Execute(new OpenViewTask(param, uiStack));
             OnUpdate();
         }
 
@@ -144,14 +158,19 @@ namespace FUI.Manager
         /// <param name="viewName"></param>
         public void Topping(string viewName)
         {
-            var entity = uiStack.Topping(viewName);
+            var entity = uiStack.GetUIEntity(viewName);
+            //已经在顶层了
+            if (uiStack.Count != 0 && uiStack.Peek() == entity)
+            {
+                return;
+            }
+
             var viewConfig = ViewConfigCache.Get(entity.ViewModel);
-            var layer = viewConfig == null ? (int)Layer.Common : viewConfig.layer;
-            entity.SetLayer(layer);
+            entity.SetLayer(viewConfig.layer);
             entity.SetOrder(uiStack.Count == 0 ? 0 : uiStack.Peek().View.Order + 1);
 
             //如果是全屏界面则使得背后的所有界面都不可见
-            if (viewConfig != null && viewConfig.viewType == ViewType.FullScreen)
+            if (viewConfig.flag.HasFlag(ViewFlag.FullScreen))
             {
                 for (int i = uiStack.Count - 1; i >= 0; i--)
                 {
@@ -166,19 +185,18 @@ namespace FUI.Manager
 
         public void OnUpdate()
         {
-            if(commandQueue.Count == 0)
+            if(taskQueue.Count == 0)
             {
                 return;
             }
 
-            var peek = commandQueue.Peek();
+            var peek = taskQueue.Peek();
             if(!peek.IsCompleted)
             {
                 return;
             }
 
-            var command = commandQueue.Dequeue();
-            command.Complete(uiStack);
+            taskQueue.Complete();
         }
 
         /// <summary>
@@ -187,12 +205,12 @@ namespace FUI.Manager
         public void Close(string viewName)
         {
             //如果要关闭的这个界面正在打开中 则直接取消要打开的那个界面
-            foreach (var command in commandQueue.Commands)
+            foreach (var task in taskQueue.Tasks)
             {
-                if ((command is OpenViewCommand) && command.ViewName == viewName)
+                if ((task is OpenViewTask) && task.ViewName == viewName)
                 {
-                    command.Cancel();
-                    commandQueue.Remove(command);
+                    task.Cancel();
+                    taskQueue.Remove(task);
                     return;
                 }
             }
@@ -204,9 +222,7 @@ namespace FUI.Manager
                 return;
             }
 
-            var closeCommand = new CloseViewCommand(viewName);
-            closeCommand.Execute(uiStack);
-            commandQueue.Enqueue(closeCommand);
+            taskQueue.Execute(new CloseViewTask(viewName, uiStack));
             OnUpdate();
         }
 
@@ -216,12 +232,12 @@ namespace FUI.Manager
         public void CloseAll()
         {
             //如果有正在打开中的界面 则取消打开
-            foreach (var command in commandQueue.Commands)
+            foreach (var task in taskQueue.Tasks)
             {
-                if (command is OpenViewCommand)
+                if (task is OpenViewTask)
                 {
-                    command.Cancel();
-                    commandQueue.Remove(command);
+                    task.Cancel();
+                    taskQueue.Remove(task);
                 }
             }
 
@@ -258,16 +274,16 @@ namespace FUI.Manager
         /// 等待所有命令执行完毕
         /// </summary>
         /// <returns></returns>
-        public async Task WaitingForAllCommandExecuteComplete()
+        public async Task WaitingForAlltaskExecuteComplete()
         {
-            if(commandQueue.Count == 0)
+            if(taskQueue.Count == 0)
             {
                 return;
             }
 
             await Task.Run(() =>
             {
-                while(commandQueue.Count > 0)
+                while(taskQueue.Count > 0)
                 {
                     Thread.Sleep(1);
                 }

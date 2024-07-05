@@ -2,21 +2,59 @@ using System;
 
 namespace FUI.Manager
 {
-    public class DefaultViewConfigAttribute : Attribute
+    public struct ViewConfig : IComparable<ViewConfig>
     {
-        public int layer;
-        public ViewType viewType;
+        ///<summary>
+        /// 层级
+        /// </summary>
+        public readonly int layer;
 
-        public DefaultViewConfigAttribute(Layer layer = Layer.Common, ViewType viewType = ViewType.NonFullScreen)
-        {
-            this.layer = (int)layer;
-            this.viewType = viewType;
-        }
+        ///<summary>
+        /// 标记
+        /// </summary>
+        public readonly ViewFlag flag;
 
-        public DefaultViewConfigAttribute(int layer, ViewType viewType)
+        public ViewConfig(int layer, ViewFlag flag)
         {
             this.layer = layer;
-            this.viewType = viewType;
+            this.flag = flag;
+        }
+
+        public static ViewConfig Default => new ViewConfig((int)Layer.Common, ViewFlag.None);
+
+        public int CompareTo(ViewConfig other)
+        {
+            if (layer != other.layer)
+            {
+                return layer.CompareTo(other.layer);
+            }
+
+            return flag.CompareTo(other.flag);
+        }
+    }
+
+    public class DefaultViewConfigAttribute : Attribute
+    {
+        public readonly ViewConfig config;
+
+        /// <summary>
+        /// 定义一个默认的界面配置
+        /// </summary>
+        /// <param name="layer">层级</param>
+        /// <param name="flag">标记</param>
+        public DefaultViewConfigAttribute(Layer layer = Layer.Common, ViewFlag flag = ViewFlag.None)
+        {
+            this.config = new ViewConfig((int)layer, flag);
+        }
+
+        /// <summary>
+        /// 定义一个默认的界面配置
+        /// </summary>
+        /// <param name="layer">层级</param>
+        /// <param name="flag">标记</param>
+        public DefaultViewConfigAttribute(int layer, ViewFlag flag = ViewFlag.None)
+        {
+            this.config = new ViewConfig(layer, flag);
         }
     }
 }
