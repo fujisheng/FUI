@@ -1,8 +1,11 @@
+using System;
+
 namespace FUI.Manager
 {
     /// <summary>
     /// ΩÁ√Ê±Í«©
     /// </summary>
+    [Flags]
     public enum ViewFlag
     {
         /// <summary>
