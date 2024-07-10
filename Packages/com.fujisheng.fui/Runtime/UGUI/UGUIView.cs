@@ -117,22 +117,31 @@ namespace FUI.UGUI
 
             var openList = new Queue<Transform>();
             openList.Enqueue(gameObject.transform);
-
+            var visualElements = new List<UGUIVisualElement>();
             //获取所有的视觉元素组件
             while (openList.Count > 0)
             {
                 var current = openList.Dequeue();
-
-                var visualElement = current.GetComponent<UGUIVisualElement>();
-                if (visualElement != null)
+                visualElements.Clear();
+                current.GetComponents(visualElements);
+                bool continueFind = true;
+                foreach(var visualElement in visualElements)
                 {
-                    visualElement.SetAssetLoader(assetLoader);
-                    visualElement.InternalInitialize();
-                    AddVisualElement(visualElement.name, visualElement);
+                    if (visualElement != null)
+                    {
+                        visualElement.SetAssetLoader(assetLoader);
+                        visualElement.InternalInitialize();
+                        AddVisualElement(visualElement.name, visualElement);
+                    }
+
+                    //如果这个元素是容器元素且不是自身则不再继续向下查找
+                    if (visualElement is IContainerElement && visualElement.gameObject != this.gameObject)
+                    {
+                        continueFind = false;
+                    }
                 }
 
-                //如果这个元素是容器元素且不是自身则不再继续向下查找
-                if (visualElement is IContainerElement && visualElement.gameObject != this.gameObject)
+                if (!continueFind)
                 {
                     continue;
                 }
