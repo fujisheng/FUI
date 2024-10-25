@@ -92,7 +92,7 @@ namespace FUI
         {
             this.bindingContext.InternalBinding();
             SynchronizeProperties();
-            this.View.Enable();
+            this.View.Visible = true;
             this.Behavior.InternalOnOpen(param);
         }
 
@@ -102,7 +102,7 @@ namespace FUI
         public void Disable()
         {
             this.Behavior.InternalOnClose();
-            this.View.Disable();
+            this.View.Visible = false;
             this.bindingContext.InternalUnbinding();
         }
 
@@ -158,7 +158,7 @@ namespace FUI
             this.View.Layer = this.Layer;
             this.View.Order = this.Order;
             SynchronizeProperties();
-            this.View.Enable();
+            this.View.Visible = true;
         }
 
         /// <summary>

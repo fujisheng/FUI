@@ -2,33 +2,34 @@
 
 namespace FUI
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
+    public enum BindingType
+    {
+        OneWay,
+        TwoWay,
+    }
+
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
     public class BindingAttribute : Attribute
     {
         public readonly string target;
+        public readonly string propertyName;
         public readonly Type valueConverterType;
         public readonly Type visualElementType;
-
-        /// <summary>
-        /// 绑定一个结构到某个View 适用于可观察对象
-        /// </summary>
-        /// <param name="target"></param>
-        public BindingAttribute(string target)
-        {
-            this.target = target;
-        }
+        public readonly BindingType bindingType;
 
         /// <summary>
         /// 绑定一个属性到某个视觉元素 适用于可观察对象的属性
         /// </summary>
-        /// <param name="target">目标</param>
+        /// <param name="target">目标 视图名或者视图某个字段名</param>
         /// <param name="converterType">值转换器类型</param>
         /// <param name="elementType">视觉元素类型</param>
-        public BindingAttribute(string target, Type elementType = null, Type converterType = null)
+        public BindingAttribute(string target, Type elementType = null, Type converterType = null, string propertyName = null, BindingType bindingType = BindingType.OneWay)
         {
             this.target = target;
             this.visualElementType = elementType;
             this.valueConverterType = converterType;
+            this.propertyName = propertyName;
+            this.bindingType = bindingType;
         }
     }
 
@@ -53,7 +54,7 @@ namespace FUI
     /// <summary>
     /// 标记某个方法为命令
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
     public class CommandAttribute : Attribute
     {
         public readonly string target;

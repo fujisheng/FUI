@@ -1,6 +1,7 @@
 ﻿using FUI;
 using FUI.Bindable;
 using FUI.Test;
+using FUI.UGUI;
 
 using UnityEngine;
 

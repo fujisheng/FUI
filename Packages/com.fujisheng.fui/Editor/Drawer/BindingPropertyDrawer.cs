@@ -311,7 +311,7 @@ namespace FUI.Editor.Drawer
             var elements = new List<Type>();
             if (!string.IsNullOrEmpty(itemData.elementPath) && root.transform.Find(itemData.elementPath) != null)
             {
-                foreach (var childElement in root.transform.Find(itemData.elementPath).GetComponents<IVisualElement>())
+                foreach (var childElement in root.transform.Find(itemData.elementPath).GetComponents<IElement>())
                 {
                     elements.Add(childElement.GetType());
                 }
@@ -466,7 +466,7 @@ namespace FUI.Editor.Drawer
         {
             foreach(var @interface in elementType.GetInterfaces())
             {
-                if(@interface.IsGenericType && @interface.GetGenericTypeDefinition() == typeof(IVisualElement<>))
+                if(@interface.IsGenericType && @interface.GetGenericTypeDefinition() == typeof(IElement<>))
                 {
                     return @interface.GetGenericArguments()[0];
                 }

@@ -2,6 +2,8 @@
 using FUI.Test;
 using FUI.UGUI.VisualElement;
 
+using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace Test.CodeBinding
@@ -12,7 +14,7 @@ namespace Test.CodeBinding
         [Binding("txt_int", typeof(IntToStringConverter), typeof(TextElement))]
         public int TestInt { get; set; }
 
-        [Binding("txt_string", elementType: typeof(TextElement))]
+        [Binding("txt_string", elementType: typeof(TextElement), bindingType:BindingType.OneWay)]
         public string TestString { get; set; }
 
         [Binding("txt_float", converterType: typeof(FloatToStringConverter))]

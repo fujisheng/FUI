@@ -84,11 +84,6 @@ namespace FUI.UGUI.VisualElement
             }
         }
 
-        protected override void OnReset()
-        {
-            OnUpdate();
-        }
-
         UIEntity CreateItem(ObservableObject item, out GameObject itemObject)
         {
             itemObject = Instantiate(itemPrefab);

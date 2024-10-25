@@ -32,8 +32,7 @@ namespace FUI.Bindable
         public event CollectionAddHandler CollectionAdd;
         public event CollectionRemoveHandler CollectionRemove;
         public event CollectionReplaceHandler CollectionReplace;
-        public event CollectionResetHandler CollectionReset;
-        public event CollectionMoveHandler CollectionMove;
+        public event CollectionUpdateHandler CollectionUpdate;
         
 
         public T this[int index]
@@ -56,7 +55,7 @@ namespace FUI.Bindable
         }
         public void Clear()
         {
-            CollectionReset?.Invoke(this);
+            CollectionUpdate?.Invoke(this);
             items.Clear();
         }
         public bool Contains(T item) => items.Contains(item);
@@ -130,32 +129,32 @@ namespace FUI.Bindable
         public void Reverse(int index, int count)
         {
             items.Reverse(index, count);
-            CollectionMove?.Invoke(this);
+            CollectionUpdate?.Invoke(this);
         }
         public void Reverse()
         {
             items.Reverse();
-            CollectionMove?.Invoke(this);
+            CollectionUpdate?.Invoke(this);
         }
         public void Sort(int index, int count, IComparer<T> comparer)
         {
             items.Sort(index, count, comparer);
-            CollectionMove?.Invoke(this);
+            CollectionUpdate?.Invoke(this);
         }
         public void Sort(Comparison<T> comparison)
         {
             items.Sort(comparison);
-            CollectionMove?.Invoke(this);
+            CollectionUpdate?.Invoke(this);
         }
         public void Sort()
         {
             items.Sort();
-            CollectionMove?.Invoke(this);
+            CollectionUpdate?.Invoke(this);
         }
         public void Sort(IComparer<T> comparer)
         {
             items.Sort(comparer);
-            CollectionMove?.Invoke(this);
+            CollectionUpdate?.Invoke(this);
         }
         public T[] ToArray()
         {

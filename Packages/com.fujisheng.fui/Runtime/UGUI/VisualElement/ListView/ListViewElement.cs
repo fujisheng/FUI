@@ -9,35 +9,30 @@ namespace FUI.UGUI.VisualElement
     /// <summary>
     /// 列表视图元素基类
     /// </summary>
-    public abstract class ListViewElement : UGUIVisualElement<IReadOnlyObservableList<ObservableObject>>, IContainerElement
+    public abstract class ListViewElement : UGUIVisualElement, IContainerElement, IListView
     {
+        /// <summary>
+        /// 所对应的列表
+        /// </summary>
         protected IReadOnlyObservableList<ObservableObject> List;
-        public sealed override void UpdateValue(IReadOnlyObservableList<ObservableObject> value)
+
+        public sealed override void UpdateValue(object value)
+        {
+            this.UpdateValue(value as IReadOnlyObservableList<ObservableObject>);
+        }
+
+        void IElement<IReadOnlyObservableList<ObservableObject>>.UpdateValue(IReadOnlyObservableList<ObservableObject> value)
         {
             if (value == List || value == null)
             {
                 return;
             }
 
-            if (List != null)
-            {
-                List.CollectionAdd -= OnCollectionAdd;
-                List.CollectionRemove -= OnCollectionRemove;
-                List.CollectionReplace -= OnCollectionReplace;
-                List.CollectionReset -= OnCollectionReset;
-                List.CollectionMove -= OnCollectionMove;
-            }
-
-            value.CollectionAdd += OnCollectionAdd;
-            value.CollectionRemove += OnCollectionRemove;
-            value.CollectionReplace += OnCollectionReplace;
-            value.CollectionReset += OnCollectionReset;
-            value.CollectionMove += OnCollectionMove;
             this.List = value;
             OnUpdate();
         }
 
-        void OnCollectionAdd(object sender, int? index, object item)
+        void IListView.OnAdd(object sender, int? index, object item)
         {
             // 如果index为null或者item为null，表示整个列表都更新了
             if (index == null || item == null)
@@ -50,7 +45,7 @@ namespace FUI.UGUI.VisualElement
             }
         }
 
-        void OnCollectionRemove(object sender, int? index, object item)
+        void IListView.OnRemove(object sender, int? index, object item)
         {
             if (index == null || item == null)
             {
@@ -62,7 +57,7 @@ namespace FUI.UGUI.VisualElement
             }
         }
 
-        void OnCollectionReplace(object sender, int? index, object oldItem, object newItem)
+        void IListView.OnReplace(object sender, int? index, object oldItem, object newItem)
         {
             if (index == null || oldItem == null || newItem == null)
             {
@@ -74,12 +69,7 @@ namespace FUI.UGUI.VisualElement
             }
         }
 
-        void OnCollectionReset(object sender)
-        {
-            OnReset();
-        }
-
-        void OnCollectionMove(object sender)
+        void IListView.OnUpdate(object sender)
         {
             OnUpdate();
         }
@@ -106,10 +96,6 @@ namespace FUI.UGUI.VisualElement
         /// <param name="newItem">替换后的item</param>
         protected virtual void OnReplace(int index, ObservableObject oldItem, ObservableObject newItem) { }
 
-        /// <summary>
-        /// 当重置的时候
-        /// </summary>
-        protected virtual void OnReset() { }
 
         /// <summary>
         /// 当全量更新的时候

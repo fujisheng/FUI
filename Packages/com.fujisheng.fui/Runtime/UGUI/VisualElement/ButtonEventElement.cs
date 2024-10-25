@@ -18,7 +18,7 @@ namespace FUI.UGUI.VisualElement
         public override void UpdateValue(Action value)
         {
             button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(()=>value.Invoke());
+            button.onClick.AddListener(() => { value.Invoke(); });
         }
     }
 }

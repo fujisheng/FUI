@@ -1,5 +1,6 @@
 ﻿using FUI;
 using FUI.Test;
+using FUI.UGUI.VisualElement;
 
 using System.Threading.Tasks;
 
@@ -27,12 +28,17 @@ namespace Test.Sub
 
         [Binding("CurrencyView")]
         public SubViewModel SubViewModel { get; set; } = new SubViewModel();
+
+        [Binding("btn_test", propertyName: nameof(ButtonElement.Text))]
+        public string ButtonText { get; set; }
     }
 
     public class MainViewBehavior : ViewBehavior<MainViewModel>
     {
         protected override async void OnOpen(object param)
         {
+            VM.ButtonText = "click me";
+
             UnityEngine.Debug.Log("data 1.........");
             await Task.Delay(1000);
             UnityEngine.Debug.Log("data 2.........");

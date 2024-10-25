@@ -35,7 +35,7 @@ namespace FUI.UGUI
             var assetLoader = assetLoaderCreator.Invoke();
             var viewObj = assetLoader.CreateGameObject(viewName);
             viewObj.SetActive(false);
-            return new UGUIView(assetLoader, viewObj, viewName);
+            return UGUIView.Create(assetLoader, viewObj, viewName);
         }
 
         public async Task<IView> CreateAsync(string viewName, CancellationToken token)
@@ -48,7 +48,8 @@ namespace FUI.UGUI
             var assetLoader = assetLoaderCreator.Invoke();
             var viewObj = await assetLoader.CreateGameObjectAsync(viewName, token);
             viewObj.SetActive(false);
-            return new UGUIView(assetLoader, viewObj, viewName);
+
+            return UGUIView.Create(assetLoader, viewObj, viewName);
         }
     }
 }

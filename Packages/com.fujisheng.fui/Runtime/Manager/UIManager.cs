@@ -65,7 +65,7 @@ namespace FUI.Manager
         public async Task OpenAsync(string viewName, object param = null)
         {
             OpenView(new UIOpenTaskParam(viewName, viewFactory, param: param, isAsync: true));
-            await WaitingForAlltaskExecuteComplete();
+            await WaitingForAllTaskComplete();
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace FUI.Manager
         public async Task OpenAsync<TViewModel>(string viewName, object param) where TViewModel : ObservableObject
         {
             OpenView(new UIOpenTaskParam(viewName, viewFactory, typeof(TViewModel), param: param, isAsync: true));
-            await WaitingForAlltaskExecuteComplete();
+            await WaitingForAllTaskComplete();
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace FUI.Manager
         public async Task OpenAsync<TViewModel, TBehavior>(string viewName, object param) where TViewModel : ObservableObject where TBehavior : ViewBehavior<TViewModel>
         {
             OpenView(new UIOpenTaskParam(viewName, viewFactory, typeof(TViewModel), typeof(TBehavior), param, true));
-            await WaitingForAlltaskExecuteComplete();
+            await WaitingForAllTaskComplete();
         }
 
         void OpenView(UIOpenTaskParam param)
@@ -248,6 +248,10 @@ namespace FUI.Manager
             }
         }
 
+        /// <summary>
+        /// 确保ViewFactory不为空
+        /// </summary>
+        /// <exception cref="System.Exception"></exception>
         void EnsureViewFactory()
         {
             if(viewFactory == null)
@@ -274,7 +278,7 @@ namespace FUI.Manager
         /// 等待所有命令执行完毕
         /// </summary>
         /// <returns></returns>
-        public async Task WaitingForAlltaskExecuteComplete()
+        public async Task WaitingForAllTaskComplete()
         {
             if(taskQueue.Count == 0)
             {
