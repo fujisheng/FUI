@@ -1,8 +1,27 @@
+using System.Runtime.CompilerServices;
+
 namespace FUI.Bindable
 {
+    /// <summary>
+    /// 只读的可绑定属性
+    /// </summary>
+    /// <typeparam name="T">属性值类型</typeparam>
     public interface IReadonlyBindableProperty<out T>
     {
         T Value { get;}
+        T GetValue();
+    }
+
+    /// <summary>
+    /// 只写的可绑定属性
+    /// </summary>
+    /// <typeparam name="T">属性值类型</typeparam>
+    public interface IWriteonlyBindableProperty<in T>
+    {
+        T Value { set; }
+        void SetValue(T value);
+        void SetValue(object value, string exception = null);
+        void SetValue<TSet>(TSet value, string exception = null);
     }
 
     /// <summary>
@@ -23,7 +42,7 @@ namespace FUI.Bindable
     /// 可绑定的属性
     /// </summary>
     /// <typeparam name="T">属性值类型</typeparam>
-    public class BindableProperty<T> : IReadonlyBindableProperty<T>
+    public class BindableProperty<T> : IReadonlyBindableProperty<T>, IWriteonlyBindableProperty<T>
     {
         T value;
 
@@ -79,20 +98,46 @@ namespace FUI.Bindable
             this.PropertyGet = getHandler;
         }
 
-        T GetValue()
+        public T GetValue()
         {
             return this.PropertyGet != null ? this.PropertyGet.Invoke() : this.value;
         }
 
-        void SetValue(T value)
+        public void SetValue(T value)
         {
             var oldValue = GetValue();
-            if (oldValue == null || !value.Equals(oldValue))
+
+            if (oldValue == null || value == null || !value.Equals(oldValue))
             {
                 this.PropertySet?.Invoke(oldValue, value);
-
                 this.value = value;
             }
+        }
+
+        public void SetValue<TSet>(TSet value, string exception = null)
+        {
+            if(value == null)
+            {
+                SetValue(default);
+                return;
+            }
+
+            if (!(value is T tValue))
+            {
+                if (string.IsNullOrEmpty(exception))
+                {
+                    throw new System.Exception($"can not convert {typeof(TSet)} to {typeof(T)}");
+                }
+
+                throw new System.Exception(exception);
+            }
+
+            SetValue(tValue);
+        }
+
+        public void SetValue(object value, string exception = null)
+        {
+            SetValue<object>(value, exception);
         }
 
         public void ClearEvent()

@@ -16,8 +16,7 @@ namespace FUI.UGUI
 		/// </summary>
 		Dictionary<string, IElement> defaultElements;
 
-		string elementName;
-		string IElement.Name => elementName;
+		string IElement.Name => gameObject.name;
 
 		public IElement Parent { get; private set; }
 
@@ -49,8 +48,10 @@ namespace FUI.UGUI
 					if (element != null)
 					{
 						element.Parent = this;
-						element.assetLoader = assetLoader;
-						AddChild(element);
+						element.AssetLoader = AssetLoader;
+                        element.Initialize();
+
+                        AddChild(element);
 					}
 
 					//如果这个元素是容器元素且不是自身则不再继续向下查找
@@ -87,9 +88,9 @@ namespace FUI.UGUI
 			}
 			elements[key] = element;
 
-			if (!defaultElements.ContainsKey(elementName))
+			if (!defaultElements.ContainsKey(element.Name))
 			{
-				defaultElements[elementName] = element;
+				defaultElements[element.Name] = element;
 			}
 		}
 

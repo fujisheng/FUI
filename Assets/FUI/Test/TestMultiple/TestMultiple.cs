@@ -1,7 +1,7 @@
 ﻿using FUI;
 using FUI.Manager;
 using FUI.Test;
-using FUI.UGUI.VisualElement;
+using FUI.UGUI.Control;
 
 using System.Threading.Tasks;
 
@@ -14,7 +14,7 @@ namespace Test.Multiple
     [Binding("TestMultipleView")]
     public class TestMultipleViewModel : ViewModel
     {
-        [Binding("txt_notify", elementType: typeof(TextElement))]
+        [Binding("txt_notify", nameof(TextElement.Text))]
         public string Notify { get; set; } = "Notify_1";
     }
 

@@ -10,14 +10,9 @@ namespace FUI.UGUI
     public partial class UGUIView : MonoBehaviour, IView
     {
         /// <summary>
-        /// 视图对应的GameObject
-        /// </summary>
-        protected new GameObject gameObject;
-
-        /// <summary>
         /// 资源加载器
         /// </summary>
-        protected IAssetLoader assetLoader;
+        protected IAssetLoader AssetLoader { get; private set; }
 
         string viewName;
 
@@ -26,7 +21,7 @@ namespace FUI.UGUI
         /// </summary>
         string IView.Name => viewName;
 
-        public BindableProperty<int> LayerProperty { get; } = new BindableProperty<int>();
+        public BindableProperty<int> LayerProperty { get; private set; }
         /// <summary>
         /// 层级
         /// </summary>
@@ -36,7 +31,7 @@ namespace FUI.UGUI
             set { LayerProperty.Value = value; } 
         }
 
-        public BindableProperty<int> OrderProperty { get; } = new BindableProperty<int>();
+        public BindableProperty<int> OrderProperty { get; private set; }
         /// <summary>
         /// 顺序
         /// </summary>
@@ -46,7 +41,7 @@ namespace FUI.UGUI
             set { OrderProperty.Value = value; }
         }
 
-        public BindableProperty<bool> VisibleProperty { get; } = new BindableProperty<bool>(true);
+        public BindableProperty<bool> VisibleProperty { get; private set; }
         /// <summary>
         /// 可见性
         /// </summary>
@@ -89,9 +84,39 @@ namespace FUI.UGUI
             }
 
             view.viewName = viewName;
-            view.assetLoader = assetLoader;
+            view.AssetLoader = assetLoader;
             view.InitializeElements();
             return view;
+        }
+
+        public virtual void Initialize()
+        {
+            LayerProperty = new BindableProperty<int>(GetLayer());
+            VisibleProperty = new BindableProperty<bool>(IsVisible());
+            OrderProperty = new BindableProperty<int>(GetOrder());
+
+            LayerProperty.PropertySet += SetLayer;
+            VisibleProperty.PropertySet += SetVisible;
+            OrderProperty.PropertySet += SetOrder;
+        }
+
+        protected virtual bool IsVisible()
+        {
+            return gameObject.activeSelf;
+        }
+
+        protected virtual int GetLayer()
+        {
+            if(!gameObject.TryGetComponent<Canvas>(out var canvas))
+            {
+                return 0;
+            }
+            return canvas.sortingOrder;
+        }
+
+        protected virtual int GetOrder()
+        {
+            return gameObject.transform.GetSiblingIndex();
         }
 
         protected virtual void SetVisible(bool oldVisible, bool visible)
@@ -101,7 +126,11 @@ namespace FUI.UGUI
 
         protected virtual void SetLayer(int oldLayer, int layer)
         {
-            gameObject.GetComponent<Canvas>().sortingOrder = layer;
+            if (!gameObject.TryGetComponent<Canvas>(out var canvas))
+            {
+                return;
+            }
+            canvas.sortingOrder = layer;
         }
 
         protected virtual void SetOrder(int oldOrder, int order)
@@ -111,8 +140,12 @@ namespace FUI.UGUI
 
         public virtual void Destroy()
         {
-            assetLoader.DestroyGameObject(gameObject);
-            assetLoader.Release();
+            VisibleProperty.ClearEvent();
+            LayerProperty.ClearEvent();
+            OrderProperty.ClearEvent();
+
+            AssetLoader.DestroyGameObject(gameObject);
+            AssetLoader.Release();
         }
     }
 }

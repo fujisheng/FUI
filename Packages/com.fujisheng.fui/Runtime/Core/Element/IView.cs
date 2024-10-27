@@ -3,7 +3,7 @@
     /// <summary>
     /// 视图接口
     /// </summary>
-    public interface IView
+    public interface IView 
     {
         /// <summary>
         /// 视图名字

@@ -1,6 +1,6 @@
 ﻿using FUI;
 using FUI.Test;
-using FUI.UGUI.VisualElement;
+using FUI.UGUI.Control;
 
 using System.Collections.Generic;
 
@@ -11,16 +11,16 @@ namespace Test.CodeBinding
     [Binding("TestCodeBindingView")]
     public class TestCodeBindingViewModel : ViewModel
     {
-        [Binding("txt_int", typeof(IntToStringConverter), typeof(TextElement))]
+        [Binding("txt_int", nameof(TextElement.Text), typeof(IntToStringConverter))]
         public int TestInt { get; set; }
 
-        [Binding("txt_string", elementType: typeof(TextElement), bindingType:BindingType.OneWay)]
+        [Binding("txt_string", nameof(TextElement.Text), bindingType:BindingType.OneWay)]
         public string TestString { get; set; }
 
-        [Binding("txt_float", converterType: typeof(FloatToStringConverter))]
+        [Binding("txt_float", nameof(TextElement.Text), typeof(FloatToStringConverter))]
         public float TestFloat { get; set; }
 
-        [Binding("txt_bool")]
+        [Binding("txt_bool", nameof(TextElement.Text), typeof(BoolToStringConverter))]
         public bool TestBool { get; set; }
     }
 

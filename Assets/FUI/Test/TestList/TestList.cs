@@ -2,6 +2,7 @@
 using FUI.Bindable;
 using FUI.Test;
 using FUI.UGUI;
+using FUI.UGUI.Control;
 
 using UnityEngine;
 
@@ -9,23 +10,23 @@ namespace Test.List
 {
     public class TestListItemViewModel : ViewModel
     {
-        [Binding("txt_id", converterType:typeof(IntToStringConverter))]
+        [Binding("txt_id", nameof(TextElement.Text), typeof(IntToStringConverter))]
         public int ID { get; set; }
 
-        [Binding("txt_name")]
+        [Binding("txt_name", nameof(TextElement.Text))]
         public string Name { get; set; }
     }
 
     [Binding("TestListView")]
     public class TestListViewModel : ViewModel
     {
-        [Binding("Scroll View")]
-        public ObservableList<TestListItemViewModel> List { get; set; }
+        [Binding("Scroll View", nameof(ScrollViewElement.Data))]
+        public ObservableList<TestListItemViewModel> List { get; set; } = new ObservableList<TestListItemViewModel>();
 
-        [Binding("btn_Add")]
+        [Binding("btn_Add", nameof(ButtonElement.OnClickAction))]
         public System.Action AddItem { get; set; }
 
-        [Binding("btn_Remove")]
+        [Binding("btn_Remove", nameof(ButtonElement.OnClickAction))]
         public System.Action RemoveItem { get; set; }
     }
 

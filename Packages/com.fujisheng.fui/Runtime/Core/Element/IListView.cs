@@ -10,7 +10,7 @@ namespace FUI
         /// <summary>
         /// 数据
         /// </summary>
-        BindableProperty<IReadonlyBindableProperty<ObservableObject>> Data { get; }
+        BindableProperty<IReadOnlyObservableList<ObservableObject>> Data { get; }
 
         /// <summary>
         /// 当有元素被添加时

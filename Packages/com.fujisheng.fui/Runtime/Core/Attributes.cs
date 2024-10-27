@@ -13,23 +13,35 @@ namespace FUI
     {
         public readonly string target;
         public readonly string propertyName;
-        public readonly Type valueConverterType;
-        public readonly Type visualElementType;
+        public readonly Type valueConverterType;   
         public readonly BindingType bindingType;
 
         /// <summary>
-        /// 绑定一个属性到某个视觉元素 适用于可观察对象的属性
+        /// 绑定某个ViewModel到某个View
         /// </summary>
-        /// <param name="target">目标 视图名或者视图某个字段名</param>
-        /// <param name="converterType">值转换器类型</param>
-        /// <param name="elementType">视觉元素类型</param>
-        public BindingAttribute(string target, Type elementType = null, Type converterType = null, string propertyName = null, BindingType bindingType = BindingType.OneWay)
+        /// <param name="target">View名字</param>
+        public BindingAttribute(string target)
         {
             this.target = target;
-            this.visualElementType = elementType;
-            this.valueConverterType = converterType;
+            this.propertyName = null;
+            this.valueConverterType = null;
+            this.bindingType = BindingType.OneWay;
+        }
+
+        /// <summary>
+        /// 绑定一个属性到View的某个属性
+        /// </summary>
+        /// <param name="target">目标View名</param>
+        /// <param name="propertyName">目标属性名</param>
+        /// <param name="converterType">值转换器类型</param>
+        /// <param name="bindingType">绑定类型</param>
+        public BindingAttribute(string target, string propertyName, Type converterType = null, BindingType bindingType = BindingType.OneWay)
+        {
+            this.target = target;
             this.propertyName = propertyName;
-            this.bindingType = bindingType;
+
+            this.valueConverterType= null;
+            this.bindingType = BindingType.OneWay;
         }
     }
 

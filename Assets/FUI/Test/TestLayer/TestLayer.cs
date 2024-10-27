@@ -1,6 +1,7 @@
 ﻿using FUI;
 using FUI.Manager;
 using FUI.Test;
+using FUI.UGUI.Control;
 
 using System;
 
@@ -12,10 +13,10 @@ namespace Test.Layer
     [Binding("TestBackgroundView")]
     public class BackgroundViewModel : ViewModel
     {
-        [Binding("txt_title")]
+        [Binding("txt_title", nameof(TextElement.Text))]
         public string Title { get; set; } = "BackGroundView";
 
-        [Binding("btn_action")]
+        [Binding("btn_action", nameof(ButtonElement.OnClickAction))]
         public Action Action { get; set; } = () =>
         {
             TestLauncher.Instance.UIManager.OpenAsync("TestCommonView");
@@ -26,10 +27,10 @@ namespace Test.Layer
     [Binding("TestCommonView")]
     public class CommonViewModel : ViewModel
     {
-        [Binding("txt_title")]
+        [Binding("txt_title", nameof(TextElement.Text))]
         public string Title { get; set; } = "CommonView";
 
-        [Binding("btn_action")]
+        [Binding("btn_action", nameof(ButtonElement.OnClickAction))]
         public Action Action { get; set; } = () =>
         {
             TestLauncher.Instance.UIManager.OpenAsync("TestForegroundView");
@@ -40,10 +41,10 @@ namespace Test.Layer
     [Binding("TestForegroundView")]
     public class ForegroundViewModel : ViewModel
     {
-        [Binding("txt_title")]
+        [Binding("txt_title", nameof(TextElement.Text))]
         public string Title { get; set; } = "ForgroundView";
 
-        [Binding("btn_action")]
+        [Binding("btn_action", nameof(ButtonElement.OnClickAction))]
         public Action Action { get; set; } = () =>
         {
             TestLauncher.Instance.UIManager.OpenAsync("TestTopView");
@@ -54,10 +55,10 @@ namespace Test.Layer
     [Binding("TestTopView")]
     public class TopViewModel : ViewModel
     {
-        [Binding("txt_title")]
+        [Binding("txt_title", nameof(TextElement.Text))]
         public string Title { get; set; } = "TopView";
 
-        [Binding("btn_action")]
+        [Binding("btn_action", nameof(ButtonElement.OnClickAction))]
         public Action Action { get; set; } = () =>
         {
             TestLauncher.Instance.UIManager.OpenAsync("TestPopupView1");
@@ -68,10 +69,10 @@ namespace Test.Layer
     [Binding("TestPopupView1")]
     public class PopupViewModel : ViewModel
     {
-        [Binding("txt_title")]
+        [Binding("txt_title", nameof(TextElement.Text))]
         public string Title { get; set; } = "PopupView";
 
-        [Binding("btn_action")]
+        [Binding("btn_action", nameof(ButtonElement.OnClickAction))]
         public Action Close { get; set; } = () =>
         {
             TestLauncher.Instance.UIManager.Close("TestPopupView1");

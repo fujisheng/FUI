@@ -1,6 +1,6 @@
 ﻿using FUI;
 using FUI.Test;
-using FUI.UGUI.VisualElement;
+using FUI.UGUI.Control;
 
 using System.Threading.Tasks;
 
@@ -10,26 +10,26 @@ namespace Test.Sub
 {
     public class SubViewModel : ViewModel
     {
-        [Binding("txt_coin")]
+        [Binding("txt_coin", nameof(TextElement.Text))]
         public string Coin { get; set; } = "coin:10";
-        [Binding("txt_diamond")]
+        [Binding("txt_diamond", nameof(TextElement.Text))]
         public string Diamond { get; set; } = "diamond:100";
-        [Binding("txt_ticket")]
+        [Binding("txt_ticket", nameof(TextElement.Text))]
         public string Ticket { get; set; } = "ticket:1000";
-        [Binding("txt_gold")]
+        [Binding("txt_gold", nameof(TextElement.Text))]
         public string Gold { get; set; } = "gold:10000";
     }
 
     [Binding("MainView")]
     public class MainViewModel : ViewModel
     {
-        [Binding("txt_title")]
+        [Binding("txt_title", nameof(TextElement.Text))]
         public string Titile { get; set; } = "i am main view title";
 
-        [Binding("CurrencyView")]
+        [Binding("CurrencyView", nameof(UGUIViewElement.Data))]
         public SubViewModel SubViewModel { get; set; } = new SubViewModel();
 
-        [Binding("btn_test", propertyName: nameof(ButtonElement.Text))]
+        [Binding("btn_test", nameof(ButtonElement.TextValue))]
         public string ButtonText { get; set; }
     }
 

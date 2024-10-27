@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 
-namespace FUI.UGUI.VisualElement
+namespace FUI.UGUI.Control
 {
     /// <summary>
     /// 适用于静态列表的列表视图元素
@@ -16,8 +16,9 @@ namespace FUI.UGUI.VisualElement
 
         List<(UIEntity entity, GameObject gameObject)> items;
 
-        protected override void Initialize()
+        public override void Initialize()
         {
+            base.Initialize();
             UnityEngine.Debug.Log("Initialize...............");
             itemPrefab.SetActive(false);
             items = new List<(UIEntity context, GameObject gameObject)>();
@@ -26,12 +27,12 @@ namespace FUI.UGUI.VisualElement
         protected override void OnAdd(int index, ObservableObject itemData)
         {
             // 如果itemEntities的数量大于List的数量，表示有多余的itemEntity 则直接复用
-            if (items.Count > List.Count)
+            if (items.Count > Data.Value.Count)
             {
-                for (int i = index; i < List.Count; i++)
+                for (int i = index; i < Data.Value.Count; i++)
                 {
                     var item = items[i];
-                    item.entity.SetViewModel(List[i]);
+                    item.entity.SetViewModel(Data.Value[i]);
                     SetParent(index, item.gameObject);
                     item.entity.Enable();
                 }
@@ -62,9 +63,9 @@ namespace FUI.UGUI.VisualElement
 
         protected override void OnUpdate()
         {
-            for (int index = 0; index < List.Count; index++)
+            for (int index = 0; index < Data.Value.Count; index++)
             {
-                var item = List[index];
+                var item = Data.Value[index];
                 if (index < items.Count)
                 {
                     items[index].entity.SynchronizeProperties();
@@ -78,7 +79,7 @@ namespace FUI.UGUI.VisualElement
                 }
             }
 
-            for (int index = List.Count; index < items.Count; index++)
+            for (int index = Data.Value.Count; index < items.Count; index++)
             {
                 items[index].entity.Disable();
             }

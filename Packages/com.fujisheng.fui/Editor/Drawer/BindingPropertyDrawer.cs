@@ -60,7 +60,7 @@ namespace FUI.Editor.Drawer
             addContextBtn.clicked += () =>
             {
                 binding.config.contexts.Add(new UGUI.BindingContext());
-                rootElement.Q<ListView>("ContextList").Refresh();
+                rootElement.Q<ListView>("ContextList").Rebuild();
                 RefreshRoot(rootElement, binding);
             };
             rootElement.Add(addContextBtn);
@@ -118,7 +118,7 @@ namespace FUI.Editor.Drawer
                 itemData.type = evt.newValue.FullName;
                 if (evt.newValue != null)
                 {
-                    list.Refresh();
+                    list.Rebuild();
                 }
             });
 
@@ -131,7 +131,7 @@ namespace FUI.Editor.Drawer
             addPropertyBtn.clicked += () =>
             {
                 itemData.properties.Add(new BindingProperty());
-                list.Refresh();
+                list.Rebuild();
             };
 
             var addContextBtn = itemView.Q<Button>("AddContextBtn");
@@ -146,14 +146,14 @@ namespace FUI.Editor.Drawer
                     list.itemsSource.Insert(index + 1, new UGUI.BindingContext());
                 }
 
-                list.Refresh();
+                list.Rebuild();
             };
 
             var removeContextBtn = itemView.Q<Button>("RemoveContextBtn");
             removeContextBtn.clicked += () =>
             {
                 list.itemsSource.RemoveAt(index);
-                list.Refresh();
+                list.Rebuild();
                 RefreshRoot(root, target as Binding);
             };
         }
@@ -295,7 +295,7 @@ namespace FUI.Editor.Drawer
             {
                 var obj = evt.newValue;
                 itemData.elementPath = GetChildPath(evt.newValue as GameObject);
-                list.Refresh();
+                list.Rebuild();
             });
             var root = (target as MonoBehaviour).gameObject;
             if (!string.IsNullOrEmpty(itemData.elementPath))
@@ -343,7 +343,7 @@ namespace FUI.Editor.Drawer
                     list.itemsSource.Insert(index + 1, new BindingProperty());
                 }
                 list.style.height = list.itemsSource.Count * list.itemHeight;
-                list.Refresh();
+                list.Rebuild();
             };
 
             //删除属性按钮
@@ -352,7 +352,7 @@ namespace FUI.Editor.Drawer
             {
                 list.itemsSource.RemoveAt(index);
                 list.style.height = list.itemsSource.Count * list.itemHeight;
-                list.Refresh();
+                list.Rebuild();
             };
         }
 
@@ -466,7 +466,7 @@ namespace FUI.Editor.Drawer
         {
             foreach(var @interface in elementType.GetInterfaces())
             {
-                if(@interface.IsGenericType && @interface.GetGenericTypeDefinition() == typeof(IElement<>))
+                if(@interface.IsGenericType && @interface.GetGenericTypeDefinition() == typeof(IElement))
                 {
                     return @interface.GetGenericArguments()[0];
                 }

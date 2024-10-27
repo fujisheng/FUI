@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace FUI.UGUI.VisualElement
+namespace FUI.UGUI.Control
 {
     /// <summary>
     /// 适用于ScrollRect的列表视图元素
@@ -11,7 +11,7 @@ namespace FUI.UGUI.VisualElement
     {
         ScrollRect scrollRect;
 
-        protected override void Initialize()
+        public override void Initialize()
         {
             base.Initialize();
             scrollRect = GetComponent<ScrollRect>();

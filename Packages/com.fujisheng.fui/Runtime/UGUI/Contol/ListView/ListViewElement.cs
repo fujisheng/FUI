@@ -4,31 +4,29 @@ using System;
 
 using UnityEngine;
 
-namespace FUI.UGUI.VisualElement
+namespace FUI.UGUI.Control
 {
     /// <summary>
     /// 列表视图元素基类
     /// </summary>
-    public abstract class ListViewElement : UGUIVisualElement, IContainerElement, IListView
+    public abstract class ListViewElement : UGUIView, IContainerElement, IListView
     {
-        /// <summary>
-        /// 所对应的列表
-        /// </summary>
-        protected IReadOnlyObservableList<ObservableObject> List;
+        public BindableProperty<IReadOnlyObservableList<ObservableObject>> Data { get; private set; }
 
-        public sealed override void UpdateValue(object value)
+        public override void Initialize()
         {
-            this.UpdateValue(value as IReadOnlyObservableList<ObservableObject>);
+            base.Initialize();
+            Data = new BindableProperty<IReadOnlyObservableList<ObservableObject>>();
+            Data.PropertySet += OnSetData;
         }
 
-        void IElement<IReadOnlyObservableList<ObservableObject>>.UpdateValue(IReadOnlyObservableList<ObservableObject> value)
+        void OnSetData(IReadOnlyObservableList<ObservableObject> oldValue, IReadOnlyObservableList<ObservableObject> newValue)
         {
-            if (value == List || value == null)
+            if(newValue == null)
             {
                 return;
             }
 
-            this.List = value;
             OnUpdate();
         }
 
@@ -111,7 +109,7 @@ namespace FUI.UGUI.VisualElement
         /// <exception cref="Exception"></exception>
         protected UIEntity CreateItemEntity(ObservableObject itemViewModel, GameObject itemObject)
         {
-            var itemView = new UGUIView(AssetLoader, itemObject, string.Empty);
+            var itemView = UGUIView.Create(this.AssetLoader, itemObject, string.Empty);
             return UIEntity.Create(itemView, itemViewModel);
         }
     }
