@@ -11,11 +11,6 @@ namespace FUI.UGUI
 		/// </summary>
 		Dictionary<ElementKey, IElement> elements;
 
-		/// <summary>
-		/// 存储默认的视觉元素
-		/// </summary>
-		Dictionary<string, IElement> defaultElements;
-
 		string IElement.Name => gameObject.name;
 
 		public IElement Parent { get; private set; }
@@ -27,29 +22,25 @@ namespace FUI.UGUI
 		/// </summary>
 		protected virtual void InitializeElements()
 		{
-			if (this.elements == null)
-			{
-				this.elements = new Dictionary<ElementKey, IElement>();
-                defaultElements = new Dictionary<string, IElement>();
-			}
+            this.elements = new Dictionary<ElementKey, IElement>();
 
-			var openList = new Queue<Transform>();
+            var openList = new Queue<Transform>();
 			openList.Enqueue(this.gameObject.transform);
-			var elements = new List<UGUIView>();
-			//获取所有的视觉元素组件
+			var elementsTemp = new List<UGUIView>();
+			//获取所有的视觉元素组件 包含自身
 			while (openList.Count > 0)
 			{
 				var current = openList.Dequeue();
-				elements.Clear();
-				current.GetComponents(elements);
+				elementsTemp.Clear();
+				current.GetComponents(elementsTemp);
 				bool continueFind = true;
-				foreach (var element in elements)
+				foreach (var element in elementsTemp)
 				{
 					if (element != null)
 					{
 						element.Parent = this;
 						element.AssetLoader = AssetLoader;
-                        element.Initialize();
+                        element.InternalInitialize();
 
                         AddChild(element);
 					}
@@ -77,31 +68,42 @@ namespace FUI.UGUI
 		/// <summary>
 		/// 添加一个视觉元素
 		/// </summary>
-		/// <param name="elementName">这个视觉元素的名字</param>
-		/// <param name="visualElement">要添加的视觉元素</param>
+		/// <param name="element">要添加的视觉元素</param>
 		public void AddChild(IElement element)
 		{
+			if(!(element is UGUIView uguiElement))
+			{
+				return;
+			}
+
 			var key = new ElementKey(element.Name, element.GetType());
-			if (elements.ContainsKey(key))
-			{
-				UnityEngine.Debug.LogWarning($"{element.Name} already contains element {key} will replace it");
-			}
-			elements[key] = element;
+            elements[key] = uguiElement;
+        }
 
-			if (!defaultElements.ContainsKey(element.Name))
-			{
-				defaultElements[element.Name] = element;
-			}
-		}
-
+		/// <summary>
+		/// 移除一个子元素
+		/// </summary>
+		/// <param name="element"></param>
 		public void RemoveChild(IElement element)
 		{
-			throw new System.NotImplementedException();
-		}
+            if (!(element is UGUIView uguiElement))
+            {
+                return;
+            }
 
-		public void RemoveAllChildren()
+            elements.Remove(new ElementKey(element.Name, element.GetType()));
+			uguiElement.Destroy();
+        }
+
+        /// <summary>
+        /// 移除所有的子元素
+        /// </summary>
+        public void RemoveAllChildren()
 		{
-			throw new System.NotImplementedException();
+			foreach(var item in elements.Values)
+			{
+				RemoveChild(item);
+			}
 		}
 
 		/// <summary>
@@ -113,25 +115,11 @@ namespace FUI.UGUI
 		public T GetChild<T>(string path) where T : IElement
         {
 			var key = new ElementKey(path, typeof(T));
-			if (!elements.TryGetValue(key, out var visualElement))
+			if (!elements.TryGetValue(key, out var element))
             {
                 return default;
             }
-			return (T)visualElement;
-		}
-
-		/// <summary>
-		/// 获取一个视觉元素 如果有多个视觉元素则返回第一个
-		/// </summary>
-		/// <param name="path">路径</param>
-		/// <returns></returns>
-		public IElement GetChild(string path)
-		{
-			if (!defaultElements.TryGetValue(path, out var visualElement))
-			{
-				return default;
-			}
-			return visualElement;
+			return (T)element;
 		}
 	}
 }

@@ -13,24 +13,37 @@ namespace FUI.UGUI.Control
     {
         Button button;
 
+        /// <summary>
+        /// 点击回调
+        /// </summary>
         public BindableProperty<UnityAction> OnClick { get; private set; }
+
+        /// <summary>
+        /// 点击回调转Action
+        /// </summary>
         public BindableProperty<Action> OnClickAction { get; private set; }
-        public BindableProperty<TextElement> TextElement { get; private set; } 
+
+        /// <summary>
+        /// 文本元素 这个是只读的
+        /// </summary>
+        public IReadonlyBindableProperty<TextElement> TextElement { get; private set; } 
+
+        /// <summary>
+        /// 文本内容
+        /// </summary>
         public BindableProperty<string> TextValue { get; private set; }
 
-        public override void Initialize()
+        protected override void Initialize()
         {
-            base.Initialize();
             button = GetComponent<Button>();
             OnClick = new BindableProperty<UnityAction>();
             OnClickAction = new BindableProperty<Action>();
             TextElement = new BindableProperty<TextElement>(button.GetComponentInChildren<TextElement>());
             TextValue = new BindableProperty<string>(TextElement.Value?.Text?.Value);
 
-            OnClick.PropertySet += OnSetOnClick;
-            OnClickAction.PropertySet += OnSetOnClickAction;
-            TextElement.PropertySet += OnSetTextElement;
-            TextValue.PropertySet += OnSetTextValue;
+            OnClick.OnValueChanged += OnSetOnClick;
+            OnClickAction.OnValueChanged += OnSetOnClickAction;
+            TextValue.OnValueChanged += OnSetTextValue;
         }
 
         void OnSetOnClick(UnityAction oldAction, UnityAction newAction)
@@ -53,11 +66,6 @@ namespace FUI.UGUI.Control
             }
         }
 
-        void OnSetTextElement(TextElement oldText, TextElement newText)
-        {
-            throw new System.Exception($"can not set ButtonElement.Text");
-        }
-
         void OnSetTextValue(string oldValue, string newValue)
         {
             if(TextElement.Value == null)
@@ -68,14 +76,12 @@ namespace FUI.UGUI.Control
             TextElement.Value.Text.Value = newValue;
         }
 
-        public override void Destroy()
+        protected override void Destroy()
         {
-            base.Destroy();
-
             button.onClick.RemoveAllListeners();
             OnClick.ClearEvent();
             OnClickAction.ClearEvent();
-            TextElement.ClearEvent();
+            TextValue.ClearEvent();
         }
     }
 }

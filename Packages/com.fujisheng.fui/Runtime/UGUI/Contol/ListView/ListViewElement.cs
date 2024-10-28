@@ -13,11 +13,10 @@ namespace FUI.UGUI.Control
     {
         public BindableProperty<IReadOnlyObservableList<ObservableObject>> Data { get; private set; }
 
-        public override void Initialize()
+        protected override void Initialize()
         {
-            base.Initialize();
             Data = new BindableProperty<IReadOnlyObservableList<ObservableObject>>();
-            Data.PropertySet += OnSetData;
+            Data.OnValueChanged += OnSetData;
         }
 
         void OnSetData(IReadOnlyObservableList<ObservableObject> oldValue, IReadOnlyObservableList<ObservableObject> newValue)
@@ -111,6 +110,11 @@ namespace FUI.UGUI.Control
         {
             var itemView = UGUIView.Create(this.AssetLoader, itemObject, string.Empty);
             return UIEntity.Create(itemView, itemViewModel);
+        }
+
+        protected override void Destroy()
+        {
+            Data.ClearEvent();
         }
     }
 }

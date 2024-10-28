@@ -12,11 +12,13 @@ namespace FUI.UGUI.Control
         IView view;
         bool initialized = false;
 
+        /// <summary>
+        /// 数据
+        /// </summary>
         public BindableProperty<ObservableObject> Data { get; private set; }
 
-        public override void Initialize()
+        protected override void Initialize()
         {
-            base.Initialize();
             //因为在构造View的时候又会调用一次Initialize，所以这里需要判断一下
             if (initialized)
             {
@@ -27,7 +29,7 @@ namespace FUI.UGUI.Control
             view = UGUIView.Create(this.AssetLoader, this.gameObject, gameObject.name);
 
             Data = new BindableProperty<ObservableObject>();
-            Data.PropertySet += OnSetData;
+            Data.OnValueChanged += OnSetData;
         }
 
         void OnSetData(ObservableObject oldValue, ObservableObject newValue)
@@ -49,6 +51,11 @@ namespace FUI.UGUI.Control
                 UnityEngine.Debug.Log($"Set  {newValue}");
             }
             this.data = newValue;
+        }
+
+        protected override void Destroy()
+        {
+            Data.ClearEvent();
         }
     }
 }

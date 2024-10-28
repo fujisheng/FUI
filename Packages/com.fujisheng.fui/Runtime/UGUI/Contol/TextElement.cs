@@ -10,32 +10,63 @@ namespace FUI.UGUI.Control
     {
         Text text;
 
+        /// <summary>
+        /// 文本内容
+        /// </summary>
         public BindableProperty<string> Text { get; private set; }
+
+        /// <summary>
+        /// 文本内容Object
+        /// </summary>
+        public BindableProperty<object> TextObject { get; private set; }
+
+        /// <summary>
+        /// 字体
+        /// </summary>
         public BindableProperty<Font> Font { get; private set; }
+
+        /// <summary>
+        /// 字体资源
+        /// </summary>
         public BindableProperty<string> FontSources { get; private set; }
+
+        /// <summary>
+        /// 字体大小
+        /// </summary>
         public BindableProperty<int> FontSize { get; private set; }
+
+        /// <summary>
+        /// 文本颜色
+        /// </summary>
         public BindableProperty<Color> Color { get; private set; }
 
-        public override void Initialize()
+        protected override void Initialize()
         {
-            base.Initialize();
             text = transform.GetComponent<Text>();
+
             Text = new BindableProperty<string>(text.text);
+            TextObject = new BindableProperty<object>(text.text);
             Font = new BindableProperty<Font>(text.font);
             FontSources = new BindableProperty<string>();
             FontSize = new BindableProperty<int>(text.fontSize);
             Color = new BindableProperty<Color>(text.color);
 
-            Text.PropertySet += OnSetText;
-            Font.PropertySet += OnSetFont;
-            FontSources.PropertySet += OnSetFontSources;
-            FontSize.PropertySet += OnSetFontSize;
-            Color.PropertySet += OnSetColor;
+            Text.OnValueChanged += OnSetText;
+            TextObject.OnValueChanged += OnSetTextObject;
+            Font.OnValueChanged += OnSetFont;
+            FontSources.OnValueChanged += OnSetFontSources;
+            FontSize.OnValueChanged += OnSetFontSize;
+            Color.OnValueChanged += OnSetColor;
         }
 
         void OnSetText(string oldValue, string newValue)
         {
             text.text = newValue;
+        }
+
+        void OnSetTextObject(object oldValue, object newValue)
+        {
+            text.text = newValue == null ? string.Empty : newValue.ToString();
         }
 
         void OnSetFont(Font oldValue,  Font newValue)
@@ -58,11 +89,10 @@ namespace FUI.UGUI.Control
             text.color = newValue;
         }
 
-        public override void Destroy()
+        protected override void Destroy()
         {
-            base.Destroy();
-
             Text.ClearEvent();
+            TextObject.ClearEvent();
             Font.ClearEvent();
             FontSources.ClearEvent();
             FontSize.ClearEvent();

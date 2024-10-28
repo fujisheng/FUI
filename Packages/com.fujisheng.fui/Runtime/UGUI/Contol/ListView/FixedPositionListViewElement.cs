@@ -13,7 +13,7 @@ namespace FUI.UGUI.Control
     {
         List<Transform> positions;
 
-        public override void Initialize()
+        protected override void Initialize()
         {
             base.Initialize();
             positions = new List<Transform>(transform.childCount);

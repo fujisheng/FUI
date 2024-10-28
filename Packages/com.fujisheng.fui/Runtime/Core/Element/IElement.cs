@@ -41,12 +41,5 @@
         /// <param name="path">子节点的路径</param>
         /// <returns></returns>
         T GetChild<T>(string path) where T : IElement;
-
-        /// <summary>
-        /// 获取一个子节点
-        /// </summary>
-        /// <param name="path">子节点路径</param>
-        /// <returns></returns>
-        IElement GetChild(string path);
     }
 }

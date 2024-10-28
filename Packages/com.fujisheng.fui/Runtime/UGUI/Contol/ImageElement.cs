@@ -10,19 +10,25 @@ namespace FUI.UGUI.Control
     {
         Image image;
 
+        /// <summary>
+        /// 图片
+        /// </summary>
         public BindableProperty<Sprite> Sprite { get; private set; }
+
+        /// <summary>
+        /// 图片资源
+        /// </summary>
         public BindableProperty<string> SpriteSources { get; private set; }
 
-        public override void Initialize()
+        protected override void Initialize()
         {
-            base.Initialize();
             image = GetComponent<Image>();
 
             Sprite = new BindableProperty<Sprite>(image.sprite);
             SpriteSources = new BindableProperty<string>();
 
-            Sprite.PropertySet += OnSetSprite;
-            SpriteSources.PropertySet += OnSetSpriteSources;
+            Sprite.OnValueChanged += OnSetSprite;
+            SpriteSources.OnValueChanged += OnSetSpriteSources;
         }
 
         void OnSetSprite(Sprite oldValue, Sprite newValue) 
@@ -35,9 +41,8 @@ namespace FUI.UGUI.Control
             image.sprite = this.AssetLoader.Load<Sprite>(newValue);
         }
 
-        public override void Destroy()
+        protected override void Destroy()
         {
-            base.Destroy();
             Sprite.ClearEvent();
             SpriteSources.ClearEvent();
         }

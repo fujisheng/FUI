@@ -1,4 +1,4 @@
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 
 namespace FUI.Bindable
 {
@@ -25,18 +25,12 @@ namespace FUI.Bindable
     }
 
     /// <summary>
-    /// 属性获取委托
+    /// 值改变委托
     /// </summary>
-    /// <typeparam name="T">属性值类型</typeparam>
-    /// <returns></returns>
-    public delegate T PropertyGetHandler<out T>();
-
-    /// <summary>
-    /// 属性设置委托
-    /// </summary>
-    /// <typeparam name="T">属性值类型</typeparam>
-    /// <param name="value">属性值</param>
-    public delegate void PropertySetHandler<in T>(T oldValue, T newValue);
+    /// <typeparam name="T">值类型</typeparam>
+    /// <param name="newValue">值</param>
+    /// <param name="oldValue">改变之前的值</param>
+    public delegate void ValueChangedHandler<in T>(T oldValue, T newValue);
 
     /// <summary>
     /// 可绑定的属性
@@ -63,12 +57,7 @@ namespace FUI.Bindable
         /// <summary>
         /// 属性值更改事件
         /// </summary>
-        public event PropertySetHandler<T> PropertySet;
-
-        /// <summary>
-        /// 属性值获取委托
-        /// </summary>
-        public event PropertyGetHandler<T> PropertyGet;
+        public event ValueChangedHandler<T> OnValueChanged;
 
         public BindableProperty()
         {
@@ -77,7 +66,7 @@ namespace FUI.Bindable
 
         public BindableProperty(T value)
         {
-            this.Value = value;
+            this.value = value;
             this.BindingType = BindingType.OneWay;
         }
 
@@ -88,35 +77,35 @@ namespace FUI.Bindable
 
         public BindableProperty(T value, BindingType bindingType)
         {
-            this.Value = value;
+            this.value = value;
             this.BindingType = bindingType;
         }
 
-        public BindableProperty(PropertySetHandler<T> setHandler, PropertyGetHandler<T> getHandler)
+        public BindableProperty(ValueChangedHandler<T> onValueChanged)
         {
-            this.PropertySet = setHandler;
-            this.PropertyGet = getHandler;
+            this.OnValueChanged = onValueChanged;
+            this.BindingType = BindingType.OneWay;
         }
 
         public T GetValue()
         {
-            return this.PropertyGet != null ? this.PropertyGet.Invoke() : this.value;
+            return this.value;
         }
 
         public void SetValue(T value)
         {
             var oldValue = GetValue();
 
-            if (oldValue == null || value == null || !value.Equals(oldValue))
+            if (!EqualityComparer<T>.Default.Equals(oldValue, value))
             {
-                this.PropertySet?.Invoke(oldValue, value);
                 this.value = value;
+                this.OnValueChanged?.Invoke(oldValue, value);
             }
         }
 
         public void SetValue<TSet>(TSet value, string exception = null)
         {
-            if(value == null)
+            if(EqualityComparer<TSet>.Default.Equals(value, default))
             {
                 SetValue(default);
                 return;
@@ -124,11 +113,7 @@ namespace FUI.Bindable
 
             if (!(value is T tValue))
             {
-                if (string.IsNullOrEmpty(exception))
-                {
-                    throw new System.Exception($"can not convert {typeof(TSet)} to {typeof(T)}");
-                }
-
+                exception = exception ?? $"can not convert {typeof(TSet)} to {typeof(T)}";
                 throw new System.Exception(exception);
             }
 
@@ -142,8 +127,7 @@ namespace FUI.Bindable
 
         public void ClearEvent()
         {
-            this.PropertySet = null;
-            this.PropertyGet = null;
+            this.OnValueChanged = null;
         }
     }
 }

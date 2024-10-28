@@ -8,11 +8,13 @@ namespace FUI.UGUI.Control
     {
         Toggle toggle;
 
+        /// <summary>
+        /// ÊÇ·ñ¿ªÆô
+        /// </summary>
         public BindableProperty<bool> IsOn { get; private set; }
 
-        public override void Initialize()
+        protected override void Initialize()
         {
-            base.Initialize();
             toggle = transform.GetComponent<Toggle>();
 
             IsOn = new BindableProperty<bool>(toggle.isOn);
@@ -21,7 +23,7 @@ namespace FUI.UGUI.Control
                 this.IsOn.Value = value;
             });
 
-            IsOn.PropertySet += OnSetValue;
+            IsOn.OnValueChanged += OnSetValue;
         }
 
         void OnSetValue(bool oldValue, bool newValue)
@@ -29,10 +31,9 @@ namespace FUI.UGUI.Control
             toggle.isOn = newValue;
         }
 
-        public override void Destroy()
+        protected override void Destroy()
         {
-            base.Destroy();
-
+            this.toggle.onValueChanged.RemoveAllListeners();
             IsOn.ClearEvent();
         }
     }

@@ -11,7 +11,7 @@ namespace FUI.UGUI.Control
     {
         ScrollRect scrollRect;
 
-        public override void Initialize()
+        protected override void Initialize()
         {
             base.Initialize();
             scrollRect = GetComponent<ScrollRect>();

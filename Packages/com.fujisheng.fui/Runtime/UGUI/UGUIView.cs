@@ -21,31 +21,43 @@ namespace FUI.UGUI
         /// </summary>
         string IView.Name => viewName;
 
+        /// <summary>
+        /// 层级属性
+        /// </summary>
         public BindableProperty<int> LayerProperty { get; private set; }
+
         /// <summary>
         /// 层级
         /// </summary>
-        public int Layer 
+        int IView.Layer 
         { 
             get { return LayerProperty.Value; }
             set { LayerProperty.Value = value; } 
         }
 
+        /// <summary>
+        /// 顺序属性
+        /// </summary>
         public BindableProperty<int> OrderProperty { get; private set; }
+
         /// <summary>
         /// 顺序
         /// </summary>
-        public int Order
+        int IView.Order
         {
             get { return OrderProperty.Value; }
             set { OrderProperty.Value = value; }
         }
 
+        /// <summary>
+        /// 可见性属性
+        /// </summary>
         public BindableProperty<bool> VisibleProperty { get; private set; }
+
         /// <summary>
         /// 可见性
         /// </summary>
-        public bool Visible
+        bool IView.Visible
         {
             get { return VisibleProperty.Value; }
             set { VisibleProperty.Value = value; }
@@ -89,22 +101,35 @@ namespace FUI.UGUI
             return view;
         }
 
-        public virtual void Initialize()
+        /// <summary>
+        /// 内部初始化
+        /// </summary>
+        void InternalInitialize()
         {
             LayerProperty = new BindableProperty<int>(GetLayer());
             VisibleProperty = new BindableProperty<bool>(IsVisible());
             OrderProperty = new BindableProperty<int>(GetOrder());
 
-            LayerProperty.PropertySet += SetLayer;
-            VisibleProperty.PropertySet += SetVisible;
-            OrderProperty.PropertySet += SetOrder;
+            LayerProperty.OnValueChanged += SetLayer;
+            VisibleProperty.OnValueChanged += SetVisible;
+            OrderProperty.OnValueChanged += SetOrder;
+
+            Initialize();
         }
 
+        /// <summary>
+        /// 是否可见 
+        /// </summary>
+        /// <returns></returns>
         protected virtual bool IsVisible()
         {
             return gameObject.activeSelf;
         }
 
+        /// <summary>
+        /// 获取层级
+        /// </summary>
+        /// <returns></returns>
         protected virtual int GetLayer()
         {
             if(!gameObject.TryGetComponent<Canvas>(out var canvas))
@@ -114,16 +139,30 @@ namespace FUI.UGUI
             return canvas.sortingOrder;
         }
 
+        /// <summary>
+        /// 获取顺序
+        /// </summary>
+        /// <returns></returns>
         protected virtual int GetOrder()
         {
             return gameObject.transform.GetSiblingIndex();
         }
 
+        /// <summary>
+        /// 设置可见性
+        /// </summary>
+        /// <param name="oldVisible">之前的值</param>
+        /// <param name="visible">现在的值</param>
         protected virtual void SetVisible(bool oldVisible, bool visible)
         {
             this.gameObject.SetActive(visible);
         }
 
+        /// <summary>
+        /// 设置层级
+        /// </summary>
+        /// <param name="oldLayer">之前的值</param>
+        /// <param name="layer">现在的值</param>
         protected virtual void SetLayer(int oldLayer, int layer)
         {
             if (!gameObject.TryGetComponent<Canvas>(out var canvas))
@@ -133,12 +172,20 @@ namespace FUI.UGUI
             canvas.sortingOrder = layer;
         }
 
+        /// <summary>
+        /// 设置顺序
+        /// </summary>
+        /// <param name="oldOrder">之前的值</param>
+        /// <param name="order">现在的值</param>
         protected virtual void SetOrder(int oldOrder, int order)
         {
             gameObject.transform.SetSiblingIndex(order);
         }
 
-        public virtual void Destroy()
+        /// <summary>
+        /// 销毁这个View
+        /// </summary>
+        void IView.Destroy()
         {
             VisibleProperty.ClearEvent();
             LayerProperty.ClearEvent();
@@ -146,6 +193,18 @@ namespace FUI.UGUI
 
             AssetLoader.DestroyGameObject(gameObject);
             AssetLoader.Release();
+
+            Destroy();
         }
+
+        /// <summary>
+        /// 初始化View
+        /// </summary>
+        protected virtual void Initialize() { }
+
+        /// <summary>
+        /// 销毁View
+        /// </summary>
+        protected virtual void Destroy() { }
     }
 }

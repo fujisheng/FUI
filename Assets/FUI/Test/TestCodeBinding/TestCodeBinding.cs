@@ -11,7 +11,7 @@ namespace Test.CodeBinding
     [Binding("TestCodeBindingView")]
     public class TestCodeBindingViewModel : ViewModel
     {
-        [Binding("txt_int", nameof(TextElement.Text), typeof(IntToStringConverter))]
+        [Binding("txt_int", nameof(TextElement.TextObject))]
         public int TestInt { get; set; }
 
         [Binding("txt_string", nameof(TextElement.Text), bindingType:BindingType.OneWay)]

@@ -16,10 +16,9 @@ namespace FUI.UGUI.Control
 
         List<(UIEntity entity, GameObject gameObject)> items;
 
-        public override void Initialize()
+        protected override void Initialize()
         {
             base.Initialize();
-            UnityEngine.Debug.Log("Initialize...............");
             itemPrefab.SetActive(false);
             items = new List<(UIEntity context, GameObject gameObject)>();
         }
