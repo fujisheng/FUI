@@ -4,12 +4,17 @@ using UnityEngine;
 
 namespace FUI.UGUI
 {
-    public partial class UGUIView : IElement
+	public partial class UGUIView : IElement
 	{
 		/// <summary>
 		/// 存储所有的视觉元素
 		/// </summary>
 		Dictionary<ElementKey, IElement> elements;
+
+		/// <summary>
+		/// 根据名字存储的视觉元素
+		/// </summary>
+		Dictionary<string, List<IElement>> namedElements;
 
 		string IElement.Name => gameObject.name;
 
@@ -22,9 +27,10 @@ namespace FUI.UGUI
 		/// </summary>
 		protected virtual void InitializeElements()
 		{
-            this.elements = new Dictionary<ElementKey, IElement>();
+			this.elements = new Dictionary<ElementKey, IElement>();
+			this.namedElements = new Dictionary<string, List<IElement>>();
 
-            var openList = new Queue<Transform>();
+			var openList = new Queue<Transform>();
 			openList.Enqueue(this.gameObject.transform);
 			var elementsTemp = new List<UGUIView>();
 			//获取所有的视觉元素组件 包含自身
@@ -40,9 +46,9 @@ namespace FUI.UGUI
 					{
 						element.Parent = this;
 						element.AssetLoader = AssetLoader;
-                        element.InternalInitialize();
+						element.InternalInitialize();
 
-                        AddChild(element);
+						AddChild(element);
 					}
 
 					//如果这个元素是容器元素且不是自身则不再继续向下查找
@@ -71,14 +77,35 @@ namespace FUI.UGUI
 		/// <param name="element">要添加的视觉元素</param>
 		public void AddChild(IElement element)
 		{
-			if(!(element is UGUIView uguiElement))
+			if (!(element is UGUIView uguiElement))
 			{
 				return;
 			}
 
 			var key = new ElementKey(element.Name, element.GetType());
-            elements[key] = uguiElement;
-        }
+			elements[key] = uguiElement;
+			AddChildToNamedElements(uguiElement);
+		}
+
+		/// <summary>
+		/// 添加一个Element到名字映射中
+		/// </summary>
+		/// <param name="element">要添加的Element</param>
+		void AddChildToNamedElements(IElement element)
+		{
+			if (!namedElements.TryGetValue(element.Name, out var list))
+			{
+				list = new List<IElement> { };
+			}
+
+			if (list.Contains(element))
+			{
+				return;
+			}
+
+			list.Add(element);
+			namedElements[element.Name] = list;
+		}
 
 		/// <summary>
 		/// 移除一个子元素
@@ -86,21 +113,39 @@ namespace FUI.UGUI
 		/// <param name="element"></param>
 		public void RemoveChild(IElement element)
 		{
-            if (!(element is UGUIView uguiElement))
-            {
-                return;
-            }
+			if (!(element is UGUIView uguiElement))
+			{
+				return;
+			}
 
-            elements.Remove(new ElementKey(element.Name, element.GetType()));
+			elements.Remove(new ElementKey(element.Name, element.GetType()));
 			uguiElement.Destroy();
-        }
+			RemoveFromNamedElements(uguiElement);
+		}
 
         /// <summary>
-        /// 移除所有的子元素
+        /// 移除一个Element从名字映射中
         /// </summary>
-        public void RemoveAllChildren()
+        /// <param name="element"></param>
+        void RemoveFromNamedElements(IElement element)
 		{
-			foreach(var item in elements.Values)
+			if (!namedElements.TryGetValue(element.Name, out var list))
+			{
+				return;
+			}
+
+			if (list.Contains(element))
+			{
+				list.Remove(element);
+			}
+		}
+
+		/// <summary>
+		/// 移除所有的子元素
+		/// </summary>
+		public void RemoveAllChildren()
+		{
+			foreach (var item in elements.Values)
 			{
 				RemoveChild(item);
 			}
@@ -113,13 +158,41 @@ namespace FUI.UGUI
 		/// <param name="path">路径</param>
 		/// <returns></returns>
 		public T GetChild<T>(string path) where T : IElement
-        {
+		{
 			var key = new ElementKey(path, typeof(T));
 			if (!elements.TryGetValue(key, out var element))
-            {
-                return default;
-            }
+			{
+				return GetOrCacheElement<T>(path);
+			}
 			return (T)element;
+		}
+
+		/// <summary>
+		/// 尝试从缓存中获取一个视觉元素  如果没有则缓存  防止通过基类型来查找
+		/// </summary>
+		/// <typeparam name="T">ElementType</typeparam>
+		/// <param name="path">ElementPath</param>
+		/// <returns></returns>
+		T GetOrCacheElement<T>(string path) where T : IElement
+		{
+			if (!namedElements.TryGetValue(path, out var list))
+			{
+				return default;
+			}
+
+			foreach (var item in list)
+			{
+				if (!(item is T tItem))
+				{
+					continue;
+				}
+
+				var key = new ElementKey(path, typeof(T));
+				elements[key] = item;
+				return tItem;
+			}
+
+			return default;
 		}
 	}
 }

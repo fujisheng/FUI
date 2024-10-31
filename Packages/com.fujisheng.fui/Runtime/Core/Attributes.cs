@@ -70,17 +70,12 @@ namespace FUI
     public class CommandAttribute : Attribute
     {
         public readonly string target;
-        public readonly Type valueConverterType;
-        public readonly Type visualElementType;
+        public readonly string commandName;
 
-        public CommandAttribute()
-        {
-
-        }
-
-        public CommandAttribute(string target, Type valueConverterType, Type visualElementType)
+        public CommandAttribute(string target, string commandName)
         {
             this.target = target;
+            this.commandName = commandName;
         }
     }
 

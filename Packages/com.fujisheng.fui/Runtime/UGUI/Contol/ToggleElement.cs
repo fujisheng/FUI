@@ -13,14 +13,21 @@ namespace FUI.UGUI.Control
         /// </summary>
         public BindableProperty<bool> IsOn { get; private set; }
 
+        /// <summary>
+        /// 值更改事件
+        /// </summary>
+        public Command<bool> OnValueChanged { get; private set; }
+
         protected override void Initialize()
         {
             toggle = transform.GetComponent<Toggle>();
 
             IsOn = new BindableProperty<bool>(toggle.isOn);
+            OnValueChanged = new Command<bool>();
             toggle.onValueChanged.AddListener((value) =>
             {
                 this.IsOn.Value = value;
+                OnValueChanged.Execute(value);
             });
 
             IsOn.OnValueChanged += OnSetValue;
@@ -35,6 +42,7 @@ namespace FUI.UGUI.Control
         {
             this.toggle.onValueChanged.RemoveAllListeners();
             IsOn.ClearEvent();
+            OnValueChanged.ClearListener();
         }
     }
 }
