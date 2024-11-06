@@ -1,5 +1,7 @@
 using FUI.Bindable;
 
+using System;
+
 using UnityEngine.UI;
 
 namespace FUI.UGUI.Control

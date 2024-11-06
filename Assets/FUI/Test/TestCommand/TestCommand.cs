@@ -11,6 +11,9 @@ namespace Test.Command
     [Binding("TestCommandView")]
     public class TestCommandViewModel : ViewModel
     {
+        [Binding("toggle", nameof(ToggleElement.IsOn), bindingType:BindingType.TwoWay)]
+        public bool ToggleValue { get; set; }
+
         [Command("toggle", nameof(ToggleElement.OnValueChanged))]
         void OnToggleChanged(bool value)
         {
