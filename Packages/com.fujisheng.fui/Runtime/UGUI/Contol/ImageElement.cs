@@ -43,8 +43,8 @@ namespace FUI.UGUI.Control
 
         protected override void Destroy()
         {
-            Sprite.ClearEvent();
-            SpriteSources.ClearEvent();
+            Sprite.ClearValueChangedEvent();
+            SpriteSources.ClearValueChangedEvent();
         }
     }
 }

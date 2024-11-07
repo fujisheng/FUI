@@ -43,7 +43,7 @@ namespace FUI.UGUI.Control
         protected override void Destroy()
         {
             this.toggle.onValueChanged.RemoveAllListeners();
-            IsOn.ClearEvent();
+            IsOn.ClearValueChangedEvent();
             OnValueChanged.ClearListener();
         }
     }

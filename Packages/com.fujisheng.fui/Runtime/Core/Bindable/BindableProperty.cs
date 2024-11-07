@@ -4,10 +4,25 @@ using System.Collections.Generic;
 namespace FUI.Bindable
 {
     /// <summary>
+    /// 可绑定属性
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IBindableProperty<T>
+    {
+        T Value { get; set; }
+        event ValueChangedHandler<T> OnValueChanged;
+        void AddValueChanged(Delegate valueChanged);
+        void RemoveValueChanged(Delegate valueChanged);
+        void ClearValueChangedEvent();
+        void MuteValueChangedEvent(bool mute);
+        Delegate GetLastInvocation();
+    }
+
+    /// <summary>
     /// 只读的可绑定属性
     /// </summary>
     /// <typeparam name="T">属性值类型</typeparam>
-    public interface IReadonlyBindableProperty<out T>
+    public interface IReadOnlyBindableProperty<out T>
     {
         T Value { get;}
         T GetValue();
@@ -17,12 +32,10 @@ namespace FUI.Bindable
     /// 只写的可绑定属性
     /// </summary>
     /// <typeparam name="T">属性值类型</typeparam>
-    public interface IWriteonlyBindableProperty<in T>
+    public interface IWriteOnlyBindableProperty<in T>
     {
         T Value { set; }
         void SetValue(T value);
-        void SetValue(object value, string exception = null);
-        void SetValue<TSet>(TSet value, string exception = null);
     }
 
     /// <summary>
@@ -37,9 +50,11 @@ namespace FUI.Bindable
     /// 可绑定的属性
     /// </summary>
     /// <typeparam name="T">属性值类型</typeparam>
-    public class BindableProperty<T> : IReadonlyBindableProperty<T>, IWriteonlyBindableProperty<T>
+    public class BindableProperty<T> : IBindableProperty<T>, IReadOnlyBindableProperty<T>, IWriteOnlyBindableProperty<T>
     {
         T value;
+
+        bool eventMuted = false;
 
         /// <summary>
         /// 绑定类型
@@ -100,33 +115,57 @@ namespace FUI.Bindable
             if (!EqualityComparer<T>.Default.Equals(oldValue, value))
             {
                 this.value = value;
+                if (this.eventMuted)
+                {
+                    return;
+                }
+
                 this.OnValueChanged?.Invoke(oldValue, value);
             }
         }
 
-        public void SetValue<TSet>(TSet value, string exception = null)
+        public void AddValueChanged(Delegate valueChanged)
         {
-            if(EqualityComparer<TSet>.Default.Equals(value, default))
+            if(valueChanged == null)
             {
-                SetValue(default);
                 return;
             }
 
-            if (!(value is T tValue))
+            if (valueChanged is ValueChangedHandler<T> handler)
             {
-                exception = exception ?? $"can not convert {typeof(TSet)} to {typeof(T)}";
-                throw new System.Exception(exception);
+                this.OnValueChanged += handler;
+            }
+        }
+
+        public void RemoveValueChanged(Delegate valueChanged)
+        {
+            if(valueChanged == null)
+            {
+                return;
             }
 
-            SetValue(tValue);
+            if(valueChanged is ValueChangedHandler<T> handler)
+            {
+                this.OnValueChanged -= handler;
+            }
         }
 
-        public void SetValue(object value, string exception = null)
+        public Delegate GetLastInvocation()
         {
-            SetValue<object>(value, exception);
+            if(this.OnValueChanged == null)
+            {
+                return null;
+            }
+            var invocationList = this.OnValueChanged.GetInvocationList();
+            return invocationList.Length > 0 ? invocationList[invocationList.Length - 1] : null;
         }
 
-        public void ClearEvent()
+        public void MuteValueChangedEvent(bool mute)
+        {
+            this.eventMuted = mute;
+        }
+
+        public void ClearValueChangedEvent()
         {
             this.OnValueChanged = null;
         }

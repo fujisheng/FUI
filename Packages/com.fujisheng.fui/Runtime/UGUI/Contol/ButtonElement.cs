@@ -26,7 +26,7 @@ namespace FUI.UGUI.Control
         /// <summary>
         /// 文本元素 这个是只读的
         /// </summary>
-        public IReadonlyBindableProperty<TextElement> TextElement { get; private set; } 
+        public IReadOnlyBindableProperty<TextElement> TextElement { get; private set; } 
 
         /// <summary>
         /// 文本内容
@@ -79,9 +79,9 @@ namespace FUI.UGUI.Control
         protected override void Destroy()
         {
             button.onClick.RemoveAllListeners();
-            OnClick.ClearEvent();
-            OnClickAction.ClearEvent();
-            TextValue.ClearEvent();
+            OnClick.ClearValueChangedEvent();
+            OnClickAction.ClearValueChangedEvent();
+            TextValue.ClearValueChangedEvent();
         }
     }
 }

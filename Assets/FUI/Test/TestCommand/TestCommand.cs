@@ -11,13 +11,14 @@ namespace Test.Command
     [Binding("TestCommandView")]
     public class TestCommandViewModel : ViewModel
     {
-        [Binding("toggle", nameof(ToggleElement.IsOn), bindingType:BindingType.TwoWay)]
-        public bool ToggleValue { get; set; }
+        [Binding("toggleValue", nameof(TextElement.Text), typeof(BoolToStringConverter))]
+        [Binding("toggle", nameof(ToggleElement.IsOn), bindingType: BindingType.TwoWay)]
+        public bool ToggleValue { get; set; } = true;
 
         [Command("toggle", nameof(ToggleElement.OnValueChanged))]
         void OnToggleChanged(bool value)
         {
-            Console.WriteLine($"OnToggleValueChanged:{value}");
+            Debug.Log($"OnToggleValueChanged:{value}");
         }
     }
 

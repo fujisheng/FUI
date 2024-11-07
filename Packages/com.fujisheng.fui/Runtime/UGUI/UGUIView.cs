@@ -187,9 +187,9 @@ namespace FUI.UGUI
         /// </summary>
         void IView.Destroy()
         {
-            VisibleProperty.ClearEvent();
-            LayerProperty.ClearEvent();
-            OrderProperty.ClearEvent();
+            VisibleProperty.ClearValueChangedEvent();
+            LayerProperty.ClearValueChangedEvent();
+            OrderProperty.ClearValueChangedEvent();
 
             AssetLoader.DestroyGameObject(gameObject);
             AssetLoader.Release();

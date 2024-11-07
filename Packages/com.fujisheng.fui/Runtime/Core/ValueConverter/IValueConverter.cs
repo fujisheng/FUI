@@ -8,7 +8,17 @@ namespace FUI
         object ConvertBack(object value, Type targetType, object param);
     }
 
-    public interface IValueConverter<TValueType, TTargetType, in TParamType>
+    public interface IForwardValueConverter<in TValueType, out TTargetType>
+    {
+        TTargetType Convert(TValueType value);
+    }
+
+    public interface IBackwardValueConverter<out TValueType, in TTargetType>
+    {
+        TValueType ConvertBack(TTargetType value);
+    }
+
+    public interface IValueConverter<TValueType, TTargetType, in TParamType> : IForwardValueConverter<TValueType, TTargetType>, IBackwardValueConverter<TValueType, TTargetType>
     {
         TTargetType Convert(TValueType value, TParamType param);
         TValueType ConvertBack(TTargetType value, TParamType param);

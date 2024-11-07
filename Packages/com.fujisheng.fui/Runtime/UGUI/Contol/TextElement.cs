@@ -91,12 +91,12 @@ namespace FUI.UGUI.Control
 
         protected override void Destroy()
         {
-            Text.ClearEvent();
-            TextObject.ClearEvent();
-            Font.ClearEvent();
-            FontSources.ClearEvent();
-            FontSize.ClearEvent();
-            Color.ClearEvent();
+            Text.ClearValueChangedEvent();
+            TextObject.ClearValueChangedEvent();
+            Font.ClearValueChangedEvent();
+            FontSources.ClearValueChangedEvent();
+            FontSize.ClearValueChangedEvent();
+            Color.ClearValueChangedEvent();
         }
     }
 }
