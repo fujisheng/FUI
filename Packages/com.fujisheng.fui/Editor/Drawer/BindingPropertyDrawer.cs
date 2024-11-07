@@ -483,7 +483,7 @@ namespace FUI.Editor.Drawer
         {
             foreach(var @interface in converterType.GetInterfaces())
             {
-                if(@interface.IsGenericType && @interface.GetGenericTypeDefinition() == typeof(IValueConverter<,,>))
+                if(@interface.IsGenericType && @interface.GetGenericTypeDefinition() == typeof(IValueConverter<,>))
                 {
                     return (@interface.GetGenericArguments()[0], @interface.GetGenericArguments()[1]);
                 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.AccessControl;
 
 namespace FUI.Bindable
 {
@@ -35,7 +36,8 @@ namespace FUI.Bindable
     public interface IWriteOnlyBindableProperty<in T>
     {
         T Value { set; }
-        void SetValue(T value);
+        void SetValue(T value, string exception);
+        void SetValue(object value, string exception);
     }
 
     /// <summary>
@@ -108,7 +110,7 @@ namespace FUI.Bindable
             return this.value;
         }
 
-        public void SetValue(T value)
+        public void SetValue(T value, string exception = null)
         {
             var oldValue = GetValue();
 
@@ -122,6 +124,23 @@ namespace FUI.Bindable
 
                 this.OnValueChanged?.Invoke(oldValue, value);
             }
+        }
+
+        public void SetValue(object value, string exception = null)
+        {
+            if (EqualityComparer<object>.Default.Equals(value, default))
+            {
+                SetValue(default);
+                return;
+            }
+
+            if (!(value is T tValue))
+            {
+                exception = exception ?? $"can not convert {value.GetType()} to {typeof(T)}";
+                throw new System.Exception(exception);
+            }
+
+            SetValue(tValue);
         }
 
         public void AddValueChanged(Delegate valueChanged)

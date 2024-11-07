@@ -1,5 +1,3 @@
-using FUI.Bindable;
-
 namespace FUI.Extensions
 {
     public static class ViewExtensions
@@ -26,16 +24,6 @@ namespace FUI.Extensions
             }
 
             return element;
-        }
-
-        public static void SetElementProperty<TElement, TProperty, TValue>(this IView view, string elementPath, IWriteOnlyBindableProperty<TProperty> property, TValue value) where TElement : IElement
-        {
-            if(!(value is TProperty propertyValue))
-            {
-
-            }
-            
-            property.SetValue(value);
         }
     }
 }
