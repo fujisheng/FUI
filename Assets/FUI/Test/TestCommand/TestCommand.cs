@@ -2,8 +2,6 @@ using FUI;
 using FUI.Test;
 using FUI.UGUI.Control;
 
-using System;
-
 using UnityEngine;
 
 namespace Test.Command
@@ -16,9 +14,9 @@ namespace Test.Command
         public bool ToggleValue { get; set; } = true;
 
         [Command("toggle", nameof(ToggleElement.OnValueChanged))]
-        void OnToggleChanged(bool value)
+        void OnToggleChanged(ToggleElement.ValueChangedArgs args)
         {
-            Debug.Log($"OnToggleValueChanged:{value}");
+            Debug.Log($"OnToggleValueChanged  {args.Sender}  {args.IsOn}");
         }
     }
 

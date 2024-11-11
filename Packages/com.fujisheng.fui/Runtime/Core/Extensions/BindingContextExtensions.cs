@@ -1,7 +1,5 @@
 using FUI.Bindable;
 
-using UnityEngine.UIElements;
-
 namespace FUI.Extensions
 {
     public static class BindingContextExtensions
