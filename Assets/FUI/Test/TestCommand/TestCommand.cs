@@ -14,7 +14,7 @@ namespace Test.Command
         public bool ToggleValue { get; set; } = true;
 
         [Command("toggle", nameof(ToggleElement.OnValueChanged))]
-        void OnToggleChanged(ToggleElement.ValueChangedArgs args)
+        public void OnToggleChanged(ToggleElement.ValueChangedArgs args)
         {
             Debug.Log($"OnToggleValueChanged  {args.Sender}  {args.IsOn}");
         }
