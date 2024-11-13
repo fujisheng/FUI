@@ -75,7 +75,8 @@ namespace FUI.Bindable
         public BindableProperty(T value, ValueChangedHandler<T> onValueChanged = null)
         {
             this.value = value;
-            if (onValueChanged != null)
+
+            if(onValueChanged != null)
             {
                 this.OnValueChanged += onValueChanged;
             }
