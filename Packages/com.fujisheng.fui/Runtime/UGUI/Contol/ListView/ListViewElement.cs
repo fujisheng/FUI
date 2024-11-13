@@ -114,7 +114,7 @@ namespace FUI.UGUI.Control
 
         protected override void Destroy()
         {
-            Data.ClearValueChangedEvent();
+            Data.Dispose();
         }
     }
 }

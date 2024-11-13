@@ -1,9 +1,11 @@
 using FUI.Bindable;
 
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace FUI.UGUI.Control
 {
+    [RequireComponent(typeof(Toggle))]
     public class ToggleElement : UGUIView
     {
         /// <summary>
@@ -54,8 +56,8 @@ namespace FUI.UGUI.Control
         protected override void Destroy()
         {
             this.toggle.onValueChanged.RemoveAllListeners();
-            IsOn.ClearValueChangedEvent();
-            OnValueChanged.ClearListener();
+            IsOn.Dispose();
+            OnValueChanged.ClearListeners();
         }
     }
 }

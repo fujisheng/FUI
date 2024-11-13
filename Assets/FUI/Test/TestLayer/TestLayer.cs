@@ -16,11 +16,11 @@ namespace Test.Layer
         [Binding("txt_title", nameof(TextElement.Text))]
         public string Title { get; set; } = "BackGroundView";
 
-        [Binding("btn_action", nameof(ButtonElement.OnClickAction))]
-        public Action Action { get; set; } = () =>
+        [Command("btn_action", nameof(ButtonElement.OnClick))]
+        public void OnClick(ButtonElement.ClickedEventArgs args)
         {
             TestLauncher.Instance.UIManager.OpenAsync("TestCommonView");
-        };
+        }
     }
 
     [DefaultViewConfig(FUI.Manager.Layer.Common, ViewFlag.FullScreen)]
@@ -30,11 +30,11 @@ namespace Test.Layer
         [Binding("txt_title", nameof(TextElement.Text))]
         public string Title { get; set; } = "CommonView";
 
-        [Binding("btn_action", nameof(ButtonElement.OnClickAction))]
-        public Action Action { get; set; } = () =>
+        [Command("btn_action", nameof(ButtonElement.OnClick))]
+        public void OnClick(ButtonElement.ClickedEventArgs args)
         {
             TestLauncher.Instance.UIManager.OpenAsync("TestForegroundView");
-        };
+        }
     }
 
     [DefaultViewConfig(FUI.Manager.Layer.Foreground, ViewFlag.FullScreen)]
@@ -44,11 +44,11 @@ namespace Test.Layer
         [Binding("txt_title", nameof(TextElement.Text))]
         public string Title { get; set; } = "ForgroundView";
 
-        [Binding("btn_action", nameof(ButtonElement.OnClickAction))]
-        public Action Action { get; set; } = () =>
+        [Command("btn_action", nameof(ButtonElement.OnClick))]
+        public void OnClick(ButtonElement.ClickedEventArgs args)
         {
             TestLauncher.Instance.UIManager.OpenAsync("TestTopView");
-        };
+        }
     }
 
     [DefaultViewConfig(FUI.Manager.Layer.Top, ViewFlag.FullScreen)]
@@ -58,11 +58,11 @@ namespace Test.Layer
         [Binding("txt_title", nameof(TextElement.Text))]
         public string Title { get; set; } = "TopView";
 
-        [Binding("btn_action", nameof(ButtonElement.OnClickAction))]
-        public Action Action { get; set; } = () =>
+        [Command("btn_action", nameof(ButtonElement.OnClick))]
+        public void OnClick(ButtonElement.ClickedEventArgs args)
         {
             TestLauncher.Instance.UIManager.OpenAsync("TestPopupView1");
-        };
+        }
     }
 
     [DefaultViewConfig(FUI.Manager.Layer.Common)]
@@ -72,11 +72,11 @@ namespace Test.Layer
         [Binding("txt_title", nameof(TextElement.Text))]
         public string Title { get; set; } = "PopupView";
 
-        [Binding("btn_action", nameof(ButtonElement.OnClickAction))]
-        public Action Close { get; set; } = () =>
+        [Command("btn_action", nameof(ButtonElement.OnClick))]
+        public void OnClick(ButtonElement.ClickedEventArgs args)
         {
             TestLauncher.Instance.UIManager.Close("TestPopupView1");
-        };
+        }
     }
 
     public class TestLayer : MonoBehaviour

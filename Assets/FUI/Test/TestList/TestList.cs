@@ -23,11 +23,21 @@ namespace Test.List
         [Binding("Scroll View", nameof(ScrollViewElement.Data))]
         public ObservableList<TestListItemViewModel> List { get; set; }
 
-        [Binding("btn_Add", nameof(ButtonElement.OnClickAction))]
-        public System.Action AddItem { get; set; }
+        [Command("btn_Add", nameof(ButtonElement.OnClick))]
+        public void OnClickAddItem(ButtonElement.ClickedEventArgs args)
+        {
+            var id = List.Count + 1;
+            List.Add(new TestListItemViewModel() { ID = id, Name = "Test" + (id) });
+        }
 
-        [Binding("btn_Remove", nameof(ButtonElement.OnClickAction))]
-        public System.Action RemoveItem { get; set; }
+        [Command("btn_Remove", nameof(ButtonElement.OnClick))]
+        public void OnClickRemoveItem(ButtonElement.ClickedEventArgs args)
+        {
+            if (List.Count > 0)
+            {
+                List.RemoveAt(List.Count - 1);
+            }
+        }
     }
 
     public class TestListBehavior : ViewBehavior<TestListViewModel>
@@ -35,30 +45,13 @@ namespace Test.List
         protected override void OnOpen(object param)
         {
             VM.List = new ObservableList<TestListItemViewModel>()
-        {
-            new TestListItemViewModel() { ID = 1, Name = "Test1" },
-            new TestListItemViewModel() { ID = 2, Name = "Test2" },
-            new TestListItemViewModel() { ID = 3, Name = "Test3" },
-            new TestListItemViewModel() { ID = 4, Name = "Test4" },
-            new TestListItemViewModel() { ID = 5, Name = "Test5" },
-        };
-
-            VM.AddItem = OnAddItem;
-            VM.RemoveItem = OnRemoveItem;
-        }
-
-        void OnAddItem()
-        {
-            var id = VM.List.Count + 1;
-            VM.List.Add(new TestListItemViewModel() { ID = id, Name = "Test" + (id) });
-        }
-
-        void OnRemoveItem()
-        {
-            if (VM.List.Count > 0)
             {
-                VM.List.RemoveAt(VM.List.Count - 1);
-            }
+                new TestListItemViewModel() { ID = 1, Name = "Test1" },
+                new TestListItemViewModel() { ID = 2, Name = "Test2" },
+                new TestListItemViewModel() { ID = 3, Name = "Test3" },
+                new TestListItemViewModel() { ID = 4, Name = "Test4" },
+                new TestListItemViewModel() { ID = 5, Name = "Test5" },
+            };
         }
     }
 

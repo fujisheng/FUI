@@ -64,6 +64,11 @@ namespace FUI.UGUI
         }
 
         /// <summary>
+        /// 可交互属性
+        /// </summary>
+        public BindableProperty<bool> Interactable { get; private set; }
+
+        /// <summary>
         /// 创建一个UGUIView
         /// </summary>
         /// <param name="assetLoader">资源加载器</param>
@@ -109,10 +114,12 @@ namespace FUI.UGUI
             LayerProperty = new BindableProperty<int>(GetLayer());
             VisibleProperty = new BindableProperty<bool>(IsVisible());
             OrderProperty = new BindableProperty<int>(GetOrder());
+            Interactable = new BindableProperty<bool>(true);
 
             LayerProperty.OnValueChanged += SetLayer;
             VisibleProperty.OnValueChanged += SetVisible;
             OrderProperty.OnValueChanged += SetOrder;
+            Interactable.OnValueChanged += OnSetInteractable;
 
             Initialize();
         }
@@ -183,13 +190,27 @@ namespace FUI.UGUI
         }
 
         /// <summary>
+        /// 设置可交互属性
+        /// </summary>
+        /// <param name="oldInteractable">之前的值</param>
+        /// <param name="interactable">现在的值</param>
+        protected virtual void OnSetInteractable(bool oldInteractable, bool interactable)
+        {
+            if (gameObject.TryGetComponent<CanvasGroup>(out var canvasGroup))
+            {
+                canvasGroup.blocksRaycasts = interactable;
+            }
+        }
+
+        /// <summary>
         /// 销毁这个View
         /// </summary>
         void IView.Destroy()
         {
-            VisibleProperty.ClearValueChangedEvent();
-            LayerProperty.ClearValueChangedEvent();
-            OrderProperty.ClearValueChangedEvent();
+            VisibleProperty.Dispose();
+            LayerProperty.Dispose();
+            OrderProperty.Dispose();
+            Interactable.Dispose();
 
             AssetLoader.DestroyGameObject(gameObject);
             AssetLoader.Release();

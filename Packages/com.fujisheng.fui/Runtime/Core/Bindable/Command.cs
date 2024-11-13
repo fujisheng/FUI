@@ -76,7 +76,7 @@ namespace FUI.Bindable
         /// <summary>
         /// 清空执行列表
         /// </summary>
-        public void ClearListener()
+        public void ClearListeners()
         {
             invocationList.Clear();
         }

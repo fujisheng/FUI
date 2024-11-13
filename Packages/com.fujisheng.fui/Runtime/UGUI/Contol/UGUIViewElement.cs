@@ -28,8 +28,7 @@ namespace FUI.UGUI.Control
             initialized = true;
             view = UGUIView.Create(this.AssetLoader, this.gameObject, gameObject.name);
 
-            Data = new BindableProperty<ObservableObject>();
-            Data.OnValueChanged += OnSetData;
+            Data = new BindableProperty<ObservableObject>(null, OnSetData);
         }
 
         void OnSetData(ObservableObject oldValue, ObservableObject newValue)
@@ -43,19 +42,17 @@ namespace FUI.UGUI.Control
             {
                 entity = UIEntity.Create(view, newValue);
                 entity.Enable();
-                UnityEngine.Debug.Log($"Create  {entity}");
             }
             else
             {
                 entity.SetViewModel(newValue);
-                UnityEngine.Debug.Log($"Set  {newValue}");
             }
             this.data = newValue;
         }
 
         protected override void Destroy()
         {
-            Data.ClearValueChangedEvent();
+            Data.Dispose();
         }
     }
 }

@@ -1,9 +1,6 @@
 using FUI.Bindable;
 
-using System;
-
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace FUI.UGUI.Control
@@ -13,15 +10,12 @@ namespace FUI.UGUI.Control
     {
         Button button;
 
+        public class ClickedEventArgs : CommandArgs { public ClickedEventArgs(object sender) : base(sender) { } }
+
         /// <summary>
         /// 点击回调
         /// </summary>
-        public BindableProperty<UnityAction> OnClick { get; private set; }
-
-        /// <summary>
-        /// 点击回调转Action
-        /// </summary>
-        public BindableProperty<Action> OnClickAction { get; private set; }
+        public Command<ClickedEventArgs> OnClick { get; private set; }
 
         /// <summary>
         /// 文本元素 这个是只读的
@@ -33,37 +27,40 @@ namespace FUI.UGUI.Control
         /// </summary>
         public BindableProperty<string> TextValue { get; private set; }
 
+        /// <summary>
+        /// 图片元素 这个是只读的
+        /// </summary>
+        public IReadOnlyBindableProperty<ImageElement> ImageElement { get; private set; }
+
+        /// <summary>
+        /// 图片精灵
+        /// </summary>
+        public BindableProperty<Sprite> ImageSprite { get; private set; }
+
+        /// <summary>
+        /// 图片资源
+        /// </summary>
+        public BindableProperty<string> ImageSpriteSources { get; private set; }
+
         protected override void Initialize()
         {
             button = GetComponent<Button>();
-            OnClick = new BindableProperty<UnityAction>();
-            OnClickAction = new BindableProperty<Action>();
+            OnClick = new Command<ClickedEventArgs>();
             TextElement = new BindableProperty<TextElement>(button.GetComponentInChildren<TextElement>());
             TextValue = new BindableProperty<string>(TextElement.Value?.Text?.Value);
+            ImageElement = new BindableProperty<ImageElement>(button.GetComponent<ImageElement>());
+            ImageSprite = new BindableProperty<Sprite>(ImageElement.Value?.Sprite?.Value);
+            ImageSpriteSources = new BindableProperty<string>(ImageElement.Value?.SpriteSources?.Value);
 
-            OnClick.OnValueChanged += OnSetOnClick;
-            OnClickAction.OnValueChanged += OnSetOnClickAction;
+            button.onClick.AddListener(OnButtonClick);
             TextValue.OnValueChanged += OnSetTextValue;
+            ImageSprite.OnValueChanged += OnSetImageSprite;
+            ImageSpriteSources.OnValueChanged += OnSetImageSpriteSources;
         }
 
-        void OnSetOnClick(UnityAction oldAction, UnityAction newAction)
+        void OnButtonClick()
         {
-            button.onClick.RemoveAllListeners();
-
-            if (newAction != null)
-            {
-                button.onClick.AddListener(newAction);
-            }
-        }
-
-        void OnSetOnClickAction(Action oldValue, Action newValue)
-        {
-            button.onClick.RemoveAllListeners();
-
-            if (newValue != null)
-            {
-                button.onClick.AddListener(() => newValue.Invoke());
-            }
+            OnClick?.Invoke(new ClickedEventArgs(this));
         }
 
         void OnSetTextValue(string oldValue, string newValue)
@@ -76,12 +73,39 @@ namespace FUI.UGUI.Control
             TextElement.Value.Text.Value = newValue;
         }
 
+        void OnSetImageSprite(Sprite oldValue, Sprite newValue)
+        {
+            if(ImageElement.Value == null)
+            {
+                return;
+            }
+
+            ImageElement.Value.Sprite.Value = newValue;
+        }
+
+        void OnSetImageSpriteSources(string oldValue, string newValue)
+        {
+            if(ImageElement.Value == null)
+            {
+                return;
+            }
+
+            ImageElement.Value.SpriteSources.Value = newValue;
+        }
+
+        protected override void OnSetInteractable(bool oldInteractable, bool interactable)
+        {
+            button.interactable = interactable;
+        }
+
         protected override void Destroy()
         {
             button.onClick.RemoveAllListeners();
-            OnClick.ClearValueChangedEvent();
-            OnClickAction.ClearValueChangedEvent();
-            TextValue.ClearValueChangedEvent();
+            OnClick.ClearListeners();
+
+            TextValue.Dispose();
+            ImageSprite.Dispose();
+            ImageSpriteSources.Dispose();
         }
     }
 }

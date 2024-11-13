@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Security.AccessControl;
 
 namespace FUI.Bindable
 {
@@ -8,13 +7,12 @@ namespace FUI.Bindable
     /// 可绑定属性
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IBindableProperty<T>
+    public interface IBindableProperty<T> : IDisposable
     {
         T Value { get; set; }
         event ValueChangedHandler<T> OnValueChanged;
         void AddValueChanged(Delegate valueChanged);
         void RemoveValueChanged(Delegate valueChanged);
-        void ClearValueChangedEvent();
         void MuteValueChangedEvent(bool mute);
         Delegate GetLastInvocation();
     }
@@ -25,7 +23,7 @@ namespace FUI.Bindable
     /// <typeparam name="T">属性值类型</typeparam>
     public interface IReadOnlyBindableProperty<out T>
     {
-        T Value { get;}
+        T Value { get; }
         T GetValue();
     }
 
@@ -59,11 +57,6 @@ namespace FUI.Bindable
         bool eventMuted = false;
 
         /// <summary>
-        /// 绑定类型
-        /// </summary>
-        public BindingType BindingType { get; }
-
-        /// <summary>
         /// 这个属性的值
         /// </summary>
         public T Value
@@ -77,32 +70,15 @@ namespace FUI.Bindable
         /// </summary>
         public event ValueChangedHandler<T> OnValueChanged;
 
-        public BindableProperty()
-        {
-            this.BindingType = BindingType.OneWay;
-        }
+        public BindableProperty() { }
 
-        public BindableProperty(T value)
+        public BindableProperty(T value, ValueChangedHandler<T> onValueChanged = null)
         {
             this.value = value;
-            this.BindingType = BindingType.OneWay;
-        }
-
-        public BindableProperty(BindingType bindingType)
-        {
-            this.BindingType = bindingType;
-        }
-
-        public BindableProperty(T value, BindingType bindingType)
-        {
-            this.value = value;
-            this.BindingType = bindingType;
-        }
-
-        public BindableProperty(ValueChangedHandler<T> onValueChanged)
-        {
-            this.OnValueChanged = onValueChanged;
-            this.BindingType = BindingType.OneWay;
+            if (onValueChanged != null)
+            {
+                this.OnValueChanged += onValueChanged;
+            }
         }
 
         public T GetValue()
@@ -145,7 +121,7 @@ namespace FUI.Bindable
 
         public void AddValueChanged(Delegate valueChanged)
         {
-            if(valueChanged == null)
+            if (valueChanged == null)
             {
                 return;
             }
@@ -158,12 +134,12 @@ namespace FUI.Bindable
 
         public void RemoveValueChanged(Delegate valueChanged)
         {
-            if(valueChanged == null)
+            if (valueChanged == null)
             {
                 return;
             }
 
-            if(valueChanged is ValueChangedHandler<T> handler)
+            if (valueChanged is ValueChangedHandler<T> handler)
             {
                 this.OnValueChanged -= handler;
             }
@@ -171,7 +147,7 @@ namespace FUI.Bindable
 
         public Delegate GetLastInvocation()
         {
-            if(this.OnValueChanged == null)
+            if (this.OnValueChanged == null)
             {
                 return null;
             }
@@ -184,9 +160,10 @@ namespace FUI.Bindable
             this.eventMuted = mute;
         }
 
-        public void ClearValueChangedEvent()
+        public void Dispose()
         {
             this.OnValueChanged = null;
+            this.value = default;
         }
     }
 }
