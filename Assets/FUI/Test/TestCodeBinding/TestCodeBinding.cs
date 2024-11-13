@@ -21,6 +21,7 @@ namespace Test.CodeBinding
         [Binding("txt_bool", nameof(TextElement.Text), typeof(BoolToStringConverter))]
         public bool TestBool { get; set; }
 
+        //下面调用来查看堆栈是否正确输出
         public void OnClick()
         {
             UnityEngine.Debug.Log($"{this}");
@@ -38,6 +39,7 @@ namespace Test.CodeBinding
             VM.TestFloat = 3.14f;
             VM.TestBool = true;
 
+            //故意让其报错  来查看错误堆栈是否正确显示
             UnityEngine.Debug.Log(param.ToString());
         }
     }
