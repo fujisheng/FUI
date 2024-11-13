@@ -5,31 +5,9 @@ namespace FUI
     /// <summary>
     /// 值转换器
     /// </summary>
-    public abstract class ValueConverter : IValueConverter
-    {
-        /// <summary>
-        /// 将一个值转换成另一个类型
-        /// </summary>
-        /// <param name="value">值</param>
-        /// <param name="targetType">目标类型</param>
-        /// <returns></returns>
-        public abstract object Convert(object value, Type targetType);
-
-        /// <summary>
-        /// 将一个值转换成另一个类型
-        /// </summary>
-        /// <param name="value">值</param>
-        /// <param name="targetType">目标类型</param>
-        /// <returns></returns>
-        public abstract object ConvertBack(object value, Type targetType);
-    }
-
-    /// <summary>
-    /// 值转换器
-    /// </summary>
     /// <typeparam name="TValueType">值类型</typeparam>
     /// <typeparam name="TTargetType">目标类型</typeparam>
-    public abstract class ValueConverter<TValueType, TTargetType> : ValueConverter, IValueConverter<TValueType, TTargetType>
+    public abstract class ValueConverter<TValueType, TTargetType> : IValueConverter, IValueConverter<TValueType, TTargetType>
     {
         /// <summary>
         /// 将一个值转换成另一个类型
@@ -54,7 +32,7 @@ namespace FUI
             return ConvertBack(value);
         }
 
-        public override object Convert(object value, Type targetType)
+        public object Convert(object value, Type targetType)
         {
             if (targetType != typeof(TTargetType))
             {
@@ -63,7 +41,7 @@ namespace FUI
             return Convert((TValueType)value);
         }
 
-        public override object ConvertBack(object value, Type targetType)
+        public object ConvertBack(object value, Type targetType)
         {
             if (targetType != typeof(TValueType))
             {

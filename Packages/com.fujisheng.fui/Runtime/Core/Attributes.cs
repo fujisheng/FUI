@@ -2,19 +2,37 @@
 
 namespace FUI
 {
-    public enum BindingType
+    /// <summary>
+    /// 绑定模式
+    /// </summary>
+    public enum BindingMode
     {
-        OneWay,
-        TwoWay,
+        /// <summary>
+        /// ViewModel->View
+        /// </summary>
+        OneWay = 1 << 0,
+
+        /// <summary>
+        /// View->ViewModel
+        /// </summary>
+        OneWayToSource = 1 << 1,
+
+        /// <summary>
+        /// ViewModel<->View
+        /// </summary>
+        TwoWay = OneWay | OneWayToSource,
     }
 
+    /// <summary>
+    /// 标记一条绑定关系
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
     public class BindingAttribute : Attribute
     {
         public readonly string target;
         public readonly string propertyName;
         public readonly Type valueConverterType;   
-        public readonly BindingType bindingType;
+        public readonly BindingMode bindingMode;
 
         /// <summary>
         /// 绑定某个ViewModel到某个View
@@ -25,7 +43,7 @@ namespace FUI
             this.target = target;
             this.propertyName = null;
             this.valueConverterType = null;
-            this.bindingType = BindingType.OneWay;
+            this.bindingMode = BindingMode.OneWay;
         }
 
         /// <summary>
@@ -34,14 +52,14 @@ namespace FUI
         /// <param name="target">目标View名</param>
         /// <param name="propertyName">目标属性名</param>
         /// <param name="converterType">值转换器类型</param>
-        /// <param name="bindingType">绑定类型</param>
-        public BindingAttribute(string target, string propertyName, Type converterType = null, BindingType bindingType = BindingType.OneWay)
+        /// <param name="bindingMode">绑定类型</param>
+        public BindingAttribute(string target, string propertyName, Type converterType = null, BindingMode bindingMode = BindingMode.OneWay)
         {
             this.target = target;
             this.propertyName = propertyName;
 
             this.valueConverterType= null;
-            this.bindingType = BindingType.OneWay;
+            this.bindingMode = BindingMode.OneWay;
         }
     }
 

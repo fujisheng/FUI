@@ -29,10 +29,10 @@ namespace FUI
         }
 
         /// <summary>
-        /// 重新绑定视图
+        /// 更新视图
         /// </summary>
-        /// <param name="view"></param>
-        public void RebindingView(IView view)
+        /// <param name="view">要更新的视图</param>
+        public void UpdateView(IView view)
         {
             if(this.View == view)
             {
@@ -50,10 +50,10 @@ namespace FUI
         }
 
         /// <summary>
-        /// 重新绑定视图模型
+        /// 更新视图模型
         /// </summary>
-        /// <param name="viewModel"></param>
-        public void RebindingViewModel(ObservableObject viewModel)
+        /// <param name="viewModel">要更新的视图模型</param>
+        public void UpdateViewModel(ObservableObject viewModel)
         {
             if(this.ViewModel == viewModel)
             {

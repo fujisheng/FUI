@@ -49,29 +49,29 @@ namespace FUI
         public override string ToString()=> $"UIEntity Name:{Name} ViewModel:{ViewModel} ViewBahavior:{Behavior} View:{View}";
 
         /// <summary>
-        /// 设置视图模型，当前视图和视图行为不变
+        /// 更新视图模型，当前视图和视图行为不变
         /// </summary>
         /// <param name="viewModel">视图模型</param>
-        public void SetViewModel(ObservableObject viewModel)
+        public void UpdateViewModel(ObservableObject viewModel)
         {
             if(this.ViewModel == viewModel || viewModel == null)
             {
                 return;
             }
-            this.bindingContext.RebindingViewModel(viewModel);
+            this.bindingContext.UpdateViewModel(viewModel);
             this.ViewModel = viewModel;
-            this.Behavior.SetViewModel(viewModel);
+            this.Behavior.UpdateViewModel(viewModel);
             SynchronizeProperties();
         }
 
         /// <summary>
-        /// 设置视图行为，当前视图和视图模型不变
+        /// 更新视图行为，当前视图和视图模型不变
         /// </summary>
         /// <param name="behavior"></param>
-        public void SetBehavior(ViewBehavior behavior)
+        public void UpdateBehavior(ViewBehavior behavior)
         {
             this.Behavior = behavior;
-            this.Behavior.SetViewModel(this.ViewModel);
+            this.Behavior.UpdateViewModel(this.ViewModel);
         }
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace FUI
             }
 
             this.View = view;
-            this.bindingContext.RebindingView(view);
+            this.bindingContext.UpdateView(view);
             this.View.Layer = this.Layer;
             this.View.Order = this.Order;
             SynchronizeProperties();

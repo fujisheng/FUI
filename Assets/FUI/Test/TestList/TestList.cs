@@ -20,7 +20,7 @@ namespace Test.List
     [Binding("TestListView")]
     public class TestListViewModel : ViewModel
     {
-        [Binding("Scroll View", nameof(ScrollViewElement.Data))]
+        [Binding("Scroll View", nameof(ScrollViewElement.List))]
         public ObservableList<TestListItemViewModel> List { get; set; }
 
         [Command("btn_Add", nameof(ButtonElement.OnClick))]

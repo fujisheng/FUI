@@ -11,22 +11,19 @@ namespace FUI.UGUI.Control
     /// </summary>
     public abstract class ListViewElement : UGUIView, IContainerElement, IListView
     {
-        public BindableProperty<IReadOnlyObservableList<ObservableObject>> Data { get; private set; }
+        public BindableProperty<IReadOnlyObservableList<ObservableObject>> List { get; private set; }
 
         protected override void Initialize()
         {
-            Data = new BindableProperty<IReadOnlyObservableList<ObservableObject>>();
-            Data.OnValueChanged += OnSetData;
-        }
-
-        void OnSetData(IReadOnlyObservableList<ObservableObject> oldValue, IReadOnlyObservableList<ObservableObject> newValue)
-        {
-            if(newValue == null)
+            List = new BindableProperty<IReadOnlyObservableList<ObservableObject>>(null, (oldValue, newValue) =>
             {
-                return;
-            }
+                if(newValue == null)
+                {
+                    return;
+                }
 
-            OnUpdate();
+                OnUpdate();
+            });
         }
 
         void IListView.OnAdd(object sender, int? index, object item)
@@ -114,7 +111,7 @@ namespace FUI.UGUI.Control
 
         protected override void Destroy()
         {
-            Data.Dispose();
+            List.Dispose();
         }
     }
 }

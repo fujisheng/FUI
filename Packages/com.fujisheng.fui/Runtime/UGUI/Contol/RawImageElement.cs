@@ -6,10 +6,8 @@ using UnityEngine.UI;
 namespace FUI.UGUI.Control
 {
     [RequireComponent(typeof(RawImage))]
-    public class RawImageElement : UGUIView
+    public class RawImageElement : UIElement<RawImage>
     {
-        RawImage image;
-
         /// <summary>
         /// 图片
         /// </summary>
@@ -18,7 +16,7 @@ namespace FUI.UGUI.Control
         /// <summary>
         /// 图片资源
         /// </summary>
-        public BindableProperty<string> TextureSources { get; private set; }
+        public BindableProperty<string> TextureSource { get; private set; }
 
         /// <summary>
         /// 颜色
@@ -33,33 +31,29 @@ namespace FUI.UGUI.Control
         /// <summary>
         /// 材质资源路径
         /// </summary>
-        public BindableProperty<string> MaterialSources { get; private set; }
+        public BindableProperty<string> MaterialSource { get; private set; }
 
 
         protected override void Initialize()
         {
-            image = GetComponent<RawImage>();
+            base.Initialize();
 
-            Texture = new BindableProperty<Texture>(image.texture);
-            TextureSources = new BindableProperty<string>();
-            Color = new BindableProperty<Color>(image.color);
-            Material = new BindableProperty<Material>(image.material);
-            MaterialSources = new BindableProperty<string>();
-
-            Texture.OnValueChanged += (oldValue, newValue) => image.texture = newValue;
-            TextureSources.OnValueChanged += (oldValue, newValue) => image.texture = AssetLoader.Load<Texture>(newValue);
-            Color.OnValueChanged += (oldValue, newValue) => image.color = newValue;
-            Material.OnValueChanged += (oldValue, newValue) => image.material = newValue;
-            MaterialSources.OnValueChanged += (oldValue, newValue) => image.material = AssetLoader.Load<Material>(newValue);
+            Texture = new BindableProperty<Texture>(Component.texture, (oldValue, newValue) => Component.texture = newValue);
+            TextureSource = new BindableProperty<string>(null, (oldValue, newValue) => Component.texture = AssetLoader.Load<Texture>(newValue));
+            Color = new BindableProperty<Color>(Component.color, (oldValue, newValue) => Component.color = newValue);
+            Material = new BindableProperty<Material>(Component.material, (oldValue, newValue) => Component.material = newValue);
+            MaterialSource = new BindableProperty<string>(null, (oldValue, newValue) => Component.material = AssetLoader.Load<Material>(newValue));
         }
 
         protected override void Destroy()
         {
+            base.Destroy();
+
             Texture.Dispose();
-            TextureSources.Dispose();
+            TextureSource.Dispose();
             Color.Dispose();
             Material.Dispose();
-            MaterialSources.Dispose();
+            MaterialSource.Dispose();
         }
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace FUI.UGUI.Control
 {
     [RequireComponent(typeof(InputField))]
-    public class InputFieldElement : UGUIView
+    public class InputFieldElement : SelectableElement<InputField>
     {
         /// <summary>
         /// 值更改参数
@@ -20,8 +20,6 @@ namespace FUI.UGUI.Control
             }
         }
 
-        InputField inputField;
-
         /// <summary>
         /// 值
         /// </summary>
@@ -34,12 +32,11 @@ namespace FUI.UGUI.Control
 
         protected override void Initialize()
         {
-            inputField = transform.GetComponent<InputField>();
+            base.Initialize();
 
-            Text = new BindableProperty<string>(inputField.text);
+            Text = new BindableProperty<string>(Component.text, (oldValue, newValue) => Component.text = newValue);
             OnValueChanged = new Command<ValueChangedArgs>();
-            inputField.onValueChanged.AddListener(OnInputFieldValueChanged);
-            Text.OnValueChanged += (oldValue, newValue) => inputField.text = newValue;
+            Component.onValueChanged.AddListener(OnInputFieldValueChanged);
         }
 
         void OnInputFieldValueChanged(string value)
@@ -50,7 +47,9 @@ namespace FUI.UGUI.Control
 
         protected override void Destroy()
         {
-            this.inputField.onValueChanged.RemoveAllListeners();
+            base.Destroy();
+
+            this.Component.onValueChanged.RemoveAllListeners();
             Text.Dispose();
             OnValueChanged.ClearListeners();
         }

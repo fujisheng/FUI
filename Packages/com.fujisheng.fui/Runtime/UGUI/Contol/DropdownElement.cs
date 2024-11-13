@@ -1,12 +1,14 @@
 using FUI.Bindable;
 
+using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace FUI.UGUI.Control
 {
     [RequireComponent(typeof(Dropdown))]
-    public class DropdownElement : UGUIView
+    public class DropdownElement : SelectableElement<Dropdown>
     {
         /// <summary>
         /// 值更改参数
@@ -20,12 +22,15 @@ namespace FUI.UGUI.Control
             }
         }
 
-        Dropdown dropdown;
-
         /// <summary>
         /// 值
         /// </summary>
         public BindableProperty<int> Value { get; private set; }
+
+        /// <summary>
+        /// 选项
+        /// </summary>
+        public BindableProperty<List<string>> Options { get; private set; }
 
         /// <summary>
         /// 值更改事件
@@ -34,12 +39,13 @@ namespace FUI.UGUI.Control
 
         protected override void Initialize()
         {
-            dropdown = transform.GetComponent<Dropdown>();
+            base.Initialize();
 
-            Value = new BindableProperty<int>(dropdown.value);
+            Value = new BindableProperty<int>(Component.value);
+            Options = new BindableProperty<List<string>>(new List<string>(), OnSetOptions);
             OnValueChanged = new Command<ValueChangedArgs>();
-            dropdown.onValueChanged.AddListener(OnDropdownValueChanged);
-            Value.OnValueChanged += (oldValue, newValue) => dropdown.value = newValue;
+            Component.onValueChanged.AddListener(OnDropdownValueChanged);
+            Value.OnValueChanged += (oldValue, newValue) => Component.value = newValue;
         }
 
         void OnDropdownValueChanged(int value)
@@ -48,9 +54,17 @@ namespace FUI.UGUI.Control
             OnValueChanged.Invoke(new ValueChangedArgs(this, value));
         }
 
+        void OnSetOptions(List<string> oldValue, List<string> newValue)
+        {
+            Component.ClearOptions();
+            Component.AddOptions(newValue);
+        }
+
         protected override void Destroy()
         {
-            this.dropdown.onValueChanged.RemoveAllListeners();
+            base.Destroy();
+
+            this.Component.onValueChanged.RemoveAllListeners();
             Value.Dispose();
             OnValueChanged.ClearListeners();
         }

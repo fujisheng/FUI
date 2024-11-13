@@ -45,7 +45,7 @@ namespace FUI.UGUI.Control
             }
             else
             {
-                entity.SetViewModel(newValue);
+                entity.UpdateViewModel(newValue);
             }
             this.data = newValue;
         }

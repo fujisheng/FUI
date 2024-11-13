@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace FUI.UGUI.Control
 {
     [RequireComponent(typeof(Toggle))]
-    public class ToggleElement : UGUIView
+    public class ToggleElement : SelectableElement<Toggle>
     {
         /// <summary>
         /// 值更改参数
@@ -20,8 +20,6 @@ namespace FUI.UGUI.Control
             }
         }
 
-        Toggle toggle;
-
         /// <summary>
         /// 是否开启
         /// </summary>
@@ -34,17 +32,11 @@ namespace FUI.UGUI.Control
 
         protected override void Initialize()
         {
-            toggle = transform.GetComponent<Toggle>();
+            base.Initialize();
 
-            IsOn = new BindableProperty<bool>(toggle.isOn);
+            IsOn = new BindableProperty<bool>(Component.isOn, (oldValue, newValue) => Component.isOn = newValue);
             OnValueChanged = new Command<ValueChangedArgs>();
-            toggle.onValueChanged.AddListener(OnToggleValueChanged);
-            IsOn.OnValueChanged += OnSetValue;
-        }
-
-        void OnSetValue(bool oldValue, bool newValue)
-        {
-            toggle.isOn = newValue;
+            Component.onValueChanged.AddListener(OnToggleValueChanged);
         }
 
         void OnToggleValueChanged(bool isOn)
@@ -55,7 +47,9 @@ namespace FUI.UGUI.Control
 
         protected override void Destroy()
         {
-            this.toggle.onValueChanged.RemoveAllListeners();
+            base.Destroy();
+
+            this.Component.onValueChanged.RemoveAllListeners();
             IsOn.Dispose();
             OnValueChanged.ClearListeners();
         }

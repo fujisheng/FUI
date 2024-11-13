@@ -6,10 +6,8 @@ using UnityEngine.UI;
 namespace FUI.UGUI.Control
 {
     [RequireComponent(typeof(Button))]
-    public class ButtonElement : UGUIView
+    public class ButtonElement : SelectableElement<Button>
     {
-        Button button;
-
         public class ClickedEventArgs : CommandArgs { public ClickedEventArgs(object sender) : base(sender) { } }
 
         /// <summary>
@@ -40,22 +38,23 @@ namespace FUI.UGUI.Control
         /// <summary>
         /// Í¼Æ¬×ÊÔ´
         /// </summary>
-        public BindableProperty<string> ImageSpriteSources { get; private set; }
+        public BindableProperty<string> ImageSpriteSource { get; private set; }
 
         protected override void Initialize()
         {
-            button = GetComponent<Button>();
-            OnClick = new Command<ClickedEventArgs>();
-            TextElement = new BindableProperty<TextElement>(button.GetComponentInChildren<TextElement>());
-            TextValue = new BindableProperty<string>(TextElement.Value?.Text?.Value);
-            ImageElement = new BindableProperty<ImageElement>(button.GetComponent<ImageElement>());
-            ImageSprite = new BindableProperty<Sprite>(ImageElement.Value?.Sprite?.Value);
-            ImageSpriteSources = new BindableProperty<string>(ImageElement.Value?.SpriteSources?.Value);
+            base.Initialize();
 
-            button.onClick.AddListener(OnButtonClick);
+            OnClick = new Command<ClickedEventArgs>();
+            TextElement = new BindableProperty<TextElement>(Component.GetComponentInChildren<TextElement>());
+            TextValue = new BindableProperty<string>(TextElement.Value?.Text?.Value);
+            ImageElement = new BindableProperty<ImageElement>(Component.GetComponent<ImageElement>());
+            ImageSprite = new BindableProperty<Sprite>(ImageElement.Value?.Sprite?.Value);
+            ImageSpriteSource = new BindableProperty<string>(ImageElement.Value?.SpriteSource?.Value);
+
+            Component.onClick.AddListener(OnButtonClick);
             TextValue.OnValueChanged += OnSetTextValue;
             ImageSprite.OnValueChanged += OnSetImageSprite;
-            ImageSpriteSources.OnValueChanged += OnSetImageSpriteSources;
+            ImageSpriteSource.OnValueChanged += OnSetImageSpriteSources;
         }
 
         void OnButtonClick()
@@ -90,22 +89,19 @@ namespace FUI.UGUI.Control
                 return;
             }
 
-            ImageElement.Value.SpriteSources.Value = newValue;
-        }
-
-        protected override void OnSetInteractable(bool oldInteractable, bool interactable)
-        {
-            button.interactable = interactable;
+            ImageElement.Value.SpriteSource.Value = newValue;
         }
 
         protected override void Destroy()
         {
-            button.onClick.RemoveAllListeners();
+            base.Destroy();
+
+            Component.onClick.RemoveAllListeners();
             OnClick.ClearListeners();
 
             TextValue.Dispose();
             ImageSprite.Dispose();
-            ImageSpriteSources.Dispose();
+            ImageSpriteSource.Dispose();
         }
     }
 }

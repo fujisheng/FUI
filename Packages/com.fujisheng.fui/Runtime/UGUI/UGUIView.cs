@@ -24,43 +24,43 @@ namespace FUI.UGUI
         /// <summary>
         /// 层级属性
         /// </summary>
-        public BindableProperty<int> LayerProperty { get; private set; }
+        public BindableProperty<int> Layer { get; private set; }
 
         /// <summary>
         /// 层级
         /// </summary>
         int IView.Layer 
         { 
-            get { return LayerProperty.Value; }
-            set { LayerProperty.Value = value; } 
+            get { return Layer.Value; }
+            set { Layer.Value = value; } 
         }
 
         /// <summary>
         /// 顺序属性
         /// </summary>
-        public BindableProperty<int> OrderProperty { get; private set; }
+        public BindableProperty<int> Order { get; private set; }
 
         /// <summary>
         /// 顺序
         /// </summary>
         int IView.Order
         {
-            get { return OrderProperty.Value; }
-            set { OrderProperty.Value = value; }
+            get { return Order.Value; }
+            set { Order.Value = value; }
         }
 
         /// <summary>
         /// 可见性属性
         /// </summary>
-        public BindableProperty<bool> VisibleProperty { get; private set; }
+        public BindableProperty<bool> Visible { get; private set; }
 
         /// <summary>
         /// 可见性
         /// </summary>
         bool IView.Visible
         {
-            get { return VisibleProperty.Value; }
-            set { VisibleProperty.Value = value; }
+            get { return Visible.Value; }
+            set { Visible.Value = value; }
         }
 
         /// <summary>
@@ -111,15 +111,10 @@ namespace FUI.UGUI
         /// </summary>
         void InternalInitialize()
         {
-            LayerProperty = new BindableProperty<int>(GetLayer());
-            VisibleProperty = new BindableProperty<bool>(IsVisible());
-            OrderProperty = new BindableProperty<int>(GetOrder());
-            Interactable = new BindableProperty<bool>(true);
-
-            LayerProperty.OnValueChanged += SetLayer;
-            VisibleProperty.OnValueChanged += SetVisible;
-            OrderProperty.OnValueChanged += SetOrder;
-            Interactable.OnValueChanged += OnSetInteractable;
+            Layer = new BindableProperty<int>(GetLayer(), SetLayer);
+            Visible = new BindableProperty<bool>(IsVisible(), SetVisible);
+            Order = new BindableProperty<int>(GetOrder(), SetOrder);
+            Interactable = new BindableProperty<bool>(true, SetInteractable);
 
             Initialize();
         }
@@ -194,7 +189,7 @@ namespace FUI.UGUI
         /// </summary>
         /// <param name="oldInteractable">之前的值</param>
         /// <param name="interactable">现在的值</param>
-        protected virtual void OnSetInteractable(bool oldInteractable, bool interactable)
+        protected virtual void SetInteractable(bool oldInteractable, bool interactable)
         {
             if (gameObject.TryGetComponent<CanvasGroup>(out var canvasGroup))
             {
@@ -207,9 +202,9 @@ namespace FUI.UGUI
         /// </summary>
         void IView.Destroy()
         {
-            VisibleProperty.Dispose();
-            LayerProperty.Dispose();
-            OrderProperty.Dispose();
+            Visible.Dispose();
+            Layer.Dispose();
+            Order.Dispose();
             Interactable.Dispose();
 
             AssetLoader.DestroyGameObject(gameObject);

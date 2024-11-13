@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace FUI.UGUI.Control
 {
     [RequireComponent(typeof(Scrollbar))]
-    public class ScrollbarElement : UGUIView
+    public class ScrollbarElement : SelectableElement<Scrollbar>
     {
         /// <summary>
         /// 值更改参数
@@ -20,8 +20,6 @@ namespace FUI.UGUI.Control
             }
         }
 
-        Scrollbar scrollbar;
-
         /// <summary>
         /// 值
         /// </summary>
@@ -34,12 +32,11 @@ namespace FUI.UGUI.Control
 
         protected override void Initialize()
         {
-            scrollbar = transform.GetComponent<Scrollbar>();
+            base.Initialize();
 
-            Value = new BindableProperty<float>(scrollbar.value);
+            Value = new BindableProperty<float>(Component.value, (oldValue, newValue) => Component.value = newValue);
             OnValueChanged = new Command<ValueChangedArgs>();
-            scrollbar.onValueChanged.AddListener(OnScrollbarValueChanged);
-            Value.OnValueChanged += (oldValue, newValue) => scrollbar.value = newValue;
+            Component.onValueChanged.AddListener(OnScrollbarValueChanged);
         }
 
         void OnScrollbarValueChanged(float value)
@@ -50,7 +47,9 @@ namespace FUI.UGUI.Control
 
         protected override void Destroy()
         {
-            this.scrollbar.onValueChanged.RemoveAllListeners();
+            base.Destroy();
+
+            this.Component.onValueChanged.RemoveAllListeners();
             Value.Dispose();
             OnValueChanged.ClearListeners();
         }

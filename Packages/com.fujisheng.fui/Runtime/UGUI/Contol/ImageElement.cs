@@ -6,10 +6,8 @@ using UnityEngine.UI;
 namespace FUI.UGUI.Control
 {
     [RequireComponent(typeof(Image))]
-    public class ImageElement : UGUIView
+    public class ImageElement : UIElement<Image>
     {
-        Image image;
-
         /// <summary>
         /// 图片
         /// </summary>
@@ -18,7 +16,7 @@ namespace FUI.UGUI.Control
         /// <summary>
         /// 图片资源
         /// </summary>
-        public BindableProperty<string> SpriteSources { get; private set; }
+        public BindableProperty<string> SpriteSource { get; private set; }
 
         /// <summary>
         /// 颜色
@@ -33,7 +31,7 @@ namespace FUI.UGUI.Control
         /// <summary>
         /// 材质资源路径
         /// </summary>
-        public BindableProperty<string> MaterialSources { get; private set; }
+        public BindableProperty<string> MaterialSource { get; private set; }
 
         /// <summary>
         /// 填充率
@@ -42,30 +40,25 @@ namespace FUI.UGUI.Control
 
         protected override void Initialize()
         {
-            image = GetComponent<Image>();
+            base.Initialize();
 
-            Sprite = new BindableProperty<Sprite>(image.sprite);
-            SpriteSources = new BindableProperty<string>();
-            Color = new BindableProperty<Color>(image.color);
-            Material = new BindableProperty<Material>(image.material);
-            MaterialSources = new BindableProperty<string>();
-            FillAmount = new BindableProperty<float>(image.fillAmount);
-
-            Sprite.OnValueChanged += (oldValue, newValue) => image.sprite = newValue;
-            SpriteSources.OnValueChanged += (oldValue, newValue) => image.sprite = AssetLoader.Load<Sprite>(newValue);
-            Color.OnValueChanged += (oldValue, newValue) => image.color = newValue;
-            Material.OnValueChanged += (oldValue, newValue) => image.material = newValue;
-            MaterialSources.OnValueChanged += (oldValue, newValue) => image.material = AssetLoader.Load<Material>(newValue);
-            FillAmount.OnValueChanged += (oldValue, newValue) => image.fillAmount = newValue;
+            Sprite = new BindableProperty<Sprite>(Component.sprite, (oldValue, newValue) => Component.sprite = newValue);
+            SpriteSource = new BindableProperty<string>(null, (oldValue, newValue) => Component.sprite = AssetLoader.Load<Sprite>(newValue));
+            Color = new BindableProperty<Color>(Component.color, (oldValue, newValue) => Component.color = newValue);
+            Material = new BindableProperty<Material>(Component.material, (oldValue, newValue) => Component.material = newValue);
+            MaterialSource = new BindableProperty<string>(null, (oldValue, newValue) => Component.material = AssetLoader.Load<Material>(newValue));
+            FillAmount = new BindableProperty<float>(Component.fillAmount, (oldValue, newValue) => Component.fillAmount = newValue);
         }
 
         protected override void Destroy()
         {
+            base.Destroy();
+
             Sprite.Dispose();
-            SpriteSources.Dispose();
+            SpriteSource.Dispose();
             Color.Dispose();
             Material.Dispose();
-            MaterialSources.Dispose();
+            MaterialSource.Dispose();
             FillAmount.Dispose();
         }
     }

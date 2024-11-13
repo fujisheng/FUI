@@ -26,12 +26,12 @@ namespace FUI.UGUI.Control
         protected override void OnAdd(int index, ObservableObject itemData)
         {
             // 如果itemEntities的数量大于List的数量，表示有多余的itemEntity 则直接复用
-            if (items.Count > Data.Value.Count)
+            if (items.Count > List.Value.Count)
             {
-                for (int i = index; i < Data.Value.Count; i++)
+                for (int i = index; i < List.Value.Count; i++)
                 {
                     var item = items[i];
-                    item.entity.SetViewModel(Data.Value[i]);
+                    item.entity.UpdateViewModel(List.Value[i]);
                     SetParent(index, item.gameObject);
                     item.entity.Enable();
                 }
@@ -57,14 +57,14 @@ namespace FUI.UGUI.Control
 
         protected override void OnReplace(int index, ObservableObject oldItem, ObservableObject newItem)
         {
-            items[index].entity.SetViewModel(newItem);
+            items[index].entity.UpdateViewModel(newItem);
         }
 
         protected override void OnUpdate()
         {
-            for (int index = 0; index < Data.Value.Count; index++)
+            for (int index = 0; index < List.Value.Count; index++)
             {
-                var item = Data.Value[index];
+                var item = List.Value[index];
                 if (index < items.Count)
                 {
                     items[index].entity.SynchronizeProperties();
@@ -78,7 +78,7 @@ namespace FUI.UGUI.Control
                 }
             }
 
-            for (int index = Data.Value.Count; index < items.Count; index++)
+            for (int index = List.Value.Count; index < items.Count; index++)
             {
                 items[index].entity.Disable();
             }

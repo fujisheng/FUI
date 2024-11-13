@@ -2,8 +2,6 @@
 using FUI.Test;
 using FUI.UGUI.Control;
 
-using System.Collections.Generic;
-
 using UnityEngine;
 
 namespace Test.CodeBinding
@@ -14,7 +12,7 @@ namespace Test.CodeBinding
         [Binding("txt_int", nameof(TextElement.TextObject))]
         public int TestInt { get; set; }
 
-        [Binding("txt_string", nameof(TextElement.Text), bindingType:BindingType.OneWay)]
+        [Binding("txt_string", nameof(TextElement.Text), bindingMode:BindingMode.OneWay)]
         public string TestString { get; set; }
 
         [Binding("txt_float", nameof(TextElement.Text), typeof(FloatToStringConverter))]
@@ -22,17 +20,25 @@ namespace Test.CodeBinding
 
         [Binding("txt_bool", nameof(TextElement.Text), typeof(BoolToStringConverter))]
         public bool TestBool { get; set; }
+
+        public void OnClick()
+        {
+            UnityEngine.Debug.Log($"{this}");
+        }
     }
 
     public class TestCodeBindingViewBehavior : ViewBehavior<TestCodeBindingViewModel>
     {
         protected override void OnOpen(object param)
         {
+            VM.OnClick();
             UnityEngine.Debug.Log("OnOpen  TestCodeBindingView");
             VM.TestInt = 1;
             VM.TestString = "Hello, code binding";
             VM.TestFloat = 3.14f;
             VM.TestBool = true;
+
+            UnityEngine.Debug.Log(param.ToString());
         }
     }
 

@@ -16,7 +16,7 @@ namespace FUI
         /// 设置ViewModel
         /// </summary>
         /// <param name="vm"></param>
-        internal virtual void SetViewModel(ObservableObject vm)
+        internal virtual void UpdateViewModel(ObservableObject vm)
         {
             this.VM = vm;
         }
@@ -56,7 +56,7 @@ namespace FUI
         #region 内部调用
         internal void InternalOnCreate(ObservableObject vm) 
         {
-            SetViewModel(vm);
+            UpdateViewModel(vm);
             OnCreate();
         }
         internal void InternalOnOpen(object param) => OnOpen(param);
@@ -81,7 +81,7 @@ namespace FUI
         /// 设置ViewModel
         /// </summary>
         /// <param name="vm"></param>
-        internal sealed override void SetViewModel(ObservableObject vm)
+        internal sealed override void UpdateViewModel(ObservableObject vm)
         {
             if(vm is TObservableObject tvm)
             {

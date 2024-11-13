@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace FUI.UGUI.Control
 {
     [RequireComponent(typeof(Slider))]
-    public class SliderElement : UGUIView
+    public class SliderElement : SelectableElement<Slider>
     {
         /// <summary>
         /// 值更改参数
@@ -20,8 +20,6 @@ namespace FUI.UGUI.Control
             }
         }
 
-        Slider slider;
-
         /// <summary>
         /// 值
         /// </summary>
@@ -34,12 +32,11 @@ namespace FUI.UGUI.Control
 
         protected override void Initialize()
         {
-            slider = transform.GetComponent<Slider>();
+            base.Initialize();
 
-            Value = new BindableProperty<float>(slider.value);
+            Value = new BindableProperty<float>(Component.value, (oldValue, newValue) => Component.value = newValue);
             OnValueChanged = new Command<ValueChangedArgs>();
-            slider.onValueChanged.AddListener(OnSliderValueChanged);
-            Value.OnValueChanged += (oldValue, newValue) => slider.value = newValue;
+            Component.onValueChanged.AddListener(OnSliderValueChanged);
         }
 
         void OnSliderValueChanged(float value)
@@ -50,7 +47,9 @@ namespace FUI.UGUI.Control
 
         protected override void Destroy()
         {
-            this.slider.onValueChanged.RemoveAllListeners();
+            base.Destroy();
+
+            this.Component.onValueChanged.RemoveAllListeners();
             Value.Dispose();
             OnValueChanged.ClearListeners();
         }

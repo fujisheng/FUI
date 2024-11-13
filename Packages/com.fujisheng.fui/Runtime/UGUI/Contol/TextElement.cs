@@ -6,10 +6,8 @@ using UnityEngine.UI;
 namespace FUI.UGUI.Control
 {
     [RequireComponent(typeof(Text))]
-    public class TextElement : UGUIView
+    public class TextElement : UIElement<Text>
     {
-        Text text;
-
         /// <summary>
         /// 文本内容
         /// </summary>
@@ -28,7 +26,7 @@ namespace FUI.UGUI.Control
         /// <summary>
         /// 字体资源
         /// </summary>
-        public BindableProperty<string> FontSources { get; private set; }
+        public BindableProperty<string> FontSource { get; private set; }
 
         /// <summary>
         /// 字体大小
@@ -42,59 +40,24 @@ namespace FUI.UGUI.Control
 
         protected override void Initialize()
         {
-            text = transform.GetComponent<Text>();
+            base.Initialize();
 
-            Text = new BindableProperty<string>(text.text);
-            TextObject = new BindableProperty<object>(text.text);
-            Font = new BindableProperty<Font>(text.font);
-            FontSources = new BindableProperty<string>();
-            FontSize = new BindableProperty<int>(text.fontSize);
-            Color = new BindableProperty<Color>(text.color);
-
-            Text.OnValueChanged += OnSetText;
-            TextObject.OnValueChanged += OnSetTextObject;
-            Font.OnValueChanged += OnSetFont;
-            FontSources.OnValueChanged += OnSetFontSources;
-            FontSize.OnValueChanged += OnSetFontSize;
-            Color.OnValueChanged += OnSetColor;
-        }
-
-        void OnSetText(string oldValue, string newValue)
-        {
-            text.text = newValue;
-        }
-
-        void OnSetTextObject(object oldValue, object newValue)
-        {
-            text.text = newValue == null ? string.Empty : newValue.ToString();
-        }
-
-        void OnSetFont(Font oldValue,  Font newValue)
-        {
-            text.font = newValue;
-        }
-
-        void OnSetFontSources(string oldValue, string newValue)
-        {
-            text.font = AssetLoader.Load<Font>(newValue);
-        }
-
-        void OnSetFontSize(int oldValue, int newValue)
-        {
-            text.fontSize = newValue;
-        }
-
-        void OnSetColor(Color oldValue, Color newValue)
-        {
-            text.color = newValue;
+            Text = new BindableProperty<string>(Component.text, (oldValue, newValue) => Component.text = newValue);
+            TextObject = new BindableProperty<object>(Component.text, (oldValue, newValue) => Component.text = newValue?.ToString());
+            Font = new BindableProperty<Font>(Component.font, (oldValue, newValue) => Component.font = newValue);
+            FontSource = new BindableProperty<string>(null, (oldValue, newValue) => Component.font = AssetLoader.Load<Font>(newValue));
+            FontSize = new BindableProperty<int>(Component.fontSize, (oldValue, newValue) => Component.fontSize = newValue);
+            Color = new BindableProperty<Color>(Component.color, (oldValue, newValue) => Component.color = newValue);
         }
 
         protected override void Destroy()
         {
+            base.Destroy();
+
             Text.Dispose();
             TextObject.Dispose();
             Font.Dispose();
-            FontSources.Dispose();
+            FontSource.Dispose();
             FontSize.Dispose();
             Color.Dispose();
         }

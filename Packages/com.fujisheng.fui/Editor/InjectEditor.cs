@@ -17,7 +17,7 @@ namespace FUI.Editor
     {
         static InjectEditor()
         {
-            CompilationPipeline.compilationStarted += OnCompilationStarted;
+            //CompilationPipeline.compilationStarted += OnCompilationStarted;
             CompilationPipeline.assemblyCompilationFinished += AssemblyCompilationFinishedCallback;
         }
 
@@ -39,7 +39,7 @@ namespace FUI.Editor
             process.StartInfo.FileName = Path.Combine(Application.dataPath, "../Compiler/Release/net8.0/win-x64/FUICompiler.exe");
             process.StartInfo.ArgumentList.Add("--sln=.\\FUI.sln");
             process.StartInfo.ArgumentList.Add("--project=FUI.Test");
-            process.StartInfo.ArgumentList.Add("--output=.\\Library\\ScriptAssemblies\\FUI.Test.dll");
+            process.StartInfo.ArgumentList.Add("--output=.\\Library\\ScriptAssemblies");
             process.StartInfo.ArgumentList.Add("--binding=.\\Binding\\");
             process.StartInfo.ArgumentList.Add("--generated=.\\Temp\\BindingGenerated\\");
             process.StartInfo.ArgumentList.Add("--ctx_type=Attribute");
@@ -90,6 +90,13 @@ namespace FUI.Editor
         static void OnCompilationStarted(object o)
         {
             UnityEngine.Debug.Log(o.GetType().FullName);
+        }
+
+        [UnityEditor.Callbacks.OnOpenAsset]
+        static bool aaa(int instance, int line)
+        {
+            UnityEngine.Debug.Log($"OnOpenAsset   instance:{instance}  line:{line}");
+            return false;
         }
     }
 }
