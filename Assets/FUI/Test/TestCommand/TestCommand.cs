@@ -14,8 +14,14 @@ namespace Test.Command
         [Binding("toggleValue", nameof(TextElement.Text), typeof(BoolToStringConverter))]
         [Binding("toggle", nameof(ToggleElement.IsOn), bindingMode: BindingMode.TwoWay)]
         public bool ToggleValue { get; set; } = true;
+
+
+
+
         [Command("toggle", nameof(ToggleElement.OnValueChanged))]
         public event Action<ToggleElement.ValueChangedArgs> ToggleValueChangedAction;
+
+
 
         [Command("toggle", nameof(ToggleElement.OnValueChanged))]
         public void OnToggleChanged(ToggleElement.ValueChangedArgs args)
