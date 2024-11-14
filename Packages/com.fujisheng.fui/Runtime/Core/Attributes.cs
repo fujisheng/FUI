@@ -82,9 +82,9 @@ namespace FUI
     public class ObservablePropertyIgnoreAttribute : Attribute { }
 
     /// <summary>
-    /// 标记某个方法为命令
+    /// 标记某个方法或委托为命令
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Event, AllowMultiple = true, Inherited = false)]
     public class CommandAttribute : Attribute
     {
         public readonly string target;

@@ -2,6 +2,8 @@ using FUI;
 using FUI.Test;
 using FUI.UGUI.Control;
 
+using System;
+
 using UnityEngine;
 
 namespace Test.Command
@@ -12,11 +14,13 @@ namespace Test.Command
         [Binding("toggleValue", nameof(TextElement.Text), typeof(BoolToStringConverter))]
         [Binding("toggle", nameof(ToggleElement.IsOn), bindingMode: BindingMode.TwoWay)]
         public bool ToggleValue { get; set; } = true;
+        [Command("toggle", nameof(ToggleElement.OnValueChanged))]
+        public event Action<ToggleElement.ValueChangedArgs> ToggleValueChangedAction;
 
         [Command("toggle", nameof(ToggleElement.OnValueChanged))]
         public void OnToggleChanged(ToggleElement.ValueChangedArgs args)
         {
-            Debug.Log($"OnToggleValueChanged  {args.Sender}  {args.IsOn}");
+            Debug.Log($"OnToggleValueChangedByMethodCommand  {args.Sender}  {args.IsOn}");
         }
     }
 
@@ -24,7 +28,17 @@ namespace Test.Command
     {
         protected override void OnOpen(object param)
         {
-           
+            VM.ToggleValueChangedAction += OnToggleChanged;
+        }
+
+        void OnToggleChanged(ToggleElement.ValueChangedArgs args)
+        {
+            Debug.Log($"OnToggleValueChangedByEventCommand  {args.Sender}  {args.IsOn}");
+        }
+
+        protected override void OnClose()
+        {
+            VM.ToggleValueChangedAction -= OnToggleChanged;
         }
     }
 
