@@ -39,10 +39,10 @@ namespace FUI.UGUI.Control
             base.Initialize();
 
             Texture = new BindableProperty<Texture>(Component.texture, (oldValue, newValue) => Component.texture = newValue);
-            TextureSource = new BindableProperty<string>(null, (oldValue, newValue) => Component.texture = AssetLoader.Load<Texture>(newValue));
+            TextureSource = new BindableProperty<string>(null, (oldValue, newValue) => Texture.Value = AssetLoader.Load<Texture>(newValue));
             Color = new BindableProperty<Color>(Component.color, (oldValue, newValue) => Component.color = newValue);
             Material = new BindableProperty<Material>(Component.material, (oldValue, newValue) => Component.material = newValue);
-            MaterialSource = new BindableProperty<string>(null, (oldValue, newValue) => Component.material = AssetLoader.Load<Material>(newValue));
+            MaterialSource = new BindableProperty<string>(null, (oldValue, newValue) => Material.Value = AssetLoader.Load<Material>(newValue));
         }
 
         protected override void Destroy()

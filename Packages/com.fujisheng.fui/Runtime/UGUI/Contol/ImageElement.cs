@@ -43,10 +43,10 @@ namespace FUI.UGUI.Control
             base.Initialize();
 
             Sprite = new BindableProperty<Sprite>(Component.sprite, (oldValue, newValue) => Component.sprite = newValue);
-            SpriteSource = new BindableProperty<string>(null, (oldValue, newValue) => Component.sprite = AssetLoader.Load<Sprite>(newValue));
+            SpriteSource = new BindableProperty<string>(null, (oldValue, newValue) => Sprite.Value = AssetLoader.Load<Sprite>(newValue));
             Color = new BindableProperty<Color>(Component.color, (oldValue, newValue) => Component.color = newValue);
             Material = new BindableProperty<Material>(Component.material, (oldValue, newValue) => Component.material = newValue);
-            MaterialSource = new BindableProperty<string>(null, (oldValue, newValue) => Component.material = AssetLoader.Load<Material>(newValue));
+            MaterialSource = new BindableProperty<string>(null, (oldValue, newValue) => Material.Value = AssetLoader.Load<Material>(newValue));
             FillAmount = new BindableProperty<float>(Component.fillAmount, (oldValue, newValue) => Component.fillAmount = newValue);
         }
 

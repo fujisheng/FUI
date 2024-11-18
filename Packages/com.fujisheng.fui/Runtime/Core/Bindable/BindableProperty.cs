@@ -4,18 +4,12 @@ using System.Collections.Generic;
 namespace FUI.Bindable
 {
     /// <summary>
-    /// 可绑定属性
+    /// 值改变委托
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IBindableProperty<T> : IDisposable
-    {
-        T Value { get; set; }
-        event ValueChangedHandler<T> OnValueChanged;
-        void AddValueChanged(Delegate valueChanged);
-        void RemoveValueChanged(Delegate valueChanged);
-        void MuteValueChangedEvent(bool mute);
-        Delegate GetLastInvocation();
-    }
+    /// <typeparam name="T">值类型</typeparam>
+    /// <param name="newValue">值</param>
+    /// <param name="oldValue">改变之前的值</param>
+    public delegate void ValueChangedHandler<in T>(T oldValue, T newValue);
 
     /// <summary>
     /// 只读的可绑定属性
@@ -34,23 +28,28 @@ namespace FUI.Bindable
     public interface IWriteOnlyBindableProperty<in T>
     {
         T Value { set; }
-        void SetValue(T value, string exception);
-        void SetValue(object value, string exception);
+        void SetValue(T value);
+        void SetValue(object value);
     }
 
     /// <summary>
-    /// 值改变委托
+    /// 可绑定属性
     /// </summary>
-    /// <typeparam name="T">值类型</typeparam>
-    /// <param name="newValue">值</param>
-    /// <param name="oldValue">改变之前的值</param>
-    public delegate void ValueChangedHandler<in T>(T oldValue, T newValue);
+    /// <typeparam name="T"></typeparam>
+    public interface IBindableProperty<T> : IReadOnlyBindableProperty<T>, IWriteOnlyBindableProperty<T>
+    {
+        event ValueChangedHandler<T> OnValueChanged;
+        void AddValueChanged(Delegate valueChanged);
+        void RemoveValueChanged(Delegate valueChanged);
+        void MuteValueChangedEvent(bool mute);
+        Delegate GetLastInvocation();
+    }
 
     /// <summary>
     /// 可绑定的属性
     /// </summary>
     /// <typeparam name="T">属性值类型</typeparam>
-    public class BindableProperty<T> : IBindableProperty<T>, IReadOnlyBindableProperty<T>, IWriteOnlyBindableProperty<T>
+    public class BindableProperty<T> : IBindableProperty<T>, IDisposable
     {
         T value;
 
@@ -87,7 +86,7 @@ namespace FUI.Bindable
             return this.value;
         }
 
-        public void SetValue(T value, string exception = null)
+        public void SetValue(T value)
         {
             var oldValue = GetValue();
 
@@ -103,7 +102,7 @@ namespace FUI.Bindable
             }
         }
 
-        public void SetValue(object value, string exception = null)
+        public void SetValue(object value)
         {
             if (EqualityComparer<object>.Default.Equals(value, default))
             {
@@ -113,8 +112,7 @@ namespace FUI.Bindable
 
             if (!(value is T tValue))
             {
-                exception = exception ?? $"can not convert {value.GetType()} to {typeof(T)}";
-                throw new System.Exception(exception);
+                throw new System.Exception($"can not convert {value.GetType()} to {typeof(T)}");
             }
 
             SetValue(tValue);
@@ -133,6 +131,16 @@ namespace FUI.Bindable
             }
         }
 
+        public Delegate GetLastInvocation()
+        {
+            if (this.OnValueChanged == null)
+            {
+                return null;
+            }
+            var invocationList = this.OnValueChanged.GetInvocationList();
+            return invocationList.Length > 0 ? invocationList[invocationList.Length - 1] : null;
+        }
+
         public void RemoveValueChanged(Delegate valueChanged)
         {
             if (valueChanged == null)
@@ -144,16 +152,6 @@ namespace FUI.Bindable
             {
                 this.OnValueChanged -= handler;
             }
-        }
-
-        public Delegate GetLastInvocation()
-        {
-            if (this.OnValueChanged == null)
-            {
-                return null;
-            }
-            var invocationList = this.OnValueChanged.GetInvocationList();
-            return invocationList.Length > 0 ? invocationList[invocationList.Length - 1] : null;
         }
 
         public void MuteValueChangedEvent(bool mute)
