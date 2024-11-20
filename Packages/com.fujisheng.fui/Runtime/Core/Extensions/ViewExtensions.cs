@@ -1,3 +1,5 @@
+using FUI.Bindable;
+
 namespace FUI.Extensions
 {
     public static class ViewExtensions
@@ -25,5 +27,23 @@ namespace FUI.Extensions
 
             return element;
         }
+
+        //public static void SetElementValue<TPropertyValueType, TValueType, TConverterValueType, TConverterTargetType>(IBindableProperty<TPropertyValueType> property, IValueConverter<TConverterValueType, TConverterTargetType> valueConverter, TValueType value)
+        //{
+        //    if (property == null)
+        //    {
+        //        return;
+        //    }
+
+        //    if (valueConverter != null)
+        //    {
+        //        var convertedValue = valueConverter.Convert(value);
+        //        property.Value = convertedValue;
+        //    }
+        //    else
+        //    {
+        //        property.Value = (TPropertyValueType)(object)value;
+        //    }
+        //}
     }
 }

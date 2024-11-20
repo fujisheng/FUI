@@ -24,14 +24,14 @@ namespace Test.List
         public ObservableList<TestListItemViewModel> List { get; set; }
 
         [Command("btn_Add", nameof(ButtonElement.OnClick))]
-        public void OnClickAddItem(ButtonElement.ClickedEventArgs args)
+        public void OnClickAddItem()
         {
             var id = List.Count + 1;
             List.Add(new TestListItemViewModel() { ID = id, Name = "Test" + (id) });
         }
 
         [Command("btn_Remove", nameof(ButtonElement.OnClick))]
-        public void OnClickRemoveItem(ButtonElement.ClickedEventArgs args)
+        public void OnClickRemoveItem()
         {
             if (List.Count > 0)
             {

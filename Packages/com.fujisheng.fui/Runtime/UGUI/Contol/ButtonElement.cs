@@ -8,12 +8,10 @@ namespace FUI.UGUI.Control
     [RequireComponent(typeof(Button))]
     public class ButtonElement : SelectableElement<Button>
     {
-        public class ClickedEventArgs : CommandArgs { public ClickedEventArgs(object sender) : base(sender) { } }
-
         /// <summary>
         /// 点击回调
         /// </summary>
-        public Command<ClickedEventArgs> OnClick { get; private set; }
+        public Command OnClick { get; private set; }
 
         /// <summary>
         /// 文本元素 这个是只读的
@@ -44,7 +42,7 @@ namespace FUI.UGUI.Control
         {
             base.Initialize();
 
-            OnClick = new Command<ClickedEventArgs>();
+            OnClick = new Command();
             TextElement = new BindableProperty<TextElement>(Component.GetComponentInChildren<TextElement>());
             TextValue = new BindableProperty<string>(TextElement.Value?.Text?.Value);
             ImageElement = new BindableProperty<ImageElement>(Component.GetComponent<ImageElement>());
@@ -59,7 +57,7 @@ namespace FUI.UGUI.Control
 
         void OnButtonClick()
         {
-            OnClick?.Invoke(new ClickedEventArgs(this));
+            OnClick?.Invoke();
         }
 
         void OnSetTextValue(string oldValue, string newValue)

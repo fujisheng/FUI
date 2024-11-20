@@ -9,18 +9,6 @@ namespace FUI.UGUI.Control
     public class ToggleElement : SelectableElement<Toggle>
     {
         /// <summary>
-        /// 值更改参数
-        /// </summary>
-        public class ValueChangedArgs : CommandArgs
-        {
-            public bool IsOn { get; }
-            public ValueChangedArgs(object sender, bool isOn) : base(sender)
-            {
-                this.IsOn = isOn;
-            }
-        }
-
-        /// <summary>
         /// 是否开启
         /// </summary>
         public BindableProperty<bool> IsOn { get; private set; }
@@ -28,21 +16,21 @@ namespace FUI.UGUI.Control
         /// <summary>
         /// 值更改事件
         /// </summary>
-        public Command<ValueChangedArgs> OnValueChanged { get; private set; }
+        public Command<bool> OnValueChanged { get; private set; }
 
         protected override void Initialize()
         {
             base.Initialize();
 
             IsOn = new BindableProperty<bool>(Component.isOn, (oldValue, newValue) => Component.isOn = newValue);
-            OnValueChanged = new Command<ValueChangedArgs>();
+            OnValueChanged = new Command<bool>();
             Component.onValueChanged.AddListener(OnToggleValueChanged);
         }
 
         void OnToggleValueChanged(bool isOn)
         {
             this.IsOn.Value = isOn;
-            OnValueChanged.Invoke(new ValueChangedArgs(this, isOn));
+            OnValueChanged.Invoke(isOn);
         }
 
         protected override void Destroy()

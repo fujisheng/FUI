@@ -24,53 +24,53 @@ namespace Test.Command
         [Binding("TestDropdown", nameof(DropdownElement.Value), bindingMode:BindingMode.TwoWay)]
         public int Dropdown { get; set; } = 0;
         [Command("TestDropdown", nameof(DropdownElement.OnValueChanged))]
-        public void OnDropdownChanged(DropdownElement.ValueChangedArgs args)
+        public void OnDropdownChanged(int value)
         {
-            Debug.Log($"OnDropdownChanged  {args.Sender}  {args.Value}");
+            Debug.Log($"OnDropdownChanged  {value}");
         }
 
         [Binding("TestInputValue", nameof(TextElement.Text))]
         [Binding("TestInput", nameof(InputFieldElement.Text), bindingMode:BindingMode.TwoWay)]
         public string Input { get; set; } = "";
         [Command("TestInput", nameof(InputFieldElement.OnValueChanged))]
-        public void OnInputChanged(InputFieldElement.ValueChangedArgs args)
+        public void OnInputChanged(string args)
         {
-            Debug.Log($"OnInputChanged  {args.Sender}  {args.Value}");
+            Debug.Log($"OnInputChanged  {args}");
         }
 
         [Binding("TestSliderValue", nameof(TextElement.TextObject))]
         [Binding("TestSlider", nameof(SliderElement.Value), bindingMode:BindingMode.TwoWay)]
         public float Slider { get; set; } = 0.5f;
         [Command("TestSlider", nameof(SliderElement.OnValueChanged))]
-        public void OnSliderChanged(SliderElement.ValueChangedArgs args)
+        public void OnSliderChanged(float args)
         {
-            Debug.Log($"OnSliderChanged  {args.Sender}  {args.Value}");
+            Debug.Log($"OnSliderChanged  {args}");
         }
 
         [Binding("TestScrollbarValue", nameof(TextElement.TextObject))]
         [Binding("TestScrollbar", nameof(ScrollbarElement.Value), bindingMode: BindingMode.TwoWay)]
         public float Scrollbar { get; set; } = 0.5f;
         [Command("TestScrollbar", nameof(ScrollbarElement.OnValueChanged))]
-        public void OnScrollbarChanged(ScrollbarElement.ValueChangedArgs args)
+        public void OnScrollbarChanged(float args)
         {
-            Debug.Log($"OnScrollbarChanged  {args.Sender}  {args.Value}");
+            Debug.Log($"OnScrollbarChanged  {args}");
         }
 
         [Binding("TestToggleValue", nameof(TextElement.TextObject))]
         [Binding("TestToggle", nameof(ToggleElement.IsOn), bindingMode: BindingMode.TwoWay)]
         public bool ToggleValue { get; set; } = true;
         [Command("TestToggle", nameof(ToggleElement.OnValueChanged))]
-        public void OnToggleChanged(ToggleElement.ValueChangedArgs args)
+        public void OnToggleChanged(bool args)
         {
-            Debug.Log($"OnToggleValueChanged  {args.Sender}  {args.IsOn}");
+            Debug.Log($"OnToggleValueChanged  {args}");
         }
 
         [Binding("TestButtonCount", nameof(TextElement.TextObject))]
         public int ButtonClickCount { get; set; } = 0;
         [Command("TestButton", nameof(ButtonElement.OnClick))]
-        public void OnTestButtonClick(ButtonElement.ClickedEventArgs args)
+        public void OnTestButtonClick()
         {
-            Debug.Log($"OnButtonClick:{args.Sender}");
+            Debug.Log($"OnButtonClick");
             ButtonClickCount++;
         }
     }

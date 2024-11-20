@@ -9,18 +9,6 @@ namespace FUI.UGUI.Control
     public class SliderElement : SelectableElement<Slider>
     {
         /// <summary>
-        /// 值更改参数
-        /// </summary>
-        public class ValueChangedArgs : CommandArgs
-        {
-            public float Value { get; }
-            public ValueChangedArgs(object sender, float value) : base(sender)
-            {
-                this.Value = value;
-            }
-        }
-
-        /// <summary>
         /// 值
         /// </summary>
         public BindableProperty<float> Value { get; private set; }
@@ -28,21 +16,21 @@ namespace FUI.UGUI.Control
         /// <summary>
         /// 值更改事件
         /// </summary>
-        public Command<ValueChangedArgs> OnValueChanged { get; private set; }
+        public Command<float> OnValueChanged { get; private set; }
 
         protected override void Initialize()
         {
             base.Initialize();
 
             Value = new BindableProperty<float>(Component.value, (oldValue, newValue) => Component.value = newValue);
-            OnValueChanged = new Command<ValueChangedArgs>();
+            OnValueChanged = new Command<float>();
             Component.onValueChanged.AddListener(OnSliderValueChanged);
         }
 
         void OnSliderValueChanged(float value)
         {
             this.Value.Value = value;
-            OnValueChanged.Invoke(new ValueChangedArgs(this, value));
+            OnValueChanged.Invoke(value);
         }
 
         protected override void Destroy()

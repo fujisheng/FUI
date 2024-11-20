@@ -19,14 +19,14 @@ namespace Test.Command
 
 
         [Command("toggle", nameof(ToggleElement.OnValueChanged))]
-        public event Action<ToggleElement.ValueChangedArgs> ToggleValueChangedAction;
+        public event Action<bool> ToggleValueChangedAction;
 
 
 
         [Command("toggle", nameof(ToggleElement.OnValueChanged))]
-        public void OnToggleChanged(ToggleElement.ValueChangedArgs args)
+        public void OnToggleChanged(bool args)
         {
-            Debug.Log($"OnToggleValueChangedByMethodCommand  {args.Sender}  {args.IsOn}");
+            Debug.Log($"OnToggleValueChangedByMethodCommand  {args}");
         }
     }
 
@@ -37,9 +37,9 @@ namespace Test.Command
             VM.ToggleValueChangedAction += OnToggleChanged;
         }
 
-        void OnToggleChanged(ToggleElement.ValueChangedArgs args)
+        void OnToggleChanged(bool isOn)
         {
-            Debug.Log($"OnToggleValueChangedByEventCommand  {args.Sender}  {args.IsOn}");
+            Debug.Log($"OnToggleValueChangedByEventCommand  {isOn}");
         }
 
         protected override void OnClose()

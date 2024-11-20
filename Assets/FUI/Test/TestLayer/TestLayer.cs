@@ -17,7 +17,7 @@ namespace Test.Layer
         public string Title { get; set; } = "BackGroundView";
 
         [Command("btn_action", nameof(ButtonElement.OnClick))]
-        public void OnClick(ButtonElement.ClickedEventArgs args)
+        public void OnClick()
         {
             TestLauncher.Instance.UIManager.OpenAsync("TestCommonView");
         }
@@ -31,7 +31,7 @@ namespace Test.Layer
         public string Title { get; set; } = "CommonView";
 
         [Command("btn_action", nameof(ButtonElement.OnClick))]
-        public void OnClick(ButtonElement.ClickedEventArgs args)
+        public void OnClick()
         {
             TestLauncher.Instance.UIManager.OpenAsync("TestForegroundView");
         }
@@ -45,7 +45,7 @@ namespace Test.Layer
         public string Title { get; set; } = "ForgroundView";
 
         [Command("btn_action", nameof(ButtonElement.OnClick))]
-        public void OnClick(ButtonElement.ClickedEventArgs args)
+        public void OnClick()
         {
             TestLauncher.Instance.UIManager.OpenAsync("TestTopView");
         }
@@ -59,7 +59,7 @@ namespace Test.Layer
         public string Title { get; set; } = "TopView";
 
         [Command("btn_action", nameof(ButtonElement.OnClick))]
-        public void OnClick(ButtonElement.ClickedEventArgs args)
+        public void OnClick()
         {
             TestLauncher.Instance.UIManager.OpenAsync("TestPopupView1");
         }
@@ -73,7 +73,7 @@ namespace Test.Layer
         public string Title { get; set; } = "PopupView";
 
         [Command("btn_action", nameof(ButtonElement.OnClick))]
-        public void OnClick(ButtonElement.ClickedEventArgs args)
+        public void OnClick()
         {
             TestLauncher.Instance.UIManager.Close("TestPopupView1");
         }

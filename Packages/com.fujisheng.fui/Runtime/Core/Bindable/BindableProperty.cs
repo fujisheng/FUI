@@ -39,10 +39,7 @@ namespace FUI.Bindable
     public interface IBindableProperty<T> : IReadOnlyBindableProperty<T>, IWriteOnlyBindableProperty<T>
     {
         event ValueChangedHandler<T> OnValueChanged;
-        void AddValueChanged(Delegate valueChanged);
-        void RemoveValueChanged(Delegate valueChanged);
         void MuteValueChangedEvent(bool mute);
-        Delegate GetLastInvocation();
     }
 
     /// <summary>
@@ -116,42 +113,6 @@ namespace FUI.Bindable
             }
 
             SetValue(tValue);
-        }
-
-        public void AddValueChanged(Delegate valueChanged)
-        {
-            if (valueChanged == null)
-            {
-                return;
-            }
-
-            if (valueChanged is ValueChangedHandler<T> handler)
-            {
-                this.OnValueChanged += handler;
-            }
-        }
-
-        public Delegate GetLastInvocation()
-        {
-            if (this.OnValueChanged == null)
-            {
-                return null;
-            }
-            var invocationList = this.OnValueChanged.GetInvocationList();
-            return invocationList.Length > 0 ? invocationList[invocationList.Length - 1] : null;
-        }
-
-        public void RemoveValueChanged(Delegate valueChanged)
-        {
-            if (valueChanged == null)
-            {
-                return;
-            }
-
-            if (valueChanged is ValueChangedHandler<T> handler)
-            {
-                this.OnValueChanged -= handler;
-            }
         }
 
         public void MuteValueChangedEvent(bool mute)

@@ -11,18 +11,6 @@ namespace FUI.UGUI.Control
     public class DropdownElement : SelectableElement<Dropdown>
     {
         /// <summary>
-        /// 值更改参数
-        /// </summary>
-        public class ValueChangedArgs : CommandArgs
-        {
-            public float Value { get; }
-            public ValueChangedArgs(object sender, float value) : base(sender)
-            {
-                this.Value = value;
-            }
-        }
-
-        /// <summary>
         /// 值
         /// </summary>
         public BindableProperty<int> Value { get; private set; }
@@ -35,7 +23,7 @@ namespace FUI.UGUI.Control
         /// <summary>
         /// 值更改事件
         /// </summary>
-        public Command<ValueChangedArgs> OnValueChanged { get; private set; }
+        public Command<int> OnValueChanged { get; private set; }
 
         protected override void Initialize()
         {
@@ -43,7 +31,7 @@ namespace FUI.UGUI.Control
 
             Value = new BindableProperty<int>(Component.value);
             Options = new BindableProperty<List<string>>(new List<string>(), OnSetOptions);
-            OnValueChanged = new Command<ValueChangedArgs>();
+            OnValueChanged = new Command<int>();
             Component.onValueChanged.AddListener(OnDropdownValueChanged);
             Value.OnValueChanged += (oldValue, newValue) => Component.value = newValue;
         }
@@ -51,7 +39,7 @@ namespace FUI.UGUI.Control
         void OnDropdownValueChanged(int value)
         {
             this.Value.Value = value;
-            OnValueChanged.Invoke(new ValueChangedArgs(this, value));
+            OnValueChanged.Invoke(value);
         }
 
         void OnSetOptions(List<string> oldValue, List<string> newValue)

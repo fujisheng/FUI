@@ -3,55 +3,22 @@ using System.Collections.Generic;
 
 namespace FUI.Bindable
 {
-    public abstract class CommandArgs
+    public abstract class CommandTemplate<T> where T : Delegate
     {
-        /// <summary>
-        /// 这个命令的发送者
-        /// </summary>
-        public object Sender { get; }
-        private CommandArgs() { }
+        protected readonly List<T> invocationList;
 
-        /// <summary>
-        /// 构造一个命令参数
-        /// </summary>
-        /// <param name="sender">命令发起者</param>
-        protected CommandArgs(object sender)
+        protected CommandTemplate()
         {
-            this.Sender = sender;
-        }
-    }
-
-    /// <summary>
-    /// 定义一个View命令
-    /// </summary>
-    /// <typeparam name="TArgs">参数类型</typeparam>
-    public class Command<TArgs> where TArgs : CommandArgs
-    {
-        
-        readonly List<Action<TArgs>> invocationList;
-
-        /// <summary>
-        /// 执行列表
-        /// </summary>
-        public IReadOnlyList<Action<TArgs>> InvocationList => invocationList;
-
-        public Command()
-        {
-            invocationList = new List<Action<TArgs>>();
-        }
-
-        public Command(Action<TArgs> invocation) : this()
-        {
-            AddListener(invocation);
+            this.invocationList = new List<T>();
         }
 
         /// <summary>
         /// 添加一个回调
         /// </summary>
         /// <param name="invocation">回调</param>
-        public void AddListener(Action<TArgs> invocation)
+        public void AddListener(T invocation)
         {
-            if(invocationList.Contains(invocation))
+            if (invocationList.Contains(invocation))
             {
                 return;
             }
@@ -63,7 +30,7 @@ namespace FUI.Bindable
         /// 移除一个回调
         /// </summary>
         /// <param name="invocation">移除回调</param>
-        public void RemoveListener(Action<TArgs> invocation)
+        public void RemoveListener(T invocation)
         {
             if (!invocationList.Contains(invocation))
             {
@@ -80,16 +47,92 @@ namespace FUI.Bindable
         {
             invocationList.Clear();
         }
+    }
 
-        /// <summary>
-        /// 执行这个command
-        /// </summary>
-        /// <param name="args"></param>
+    public class Command : CommandTemplate<Action>
+    {
+        public void Invoke()
+        {
+            foreach (var action in invocationList)
+            {
+                action?.Invoke();
+            }
+        }
+    }
+
+    public class Command<TArgs> : CommandTemplate<Action<TArgs>>
+    {
         public void Invoke(TArgs args)
         {
             foreach (var action in invocationList)
             {
                 action?.Invoke(args);
+            }
+        }
+    }
+
+    public class Command<TArgs1, TArgs2> : CommandTemplate<Action<TArgs1, TArgs2>>
+    {
+        public void Invoke(TArgs1 args1, TArgs2 args2)
+        {
+            foreach (var action in invocationList)
+            {
+                action?.Invoke(args1, args2);
+            }
+        }
+    }
+
+    public class Command<TArgs1, TArgs2, TArgs3> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3>>
+    {
+        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3)
+        {
+            foreach (var action in invocationList)
+            {
+                action?.Invoke(args1, args2, args3);
+            }
+        }
+    }
+
+    public class Command<TArgs1, TArgs2, TArgs3, TArgs4> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3, TArgs4>>
+    {
+        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4)
+        {
+            foreach (var action in invocationList)
+            {
+                action?.Invoke(args1, args2, args3, args4);
+            }
+        }
+    }
+
+    public class Command<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5>>
+    {
+        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4, TArgs5 args5)
+        {
+            foreach (var action in invocationList)
+            {
+                action?.Invoke(args1, args2, args3, args4, args5);
+            }
+        }
+    }
+
+    public class Command<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5, TArgs6> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5, TArgs6>>
+    {
+        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4, TArgs5 args5, TArgs6 args6)
+        {
+            foreach (var action in invocationList)
+            {
+                action?.Invoke(args1, args2, args3, args4, args5, args6);
+            }
+        }
+    }
+
+    public class Command<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5, TArgs6, TArgs7> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5, TArgs6, TArgs7>>
+    {
+        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4, TArgs5 args5, TArgs6 args6, TArgs7 args7)
+        {
+            foreach (var action in invocationList)
+            {
+                action?.Invoke(args1, args2, args3, args4, args5, args6, args7);
             }
         }
     }
