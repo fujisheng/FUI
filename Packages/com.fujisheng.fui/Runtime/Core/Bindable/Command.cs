@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace FUI.Bindable
 {
+    /// <summary>
+    /// 命令模板
+    /// </summary>
+    /// <typeparam name="T">命令签名类型</typeparam>
     public abstract class CommandTemplate<T> where T : Delegate
     {
         protected readonly List<T> invocationList;

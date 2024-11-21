@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FUI.Bindable
+﻿namespace FUI.Bindable
 {
     public class ObservableObject : INotifyPropertyChanged
     {

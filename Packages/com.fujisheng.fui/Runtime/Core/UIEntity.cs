@@ -150,7 +150,7 @@ namespace FUI
             var view = factory.Create(Name);
             if(view == null)
             {
-                throw new Exception($"Unfreeze ViewBuilder.BuildView failed, viewName: {Name}, viewType: {viewType} viewModel:{this.ViewModel}");
+                throw new Exception($"Unfreeze failed, factory:{factory} cannot create viewName: {Name}, viewType: {viewType} viewModel:{this.ViewModel}");
             }
 
             this.View = view;

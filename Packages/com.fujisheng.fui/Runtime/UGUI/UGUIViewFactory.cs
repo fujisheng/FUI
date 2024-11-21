@@ -4,24 +4,31 @@ using System.Threading.Tasks;
 
 namespace FUI.UGUI
 {
+    /// <summary>
+    /// uguiView构造工厂
+    /// </summary>
     public class UGUIViewFactory : IViewFactory
     {
-        readonly Func<IAssetLoader> assetLoaderCreator;
+        readonly IAssetLoaderFactory assetLoaderFactory;
 
-        public UGUIViewFactory(Func<IAssetLoader> assetLoaderCreator)
+        /// <summary>
+        /// 构造一个UGUIView工厂
+        /// </summary>
+        /// <param name="assetLoaderFactory">AssetLoader工厂</param>
+        public UGUIViewFactory(IAssetLoaderFactory assetLoaderFactory)
         {
-            this.assetLoaderCreator = assetLoaderCreator;
+            this.assetLoaderFactory = assetLoaderFactory;
         }
 
         /// <summary>
-        /// 确保AssetLoaderCreator不为空
+        /// 确保AssetLoaderFactory不为空
         /// </summary>
         /// <exception cref="Exception"></exception>
         void EnsureAssetLoaderCreator()
         {
-            if(assetLoaderCreator == null)
+            if(assetLoaderFactory == null)
             {
-                throw new Exception("UGUIBuilder assetLoaderCreator is null");
+                throw new Exception("UGUIViewFactory assetLoaderFactory is null");
             }
         }
 
@@ -32,7 +39,7 @@ namespace FUI.UGUI
             {
                 return null;
             }
-            var assetLoader = assetLoaderCreator.Invoke();
+            var assetLoader = assetLoaderFactory.Create(viewName);
             var viewObj = assetLoader.CreateGameObject(viewName);
             viewObj.SetActive(false);
             return UGUIView.Create(assetLoader, viewObj, viewName);
@@ -45,7 +52,7 @@ namespace FUI.UGUI
             {
                 return null;
             }
-            var assetLoader = assetLoaderCreator.Invoke();
+            var assetLoader = assetLoaderFactory.Create(viewName);
             var viewObj = await assetLoader.CreateGameObjectAsync(viewName, token);
             viewObj.SetActive(false);
 

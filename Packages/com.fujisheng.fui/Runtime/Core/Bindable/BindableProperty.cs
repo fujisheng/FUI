@@ -35,11 +35,10 @@ namespace FUI.Bindable
     /// <summary>
     /// 可绑定属性
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">属性值类型</typeparam>
     public interface IBindableProperty<T> : IReadOnlyBindableProperty<T>, IWriteOnlyBindableProperty<T>
     {
         event ValueChangedHandler<T> OnValueChanged;
-        void MuteValueChangedEvent(bool mute);
     }
 
     /// <summary>
@@ -49,8 +48,6 @@ namespace FUI.Bindable
     public class BindableProperty<T> : IBindableProperty<T>, IDisposable
     {
         T value;
-
-        bool eventMuted = false;
 
         /// <summary>
         /// 这个属性的值
@@ -90,11 +87,6 @@ namespace FUI.Bindable
             if (!EqualityComparer<T>.Default.Equals(oldValue, value))
             {
                 this.value = value;
-                if (this.eventMuted)
-                {
-                    return;
-                }
-
                 this.OnValueChanged?.Invoke(oldValue, value);
             }
         }
@@ -113,11 +105,6 @@ namespace FUI.Bindable
             }
 
             SetValue(tValue);
-        }
-
-        public void MuteValueChangedEvent(bool mute)
-        {
-            this.eventMuted = mute;
         }
 
         public void Dispose()

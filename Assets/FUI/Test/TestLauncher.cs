@@ -34,7 +34,9 @@ namespace FUI.Test
         void Awake()
         {
             Models.Instance.Initialize();
-            UIManager = new UIManager(new UGUIViewFactory(()=>new TestAssetLoader()));
+            var assetLoaderFactory = new TestAssetLoaderFactory();
+            var viewFactory = new UGUIViewFactory(assetLoaderFactory);
+            UIManager = new UIManager(viewFactory);
             UIManager.Initialize();
             UnityEngine.Debug.Log($"uiManager  initialize.......");
         }

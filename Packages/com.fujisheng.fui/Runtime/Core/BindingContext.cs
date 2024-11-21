@@ -32,7 +32,7 @@ namespace FUI
         /// 更新视图
         /// </summary>
         /// <param name="view">要更新的视图</param>
-        public void UpdateView(IView view)
+        internal void UpdateView(IView view)
         {
             if(this.View == view)
             {
@@ -41,7 +41,7 @@ namespace FUI
 
             if(this.View.GetType() != view.GetType())
             {
-                throw new System.Exception($"{this.GetType()} RebindingView Error {view} not {this.View.GetType()}");
+                throw new System.Exception($"{this.GetType()} UpdateView Error {view} not {this.View.GetType()}");
             }
 
             InternalUnbinding();
@@ -53,16 +53,17 @@ namespace FUI
         /// 更新视图模型
         /// </summary>
         /// <param name="viewModel">要更新的视图模型</param>
-        public void UpdateViewModel(ObservableObject viewModel)
+        internal void UpdateViewModel(ObservableObject viewModel)
         {
             if(this.ViewModel == viewModel)
             {
                 return;
             }
 
+            //TODO：是否允许更新成子类
             if(this.ViewModel.GetType() != ViewModel.GetType())
             {
-                throw new System.Exception($"{this.GetType()}  RebindingViewModel Error {viewModel} not {this.ViewModel.GetType()}");
+                throw new System.Exception($"{this.GetType()}  UpdateViewModel Error {viewModel} not {this.ViewModel.GetType()}");
             }
 
             InternalUnbinding();
@@ -70,13 +71,13 @@ namespace FUI
             InternalBinding();
         }
 
-        public void InternalBinding()
+        internal void InternalBinding()
         {
             ViewModel.PropertyChanged += OnPropertyChanged;
             Binding();
         }
 
-        public void InternalUnbinding()
+        internal void InternalUnbinding()
         {
             ViewModel.PropertyChanged -= OnPropertyChanged;
             Unbinding();

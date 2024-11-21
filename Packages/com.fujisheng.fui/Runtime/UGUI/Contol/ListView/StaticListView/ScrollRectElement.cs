@@ -7,7 +7,7 @@ namespace FUI.UGUI.Control
     /// 适用于ScrollRect的列表视图元素
     /// </summary>
     [RequireComponent(typeof(ScrollRect))]
-    public class ScrollViewElement : StaticListViewElement
+    public class ScrollRectElement : StaticListViewElement
     {
         ScrollRect scrollRect;
 
