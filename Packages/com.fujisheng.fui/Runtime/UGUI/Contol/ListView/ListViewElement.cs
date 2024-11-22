@@ -9,7 +9,7 @@ namespace FUI.UGUI.Control
     /// <summary>
     /// 列表视图元素基类
     /// </summary>
-    public abstract class ListViewElement : UGUIView, IContainerElement, IListView
+    public abstract class ListViewElement : View, IContainerElement, IListView
     {
         public BindableProperty<IReadOnlyObservableList<ObservableObject>> List { get; private set; }
 
@@ -105,7 +105,7 @@ namespace FUI.UGUI.Control
         /// <exception cref="Exception"></exception>
         protected UIEntity CreateItemEntity(ObservableObject itemViewModel, GameObject itemObject)
         {
-            var itemView = UGUIView.Create(this.AssetLoader, itemObject, string.Empty);
+            var itemView = View.Create(this.AssetLoader, itemObject, string.Empty);
             return UIEntity.Create(itemView, itemViewModel);
         }
 

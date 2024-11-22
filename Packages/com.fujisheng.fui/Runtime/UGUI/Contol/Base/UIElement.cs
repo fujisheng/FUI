@@ -8,7 +8,7 @@ namespace FUI.UGUI.Control
     /// 适用于UGUI的元素基类
     /// </summary>
     /// <typeparam name="TComponent"></typeparam>
-    public abstract class UIElement<TComponent> : UGUIView where TComponent : Component
+    public abstract class UIElement<TComponent> : View where TComponent : Component
     {
         protected TComponent Component { get; private set; }
         protected RectTransform RectTransform { get; private set; }

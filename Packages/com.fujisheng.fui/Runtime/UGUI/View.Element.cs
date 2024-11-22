@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace FUI.UGUI
 {
-	public partial class UGUIView : IElement
+	public partial class View
 	{
 		/// <summary>
 		/// 存储所有的视觉元素
@@ -32,7 +32,7 @@ namespace FUI.UGUI
 
 			var openList = new Queue<Transform>();
 			openList.Enqueue(this.gameObject.transform);
-			var elementsTemp = new List<UGUIView>();
+			var elementsTemp = new List<View>();
 			//获取所有的视觉元素组件 包含自身
 			while (openList.Count > 0)
 			{
@@ -42,14 +42,20 @@ namespace FUI.UGUI
 				bool continueFind = true;
 				foreach (var element in elementsTemp)
 				{
-					if (element != null)
+                    //如果这个元素是自身则添加到子元素中 不再初始化且不用设置AssetLoader
+                    if (element.gameObject == this.gameObject)
 					{
-						element.Parent = this;
-						element.AssetLoader = AssetLoader;
-						element.InternalInitialize();
-
 						AddChild(element);
-					}
+                    }
+                    //如果这个元素是视觉元素且不是自己则初始化
+                    else
+					{
+                        element.Parent = this;
+                        element.AssetLoader = AssetLoader;
+                        element.InternalInitialize();
+
+                        AddChild(element);
+                    }
 
 					//如果这个元素是容器元素且不是自身则不再继续向下查找
 					if (element is IContainerElement && element.gameObject != this.gameObject)
@@ -77,7 +83,7 @@ namespace FUI.UGUI
 		/// <param name="element">要添加的视觉元素</param>
 		public void AddChild(IElement element)
 		{
-			if (!(element is UGUIView uguiElement))
+			if (!(element is View uguiElement))
 			{
 				return;
 			}
@@ -113,7 +119,7 @@ namespace FUI.UGUI
 		/// <param name="element"></param>
 		public void RemoveChild(IElement element)
 		{
-			if (!(element is UGUIView uguiElement))
+			if (!(element is View uguiElement))
 			{
 				return;
 			}

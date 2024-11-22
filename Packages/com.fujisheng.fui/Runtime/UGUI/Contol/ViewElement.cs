@@ -5,12 +5,11 @@ namespace FUI.UGUI.Control
     /// <summary>
     /// 把一个View作为一个视觉元素
     /// </summary>
-    public class UGUIViewElement : UGUIView, IContainerElement
+    public class ViewElement : View, IContainerElement
     {
         UIEntity entity;
         ObservableObject data;
         IView view;
-        bool initialized = false;
 
         /// <summary>
         /// 数据
@@ -19,19 +18,12 @@ namespace FUI.UGUI.Control
 
         protected override void Initialize()
         {
-            //因为在构造View的时候又会调用一次Initialize，所以这里需要判断一下
-            if (initialized)
-            {
-                return;
-            }
+            view = View.Create(this.AssetLoader, this.gameObject, gameObject.name, true);
 
-            initialized = true;
-            view = UGUIView.Create(this.AssetLoader, this.gameObject, gameObject.name);
-
-            Data = new BindableProperty<ObservableObject>(null, OnSetData);
+            Data = new BindableProperty<ObservableObject>(null, OnUpdateData);
         }
 
-        void OnSetData(ObservableObject oldValue, ObservableObject newValue)
+        void OnUpdateData(ObservableObject oldValue, ObservableObject newValue)
         {
             if (newValue == null)
             {
@@ -53,6 +45,8 @@ namespace FUI.UGUI.Control
         protected override void Destroy()
         {
             Data.Dispose();
+            entity.Disable();
+            entity = null;
         }
     }
 }

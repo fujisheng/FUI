@@ -26,7 +26,7 @@ namespace Test.Sub
         [Binding("txt_title", nameof(TextElement.Text))]
         public string Titile { get; set; } = "i am main view title";
 
-        [Binding("CurrencyView", nameof(UGUIViewElement.Data))]
+        [Binding("CurrencyView", nameof(ViewElement.Data))]
         public SubViewModel SubViewModel { get; set; } = new SubViewModel();
 
         [Binding("btn_test", nameof(ButtonElement.TextValue))]

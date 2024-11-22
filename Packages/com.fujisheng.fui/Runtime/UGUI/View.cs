@@ -7,7 +7,7 @@ namespace FUI.UGUI
     /// <summary>
     /// 适用于UGUI的view基类
     /// </summary>
-    public partial class UGUIView : MonoBehaviour, IView
+    public partial class View : MonoBehaviour, IView
     {
         /// <summary>
         /// 资源加载器
@@ -74,11 +74,12 @@ namespace FUI.UGUI
         /// <param name="assetLoader">资源加载器</param>
         /// <param name="assetPath">资源路径</param>
         /// <param name="viewName">view名字</param>
+        /// <param name="initialized">已初始化的</param>
         /// <returns></returns>
-        public static UGUIView Create(IAssetLoader assetLoader, string assetPath, string viewName)
+        public static View Create(IAssetLoader assetLoader, string assetPath, string viewName, bool initialized = false)
         {
             var go = assetLoader.CreateGameObject(assetPath);
-            return Create(assetLoader, go, viewName);
+            return Create(assetLoader, go, viewName, initialized);
         }
 
         /// <summary>
@@ -87,22 +88,28 @@ namespace FUI.UGUI
         /// <param name="assetLoader">资源加载器</param>
         /// <param name="go">游戏实体</param>
         /// <param name="viewName">view名字</param>
+        /// <param name="initialized">已初始化的</param>
         /// <returns></returns>
-        public static UGUIView Create(IAssetLoader assetLoader, GameObject go, string viewName)
+        public static View Create(IAssetLoader assetLoader, GameObject go, string viewName, bool initialized = false)
         {
             if (go == null)
             {
                 return null;
             }
 
-            if (!go.TryGetComponent<UGUIView>(out var view))
+            if (!go.TryGetComponent<View>(out var view))
             {
-                view = go.AddComponent<UGUIView>();
+                view = go.AddComponent<View>();
             }
 
             view.viewName = viewName;
             view.AssetLoader = assetLoader;
-            view.InitializeElements();
+
+            //如果没有初始化，需要初始化
+            if (!initialized)
+            {
+                view.InternalInitialize();
+            }
             return view;
         }
 
@@ -116,6 +123,10 @@ namespace FUI.UGUI
             Order = new BindableProperty<int>(GetOrder(), SetOrder);
             Interactable = new BindableProperty<bool>(true, SetInteractable);
 
+            //初始化所有的子元素
+            InitializeElements();
+
+            //初始化View
             Initialize();
         }
 
@@ -207,10 +218,22 @@ namespace FUI.UGUI
             Order.Dispose();
             Interactable.Dispose();
 
+            DestroyChildren();
+
             AssetLoader.DestroyGameObject(gameObject);
             AssetLoader.Release();
 
             Destroy();
+        }
+
+        void DestroyChildren()
+        {
+            foreach (var child in Children)
+            {
+                (child as View).Destroy();
+            }
+            elements.Clear();
+            namedElements.Clear();
         }
 
         /// <summary>
