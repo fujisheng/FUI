@@ -12,11 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac7557e588e50114e818f5a4e6825a4a, type: 3}
   m_Name: CompilerSetting
   m_EditorClassIdentifier: 
-  dlls: []
+  compilerPath: ./FUI/Compiler/FUICompiler/FUICompiler.exe
   solutionPath: ./FUI.sln
   targetProject: {fileID: 0}
-  projectName: 
   output: ./Library/ScriptAssemblies
-  bindingPath: 
   generatedPath: ./FUI/Generated
   generateType: 0

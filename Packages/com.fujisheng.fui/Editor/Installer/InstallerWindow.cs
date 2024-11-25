@@ -1,10 +1,12 @@
 using System.IO;
+using System.IO.Compression;
 
 using UnityEditor;
 
 using UnityEditorInternal;
 
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace FUI.Editor
 {
@@ -12,7 +14,7 @@ namespace FUI.Editor
     {
         const string dataPath = "./FUI";
         const string installPath = "./FUI/Compiler";
-        const string compilerUrl = "";
+        const string compilerUrl = "https://github.com/fujisheng/FUICompiler/releases/download/v0.0.1.a/FUICompiler.zip";
         const string settingPath = "Assets/Editor Default Resources/FUI/Settings/CompilerSetting.asset";
 
         string installedVersion;
@@ -49,7 +51,7 @@ namespace FUI.Editor
                     var installOrUpdate = string.IsNullOrEmpty(installedVersion) ? "Install" : "Update";
                     if (GUILayout.Button(installOrUpdate))
                     {
-                        //TODO: Install
+                        DownloadCompiler(installPath);
                     }
                 }
                 EditorGUILayout.EndHorizontal();
@@ -67,6 +69,33 @@ namespace FUI.Editor
 
         }
 
+        async void DownloadCompiler(string downloadPath)
+        {
+            using (UnityWebRequest webRequest = UnityWebRequest.Get(compilerUrl))
+            {
+                Debug.Log($"start download compiler...");
+                await webRequest.SendWebRequest();
+
+                if (webRequest.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError("download compiler error" + webRequest.error);
+                }
+                else
+                {
+                    Directory.Delete(downloadPath, true );
+                    TryCreateDirectory(downloadPath);
+
+                    using(var stream = new MemoryStream(webRequest.downloadHandler.data))
+                    using(var zipFile = new ZipArchive(stream))
+                    {
+                        zipFile.ExtractToDirectory(downloadPath);
+                    }
+                    Debug.Log("download sucess");
+                    setting.compilerPath = $"{downloadPath}/FUICompiler/FUICompiler.exe";
+                }
+            }
+        }
+
         string GetInstalledVersion()
         {
             return "0.0.1";
@@ -75,10 +104,6 @@ namespace FUI.Editor
         string GetLatestVersion()
         {
             return "0.0.2";
-        }
-
-        void Install()
-        {
         }
 
         CompilerSetting LoadOrCreateSetting() 
@@ -92,6 +117,7 @@ namespace FUI.Editor
                 setting.solutionPath = GetDefaultSolutionPath();
                 setting.generatedPath = $"{dataPath}/Generated";
                 setting.output = "./Library/ScriptAssemblies";
+                setting.compilerPath = $"{installPath}/FUICompiler/FUICompiler.exe";
                 AssetDatabase.CreateAsset(setting, settingPath);
 
                 AssetDatabase.Refresh();

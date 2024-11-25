@@ -57,7 +57,7 @@ namespace FUI.Editor
 
             UnityEngine.Debug.Log($"<color=green>FUICompiler Start</color>");
             var process = new Process();
-            process.StartInfo.FileName = Path.Combine(Application.dataPath, "../Compiler/Release/net8.0/win-x64/FUICompiler.exe");
+            process.StartInfo.FileName = Path.Combine(Application.dataPath, $"../{setting.compilerPath}");
             process.StartInfo.ArgumentList.Add($"--sln={setting.solutionPath}");
             process.StartInfo.ArgumentList.Add($"--project={setting.GetTargetProjectName()}");
             process.StartInfo.ArgumentList.Add($"--output={setting.output}");

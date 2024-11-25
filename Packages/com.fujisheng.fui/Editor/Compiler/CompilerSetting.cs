@@ -1,4 +1,6 @@
-﻿using UnityEditorInternal;
+﻿using Codice.CM.Common.Replication;
+
+using UnityEditorInternal;
 
 using UnityEngine;
 
@@ -28,6 +30,10 @@ namespace FUI.Editor
     /// </summary>
     public class CompilerSetting : ScriptableObject
     {
+        /// <summary>
+        /// 编译器路径
+        /// </summary>
+        public string compilerPath;
         /// <summary>
         /// 解决方案路径
         /// </summary>

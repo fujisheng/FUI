@@ -8,11 +8,8 @@ Logs/
 .vs/
 obj/
 
-FUICompiler/bin/
-FUICompiler/obj/
-Assets/Sources/Code/
-Assets/Scripts/Local/ILRuntime/Generated/
-Assets/Scripts/Local/ILRuntime/Generated.meta
+FUI/
+Assets/Editor Default Resources/FUI/
 Assets/StreamingAssets/scripts.meta
 Assets/StreamingAssets/scripts/*
 !Assets/StreamingAssets/scripts/bootstrap.js
