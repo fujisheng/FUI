@@ -14,6 +14,11 @@ namespace FUI.Manager
         /// </summary>
         internal int Count => stack.Count;
 
+        /// <summary>
+        /// 所有Item
+        /// </summary>
+        internal IReadOnlyList<UIEntity> Items => stack;
+
         internal UIStack()
         {
             stack = new List<UIEntity>();

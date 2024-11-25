@@ -1,5 +1,6 @@
 ﻿using FUI.Bindable;
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,6 +24,11 @@ namespace FUI.Manager
         /// View构造器
         /// </summary>
         IViewFactory viewFactory;
+
+        /// <summary>
+        /// 所有打开的UI实体
+        /// </summary>
+        public IReadOnlyList<UIEntity> OpeningEntities => uiStack.Items;
 
         public UIManager(IViewFactory viewFactory)
         {

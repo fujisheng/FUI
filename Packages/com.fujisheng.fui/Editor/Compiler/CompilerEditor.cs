@@ -9,40 +9,61 @@ using UnityEngine;
 
 namespace FUI.Editor
 {
-    /// <summary>
-    /// TODO  暂时这样处理，后面完全替代掉unity编译
-    /// </summary>
     [InitializeOnLoad]
-    public class InjectEditor : UnityEditor.Editor
+    public class CompilerEditor : UnityEditor.Editor
     {
-        static InjectEditor()
+        static CompilerSetting setting;
+
+        static CompilerEditor()
         {
-            //CompilationPipeline.compilationStarted += OnCompilationStarted;
             CompilationPipeline.assemblyCompilationFinished += AssemblyCompilationFinishedCallback;
+        }
+
+        /// <summary>
+        /// 尝试加载编译器设置
+        /// </summary>
+        /// <param name="setting"></param>
+        /// <returns></returns>
+        static bool TryLoadSetting(out CompilerSetting setting)
+        {
+            setting = AssetDatabase.LoadAssetAtPath<CompilerSetting>("Assets/Editor Default Resources/FUI/Settings/CompilerSetting.asset");
+            return setting != null;
         }
 
         static void AssemblyCompilationFinishedCallback(string file, UnityEditor.Compilation.CompilerMessage[] messages)
         {
-            if (!file.EndsWith("FUI.Test.dll"))
+            if(setting == null && !TryLoadSetting(out setting))
+            {
+                UnityEngine.Debug.LogError("InjectSetting not found");
+                return;
+            }
+
+            if (!file.EndsWith($"{setting.targetProject.name}.dll"))
             {
                 return;
             }
 
-            CompileUIProject();
+            Compile();
         }
 
-        [MenuItem("FUI/CompileUIProject")]
-        public static void CompileUIProject()
+        [MenuItem("FUI/Compile")]
+        public static void Compile()
         {
+            if(setting == null && !TryLoadSetting(out setting))
+            {
+                UnityEngine.Debug.LogError("InjectSetting not found");
+                return;
+            }
+
             UnityEngine.Debug.Log($"<color=green>FUICompiler Start</color>");
             var process = new Process();
             process.StartInfo.FileName = Path.Combine(Application.dataPath, "../Compiler/Release/net8.0/win-x64/FUICompiler.exe");
-            process.StartInfo.ArgumentList.Add("--sln=.\\FUI.sln");
-            process.StartInfo.ArgumentList.Add("--project=FUI.Test");
-            process.StartInfo.ArgumentList.Add("--output=.\\Library\\ScriptAssemblies");
+            process.StartInfo.ArgumentList.Add($"--sln={setting.solutionPath}");
+            process.StartInfo.ArgumentList.Add($"--project={setting.GetTargetProjectName()}");
+            process.StartInfo.ArgumentList.Add($"--output={setting.output}");
             process.StartInfo.ArgumentList.Add("--binding=.\\Binding\\");
-            process.StartInfo.ArgumentList.Add("--generated=.\\Temp\\BindingGenerated\\");
-            process.StartInfo.ArgumentList.Add("--ctx_type=Attribute");
+            process.StartInfo.ArgumentList.Add($"--generated={setting.generatedPath}");
+            process.StartInfo.ArgumentList.Add($"--ctx_type={setting.generateType.ToString()}");
 
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.UseShellExecute = false;
