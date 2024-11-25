@@ -10,6 +10,8 @@ obj/
 
 FUI/
 Assets/Editor Default Resources/FUI/
+Assets/Editor Default Resources/FUI.meta
+UserSetting/
 Assets/StreamingAssets/scripts.meta
 Assets/StreamingAssets/scripts/*
 !Assets/StreamingAssets/scripts/bootstrap.js
