@@ -27,9 +27,12 @@ namespace FUI.Editor
         {
             var window = GetWindowWithRect<InstallerWindow>(new Rect(Vector2.zero, new Vector2(1080, 720)));
             window.titleContent = new GUIContent("FUI Installer");
+        }
 
-            window.installedVersion = window.GetInstalledVersion();
-            window.setting = window.LoadOrCreateSetting();
+        void OnEnable()
+        {
+            installedVersion = GetInstalledVersion();
+            setting = LoadOrCreateSetting();
         }
 
         private void OnGUI()
@@ -63,6 +66,13 @@ namespace FUI.Editor
                     setting.generatedPath = EditorGUILayout.TextField("GeneratedPath", setting.generatedPath);
                     setting.output = EditorGUILayout.TextField("Output", setting.output);
                     setting.generateType =(BindingContextGenerateType) EditorGUILayout.EnumPopup("GenerateType", setting.generateType);
+                    setting.bindingInfoOutputPath = EditorGUILayout.TextField("BindingInfoOutputPath", setting.bindingInfoOutputPath);
+                    if(GUILayout.Button("Save Settings"))
+                    {
+                        EditorUtility.SetDirty(setting);
+                        AssetDatabase.SaveAssets();
+                        UnityEngine.Debug.Log("Save FUI Compiler Setting Success");
+                    }
                 }
             }
             EditorGUILayout.EndVertical();
@@ -118,6 +128,7 @@ namespace FUI.Editor
                 setting.generatedPath = $"{dataPath}/Generated";
                 setting.output = "./Library/ScriptAssemblies";
                 setting.compilerPath = $"{installPath}/FUICompiler/FUICompiler.exe";
+                setting.bindingInfoOutputPath = $"{dataPath}/BindingInfo";
                 AssetDatabase.CreateAsset(setting, settingPath);
 
                 AssetDatabase.Refresh();

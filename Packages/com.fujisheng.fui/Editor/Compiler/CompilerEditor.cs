@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -13,6 +14,11 @@ namespace FUI.Editor
     public class CompilerEditor : UnityEditor.Editor
     {
         static CompilerSetting setting;
+
+        /// <summary>
+        /// 当目标项目编译完成时
+        /// </summary>
+        public static Action OnCompilationComplete;
 
         static CompilerEditor()
         {
@@ -64,6 +70,7 @@ namespace FUI.Editor
             process.StartInfo.ArgumentList.Add("--binding=.\\Binding\\");
             process.StartInfo.ArgumentList.Add($"--generated={setting.generatedPath}");
             process.StartInfo.ArgumentList.Add($"--ctx_type={setting.generateType.ToString()}");
+            process.StartInfo.ArgumentList.Add($"--binding_output={setting.bindingInfoOutputPath}");
 
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.UseShellExecute = false;
@@ -81,6 +88,8 @@ namespace FUI.Editor
                 }
                 ProcessMessage(line);
             }
+
+            OnCompilationComplete?.Invoke();
         }
 
         static void ProcessMessage(string message)

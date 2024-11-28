@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using UnityEngine;
@@ -165,40 +166,51 @@ namespace FUI.UGUI
 		/// <returns></returns>
 		public T GetChild<T>(string path) where T : IElement
 		{
-			var key = new ElementKey(path, typeof(T));
-			if (!elements.TryGetValue(key, out var element))
-			{
-				return GetOrCacheElement<T>(path);
-			}
-			return (T)element;
+			return (T)GetChild(path, typeof(T));
 		}
 
-		/// <summary>
-		/// 尝试从缓存中获取一个视觉元素  如果没有则缓存  防止通过基类型来查找
-		/// </summary>
-		/// <typeparam name="T">ElementType</typeparam>
-		/// <param name="path">ElementPath</param>
-		/// <returns></returns>
-		T GetOrCacheElement<T>(string path) where T : IElement
+        /// <summary>
+        /// 获取一个视觉元素
+        /// </summary>
+        /// <param name="path">路径</param>
+        /// <param name="elementType">元素类型</param>
+        /// <returns></returns>
+        public IElement GetChild(string path, Type elementType)
+        {
+            var key = new ElementKey(path, elementType);
+            if (!elements.TryGetValue(key, out var element))
+            {
+                return GetOrCacheElement(path, elementType);
+            }
+            return element;
+        }
+
+        /// <summary>
+        /// 尝试从缓存中获取一个视觉元素  如果没有则缓存  防止通过基类型来查找
+        /// </summary>
+        /// <typeparam name="T">ElementType</typeparam>
+        /// <param name="path">ElementPath</param>
+        /// <returns></returns>
+        IElement GetOrCacheElement(string path, Type elementType)
 		{
-			if (!namedElements.TryGetValue(path, out var list))
-			{
-				return default;
-			}
+            if (!namedElements.TryGetValue(path, out var list))
+            {
+                return default;
+            }
 
-			foreach (var item in list)
-			{
-				if (!(item is T tItem))
-				{
-					continue;
-				}
+            foreach (var item in list)
+            {
+                if (item.GetType() != elementType)
+                {
+                    continue;
+                }
 
-				var key = new ElementKey(path, typeof(T));
-				elements[key] = item;
-				return tItem;
-			}
+                var key = new ElementKey(path, elementType);
+                elements[key] = item;
+                return item;
+            }
 
-			return default;
-		}
+            return default;
+        }
 	}
 }

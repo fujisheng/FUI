@@ -19,6 +19,11 @@ namespace FUI
         BindingContext bindingContext;
 
         /// <summary>
+        /// 绑定上下文类型
+        /// </summary>
+        public Type BindingContextType => bindingContext.GetType();
+
+        /// <summary>
         /// 视图
         /// </summary>
         public IView View { get; private set; }

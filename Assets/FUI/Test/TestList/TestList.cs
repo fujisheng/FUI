@@ -15,6 +15,12 @@ namespace Test.List
 
         [Binding("txt_name", nameof(TextElement.Text))]
         public string Name { get; set; }
+
+        [Command("btn_button", nameof(ButtonElement.OnClick))]
+        public void OnClick()
+        {
+            UnityEngine.Debug.Log($"OnClickListItem:{ID}");
+        }
     }
 
     [Binding("TestListView")]

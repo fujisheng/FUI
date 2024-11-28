@@ -1,6 +1,4 @@
-﻿using Codice.CM.Common.Replication;
-
-using UnityEditorInternal;
+﻿using UnityEditorInternal;
 
 using UnityEngine;
 
@@ -58,6 +56,11 @@ namespace FUI.Editor
         /// 生成类型
         /// </summary>
         public BindingContextGenerateType generateType;
+
+        /// <summary>
+        /// 绑定信息输出路径
+        /// </summary>
+        public string bindingInfoOutputPath;
 
         #region AssemblyDefinitionData
         [System.Serializable]

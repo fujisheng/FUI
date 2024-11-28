@@ -4,13 +4,14 @@ using FUI.UGUI;
 
 using UnityEngine;
 using FUI.Manager;
+using System.Collections.Generic;
 
 namespace FUI.Test
 {
     public class TestLauncher : MonoBehaviour
     {
         public UIManager UIManager { get; private set; }
-
+        public IReadOnlyList<UIEntity> Entities { get; private set; }
         static TestLauncher instance;
         public static TestLauncher Instance
         {
@@ -38,6 +39,7 @@ namespace FUI.Test
             var viewFactory = new UGUIViewFactory(assetLoaderFactory);
             UIManager = new UIManager(viewFactory);
             UIManager.Initialize();
+            Entities = UIManager.OpeningEntities;
             UnityEngine.Debug.Log($"uiManager  initialize.......");
         }
 

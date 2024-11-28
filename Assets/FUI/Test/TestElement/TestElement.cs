@@ -20,7 +20,7 @@ namespace Test.Command
         [Binding("TestRawImageSrc", nameof(TextElement.Text))]
         public string Texture { get; set; } = "testIcon2";
 
-        [Binding("TestDropdownValue", nameof(TextElement.TextObject))]
+        [Binding("TestDropdownValue", nameof(TextElement.Text), typeof(IntToStringConverter))]
         [Binding("TestDropdown", nameof(DropdownElement.Value), bindingMode:BindingMode.TwoWay)]
         public int Dropdown { get; set; } = 0;
         [Command("TestDropdown", nameof(DropdownElement.OnValueChanged))]
