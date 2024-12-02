@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace FUI.Editor
+namespace FUI
 {
     /// <summary>
     /// 要绑定的属性信息
@@ -188,7 +188,7 @@ namespace FUI.Editor
     /// </summary>
     public class BindingInfo
     {
-        public string viewName = "TestView";
+        public string viewName = string.Empty;
         public List<ContextBindingInfo> contexts = new List<ContextBindingInfo>();
     }
 }

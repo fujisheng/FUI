@@ -99,6 +99,8 @@ namespace FUI
             SynchronizeProperties();
             this.View.Visible = true;
             this.Behavior.InternalOnOpen(param);
+
+            OnEntityEnabled?.Invoke(this);
         }
 
         /// <summary>
@@ -109,6 +111,8 @@ namespace FUI
             this.Behavior.InternalOnClose();
             this.View.Visible = false;
             this.bindingContext.InternalUnbinding();
+
+            OnEntityDisabled?.Invoke(this);
         }
 
         /// <summary>
@@ -117,6 +121,8 @@ namespace FUI
         public void Focus()
         {
             this.Behavior.InternalOnFocus();
+
+            OnEntityFocused?.Invoke(this);
         }
 
         /// <summary>
@@ -125,6 +131,8 @@ namespace FUI
         public void Unfocus()
         {
             this.Behavior.InternalOnUnfocus();
+
+            OnEntityUnfocused?.Invoke(this);
         }
 
         /// <summary>
@@ -135,6 +143,8 @@ namespace FUI
             this.bindingContext.InternalUnbinding();
             this.Behavior.InternalOnDestroy();
             this.View.Destroy();
+
+            OnEntityDestoryed?.Invoke(this);
         }
 
         /// <summary>
@@ -145,6 +155,8 @@ namespace FUI
             this.bindingContext.InternalUnbinding();
             this.View.Destroy();
             this.View = null;
+
+            OnEntityFreezed?.Invoke(this);
         }
 
         /// <summary>
@@ -164,6 +176,8 @@ namespace FUI
             this.View.Order = this.Order;
             SynchronizeProperties();
             this.View.Visible = true;
+
+            OnEntityUnfreezed?.Invoke(this);
         }
 
         /// <summary>

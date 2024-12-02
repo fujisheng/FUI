@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 using UnityEditor;
@@ -16,13 +18,48 @@ namespace FUI.Editor
         static CompilerSetting setting;
 
         /// <summary>
-        /// 当目标项目编译完成时
+        /// 当目标项目编译完成时 的所有回调
         /// </summary>
-        public static Action OnCompilationComplete;
+        static List<Action<string, List<object>>> onCompilationComplate;
 
         static CompilerEditor()
         {
+            Initialize();
             CompilationPipeline.assemblyCompilationFinished += AssemblyCompilationFinishedCallback;
+        }
+
+        static void Initialize()
+        {
+            //找到所有的编译成功回调
+            onCompilationComplate = new List<Action<string, List<object>>>();
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach(var type in assembly.GetTypes())
+                {
+                    var methods = type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    foreach(var method in methods)
+                    {
+                        if (method.GetCustomAttribute<AssemblyCompilationFinishedAttribute>() != null)
+                        {
+                            var callback = (Action<string, List<object>>)method.CreateDelegate(typeof(Action<string, List<object>>));
+                            onCompilationComplate.Add(callback);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 执行所有的编译完成回调
+        /// </summary>
+        /// <param name="file">编译完成的dll</param>
+        /// <param name="message">消息</param>
+        static void InvokeCompilationFinishedCallback(string file, List<object> message)
+        {
+            foreach(var action in onCompilationComplate)
+            {
+                action?.Invoke(file, message);
+            }
         }
 
         /// <summary>
@@ -79,6 +116,7 @@ namespace FUI.Editor
 
             process.Start();
 
+            var messages = new List<object>();
             while (true)
             {
                 var line = process.StandardOutput.ReadLine();
@@ -86,10 +124,13 @@ namespace FUI.Editor
                 {
                     break;
                 }
+
+                messages.Add(line);
                 ProcessMessage(line);
             }
 
-            OnCompilationComplete?.Invoke();
+            var file = $"{setting.output}/{setting.GetTargetProjectName()}.dll";
+            InvokeCompilationFinishedCallback(file, messages);
         }
 
         static void ProcessMessage(string message)

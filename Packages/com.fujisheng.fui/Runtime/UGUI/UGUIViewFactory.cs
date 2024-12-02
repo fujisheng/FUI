@@ -24,7 +24,7 @@ namespace FUI.UGUI
         /// 确保AssetLoaderFactory不为空
         /// </summary>
         /// <exception cref="Exception"></exception>
-        void EnsureAssetLoaderCreator()
+        void EnsureAssetLoaderFactory()
         {
             if(assetLoaderFactory == null)
             {
@@ -34,7 +34,7 @@ namespace FUI.UGUI
 
         public IView Create(string viewName)
         {
-            EnsureAssetLoaderCreator();
+            EnsureAssetLoaderFactory();
             if (string.IsNullOrEmpty(viewName))
             {
                 return null;
@@ -47,7 +47,7 @@ namespace FUI.UGUI
 
         public async Task<IView> CreateAsync(string viewName, CancellationToken token)
         {
-            EnsureAssetLoaderCreator();
+            EnsureAssetLoaderFactory();
             if (string.IsNullOrEmpty(viewName))
             {
                 return null;

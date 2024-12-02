@@ -1,6 +1,7 @@
 using FUI.Bindable;
 
 using System;
+using System.Collections.Generic;
 
 using UnityEngine;
 
@@ -11,7 +12,15 @@ namespace FUI.UGUI.Control
     /// </summary>
     public abstract class ListViewElement : View, IContainerElement, IListView
     {
+        /// <summary>
+        /// 数据
+        /// </summary>
         public BindableProperty<IReadOnlyObservableList<ObservableObject>> List { get; private set; }
+
+        /// <summary>
+        /// 所有子节点实体
+        /// </summary>
+        protected List<UIEntity> ItemEntites { get; private set; }
 
         protected override void Initialize()
         {
@@ -24,6 +33,8 @@ namespace FUI.UGUI.Control
 
                 OnUpdate();
             });
+
+            ItemEntites = new List<UIEntity>();
         }
 
         void IListView.OnAdd(object sender, int? index, object item)
@@ -106,12 +117,20 @@ namespace FUI.UGUI.Control
         protected UIEntity CreateItemEntity(ObservableObject itemViewModel, GameObject itemObject)
         {
             var itemView = View.Create(this.AssetLoader, itemObject, string.Empty);
-            return UIEntity.Create(itemView, itemViewModel);
+            var entity = UIEntity.Create(itemView, itemViewModel);
+            ItemEntites.Add(entity);
+            return entity;
         }
 
         protected override void Destroy()
         {
             List.Dispose();
+
+            foreach(var itemEntity in ItemEntites)
+            {
+                itemEntity.Destroy();
+            }
+            ItemEntites.Clear();
         }
     }
 }

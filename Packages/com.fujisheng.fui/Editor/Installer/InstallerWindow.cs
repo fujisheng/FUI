@@ -14,13 +14,20 @@ namespace FUI.Editor
     {
         const string dataPath = "./FUI";
         const string installPath = "./FUI/Compiler";
-        const string compilerUrl = "https://github.com/fujisheng/FUICompiler/releases/download/v0.0.1.a/FUICompiler.zip";
+        const string compilerUrl = "https://github.com/fujisheng/FUICompiler/releases/download/0.0.2.a/FUICompiler.zip";
         const string settingPath = "Assets/Editor Default Resources/FUI/Settings/CompilerSetting.asset";
 
         string installedVersion;
         string latestVersion;
 
         CompilerSetting setting;
+
+        [InitializeOnLoadMethod]
+        static void Initialize()
+        {
+            UIEntitites.Instance.GetEntity(null);
+            BindingContexts.Instance.GetContextInfo(null);
+        }
 
         [MenuItem("FUI/Installer")]
         public static void ShowWindow()
@@ -83,12 +90,12 @@ namespace FUI.Editor
         {
             using (UnityWebRequest webRequest = UnityWebRequest.Get(compilerUrl))
             {
-                Debug.Log($"start download compiler...");
+                UnityEngine.Debug.Log($"start download compiler...");
                 await webRequest.SendWebRequest();
 
                 if (webRequest.result != UnityWebRequest.Result.Success)
                 {
-                    Debug.LogError("download compiler error" + webRequest.error);
+                    UnityEngine.Debug.LogError("download compiler error" + webRequest.error);
                 }
                 else
                 {
@@ -100,7 +107,7 @@ namespace FUI.Editor
                     {
                         zipFile.ExtractToDirectory(downloadPath);
                     }
-                    Debug.Log("download sucess");
+                    UnityEngine.Debug.Log("download sucess");
                     setting.compilerPath = $"{downloadPath}/FUICompiler/FUICompiler.exe";
                 }
             }
@@ -155,6 +162,14 @@ namespace FUI.Editor
             }
 
             Directory.CreateDirectory(path);
+        }
+
+        /// <summary>
+        /// Inject to UnityEditor.Scripting.ScriptCompilation 671 hook start event
+        /// </summary>
+        void InjectCompilationStarted()
+        {
+
         }
     }
 }

@@ -7,12 +7,10 @@ namespace FUI.Editor
     {
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
 
-        static TypeExtensions()
+        [AssemblyCompilationFinished]
+        static void OnCompilationComplete(string file, List<object> messages)
         {
-            CompilerEditor.OnCompilationComplete += () =>
-            {
-                typeCache.Clear();
-            };
+            typeCache.Clear();
         }
 
         public static Type GetNamedType(this string typeFullName)

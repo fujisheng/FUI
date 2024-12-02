@@ -30,6 +30,13 @@ namespace FUI.UGUI.Control
                 return;
             }
 
+            //如果这个Entity不为空且要更新的数据类型不是之前的数据类型  则需要先禁用之前的Entity
+            if(entity != null && newValue.GetType() != data.GetType())
+            {
+                entity.Disable();
+                entity = null;
+            }
+
             if (entity == null || newValue.GetType() != data.GetType())
             {
                 entity = UIEntity.Create(view, newValue);

@@ -1,7 +1,4 @@
-﻿using FUI.Test;
-using FUI.UGUI;
-
-using System.Collections.Generic;
+﻿using FUI.UGUI;
 
 using UnityEditor;
 
@@ -11,47 +8,42 @@ using UnityEngine;
 
 namespace FUI.Editor
 {
-    [CustomEditor(typeof(View))]
+    [CustomEditor(typeof(View), true)]
     public class ViewInspector : UnityEditor.Editor
     {
-        public static IReadOnlyList<UIEntity> entities;
-        Vector2 scrollPosition;
         ContextBindingInfo contextInfo;
         IView view;
         UIEntity entity;
 
+        bool showPropertites = true;
+        bool showCommands = true;
+        Vector2 propertitesScrollPosition;
+        Vector2 commandsScrollPosition;
+
         void OnEnable()
         {
-            entities = TestLauncher.Instance.Entities;
             view = target as IView;
-            entity = GetEntity(view);
-            if (entity == null)
-            {
-                return;
-            }
-            contextInfo = BindingInfoManager.Instance.GetContextInfo(entity);
-
-            CompilerEditor.OnCompilationComplete += OnCompilationComplate;
+            entity = UIEntitites.Instance.GetEntity(view);
         }
 
         void OnDisable()
         {
-            CompilerEditor.OnCompilationComplete -= OnCompilationComplate;
-            scrollPosition = Vector2.zero;
+            propertitesScrollPosition = Vector2.zero;
+            commandsScrollPosition = Vector2.zero;
+
             contextInfo = null;
             view = null;
             entity = null;
         }
 
-        void OnCompilationComplate()
-        {
-            contextInfo = BindingInfoManager.Instance.GetContextInfo(entity);
-
-            this.Repaint();
-        }
-
         public override void OnInspectorGUI()
         {
+            if(entity == null)
+            {
+                return;
+            }
+
+            contextInfo = BindingContexts.Instance.GetContextInfo(entity);
             if (contextInfo == null)
             {
                 return;
@@ -70,24 +62,49 @@ namespace FUI.Editor
                 GUILayout.Space(10);
 
                 //属性绑定列表
-                scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.MaxHeight(300));
+                this.showPropertites = EditorGUILayout.BeginFoldoutHeaderGroup(this.showPropertites, "Properties");
                 {
-                    foreach (var property in contextInfo.properties)
+                    if (this.showPropertites)
                     {
-                        DrawBindingItem(contextInfo, property);
+                        propertitesScrollPosition = EditorGUILayout.BeginScrollView(propertitesScrollPosition);
+                        {
+
+                            foreach (var property in contextInfo.properties)
+                            {
+                                DrawPropertyItem(contextInfo, property);
+                            }
+                        }
+                        EditorGUILayout.EndScrollView();
                     }
                 }
-                EditorGUILayout.EndScrollView();
+                EditorGUILayout.EndFoldoutHeaderGroup();
+
+                //命令绑定列表
+                this.showCommands = EditorGUILayout.BeginFoldoutHeaderGroup(this.showCommands, "Commands");
+                {
+                    if (this.showCommands)
+                    {
+                        commandsScrollPosition = EditorGUILayout.BeginScrollView(commandsScrollPosition);
+                        {
+                            foreach (var command in contextInfo.commands)
+                            {
+                                DrawCommandItem(contextInfo, command);
+                            }
+                        }
+                        EditorGUILayout.EndScrollView();
+                    }
+                }
+                EditorGUILayout.EndFoldoutHeaderGroup();
             }
             EditorGUILayout.EndVertical();
         }
 
         /// <summary>
-        /// 绘制一个绑定信息
+        /// 绘制一个属性绑定信息
         /// </summary>
         /// <param name="contextInfo"></param>
         /// <param name="info"></param>
-        void DrawBindingItem(ContextBindingInfo contextInfo, PropertyBindingInfo info)
+        void DrawPropertyItem(ContextBindingInfo contextInfo, PropertyBindingInfo info)
         {
             EditorGUILayout.BeginHorizontal();
             {
@@ -95,7 +112,7 @@ namespace FUI.Editor
                 var propertyInfoContent = new GUIContent($"{info.propertyInfo.name}({info.propertyInfo.type.GetTypeName()})", $"{contextInfo.viewModelType}.{info.propertyInfo.name}({info.propertyInfo.type})");
                 if (GUILayout.Button(propertyInfoContent, GUILayout.Width(200)))
                 {
-                    InternalEditorUtility.OpenFileAtLineExternal(info.propertyInfo.location.path, info.propertyInfo.location.line, info.propertyInfo.location.column);
+                    OpenFileAtLine(info.propertyInfo.location);
                 }
 
                 //绑定模式
@@ -117,7 +134,7 @@ namespace FUI.Editor
 
                 //目标信息
                 var targetInfoContent = new GUIContent($"{info.targetInfo.type.GetTypeName()}.{info.targetInfo.propertyName}({info.targetInfo.propertyValueType.GetTypeName()})", $"{info.targetInfo.type}.{info.targetInfo.propertyName}({info.targetInfo.propertyType})");
-                UnityEngine.Debug.Log($"propertyType:{info.targetInfo.propertyType.GetTypeName()}");
+
                 if (GUILayout.Button(targetInfoContent, GUILayout.Width(300)))
                 {
                     var targetType = info.targetInfo.type.GetNamedType();
@@ -125,41 +142,62 @@ namespace FUI.Editor
                     EditorGUIUtility.PingObject((target as View).gameObject);
                 }
 
-                GUILayout.Label("@", GUILayout.Width(20));
-
                 //转换器信息
-                var converterContent = new GUIContent();
-                if(info.converterInfo == null)
+                if (info.converterInfo != null)
                 {
-                    converterContent.text = "None";
-                }
-                else
-                {
-                    converterContent.text = $"{info.converterInfo.type.GetTypeName()}({info.converterInfo.sourceType.GetTypeName()}->{info.converterInfo.targetType.GetTypeName()})";
-                    converterContent.tooltip = $"{info.converterInfo.type}({info.converterInfo.sourceType}->{info.converterInfo.targetType})";
-                }
+                    GUILayout.Label("@", GUILayout.Width(20));
 
-                GUILayout.Button(converterContent, GUILayout.Width(200));
+                    var converterContent = new GUIContent();
+                    if (info.converterInfo == null)
+                    {
+                        converterContent.text = "None";
+                    }
+                    else
+                    {
+                        converterContent.text = $"{info.converterInfo.type.GetTypeName()}({info.converterInfo.sourceType.GetTypeName()}->{info.converterInfo.targetType.GetTypeName()})";
+                        converterContent.tooltip = $"{info.converterInfo.type}({info.converterInfo.sourceType}->{info.converterInfo.targetType})";
+                    }
+
+                    GUILayout.Button(converterContent, GUILayout.Width(200));
+                }
             }
             EditorGUILayout.EndHorizontal();
         }
 
-        UIEntity GetEntity(IView view)
+        void OpenFileAtLine(LocationInfo location)
         {
-            if(entities == null)
-            {
-                return null;
-            }
+            InternalEditorUtility.OpenFileAtLineExternal(location.path, location.line, location.column);
+        }
 
-            foreach(var entity in entities)
+        /// <summary>
+        /// 绘制一个命令绑定信息
+        /// </summary>
+        void DrawCommandItem(ContextBindingInfo contextInfo, CommandBindingInfo info)
+        {
+            EditorGUILayout.BeginHorizontal();
             {
-                if (entity.View == view)
+                //属性信息
+                var commandParameter = string.Join(",", info.commandInfo.parameters);
+                var propertyInfoContent = new GUIContent($"{info.commandInfo.name}({commandParameter})", $"{contextInfo.viewModelType}.{info.commandInfo.name}({commandParameter})");
+                if (GUILayout.Button(propertyInfoContent, GUILayout.Width(200)))
                 {
-                    return entity;
+                    OpenFileAtLine(info.commandInfo.location);
+                }
+
+                GUILayout.Label("<<", GUILayout.Width(20));
+
+                //目标信息
+                var targetParameter = string.Join(",", info.targetInfo.parameters);
+                var targetInfoContent = new GUIContent($"{info.targetInfo.type.GetTypeName()}.{info.targetInfo.propertyName}({targetParameter})", $"{info.targetInfo.type}.{info.targetInfo.propertyName}({targetParameter})");
+
+                if (GUILayout.Button(targetInfoContent, GUILayout.Width(300)))
+                {
+                    var targetType = info.targetInfo.type.GetNamedType();
+                    var target = (this.target as IView).GetChild(info.targetInfo.path, targetType);
+                    EditorGUIUtility.PingObject((target as View).gameObject);
                 }
             }
-
-            return null;
+            EditorGUILayout.EndHorizontal();
         }
     }
 }

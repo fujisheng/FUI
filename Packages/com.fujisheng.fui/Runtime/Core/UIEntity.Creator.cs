@@ -26,6 +26,8 @@ namespace FUI
             };
 
             behavior.InternalOnCreate(entity.ViewModel);
+
+            OnEntityCreated?.Invoke(entity);
             return entity;
         }
 
