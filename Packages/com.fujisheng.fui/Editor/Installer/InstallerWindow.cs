@@ -10,11 +10,14 @@ using UnityEngine.Networking;
 
 namespace FUI.Editor
 {
+    /// <summary>
+    /// 编译器安装窗口
+    /// </summary>
     public class InstallerWindow : EditorWindow
     {
         const string dataPath = "./FUI";
         const string installPath = "./FUI/Compiler";
-        const string compilerUrl = "https://github.com/fujisheng/FUICompiler/releases/download/0.0.2.a/FUICompiler.zip";
+        const string compilerReleasedUrl = "https://api.github.com/repos/fujisheng/FUICompiler/releases/latest";
         const string settingPath = "Assets/Editor Default Resources/FUI/Settings/CompilerSetting.asset";
 
         string installedVersion;
@@ -40,32 +43,38 @@ namespace FUI.Editor
         {
             installedVersion = GetInstalledVersion();
             setting = LoadOrCreateSetting();
+            GetLatestVersion();
         }
 
         private void OnGUI()
         {
             EditorGUILayout.BeginVertical();
             {
-                var versionDes = string.IsNullOrEmpty(latestVersion) 
-                    ? $"InstalledVersion:{installedVersion}"
-                    : $"InstalledVersion:{installedVersion}(LatestVersion:{latestVersion})";
-                EditorGUILayout.LabelField(versionDes);
-
-                EditorGUILayout.BeginHorizontal();
+                //没有安装编译器
+                if (string.IsNullOrEmpty(installedVersion))
                 {
-                    if (GUILayout.Button("CheckUpdate"))
+                    EditorGUILayout.LabelField($"Not Find FUICompiler, Please Install First (Lastest:{latestVersion})");
+                    if (GUILayout.Button("Install"))
                     {
-                        latestVersion = GetLatestVersion();
-                    }
-
-                    var installOrUpdate = string.IsNullOrEmpty(installedVersion) ? "Install" : "Update";
-                    if (GUILayout.Button(installOrUpdate))
-                    {
-                        DownloadCompiler(installPath);
+                        DownloadCompiler(latestVersion);
                     }
                 }
-                EditorGUILayout.EndHorizontal();
+                //已安装编译器但不是最新版本
+                else if (!string.IsNullOrEmpty(installedVersion) && installedVersion != latestVersion)
+                {
+                    EditorGUILayout.LabelField($"Installed Version:{installedVersion}  (Latest:{latestVersion})");
+                    if (GUILayout.Button("Update"))
+                    {
+                        DownloadCompiler(latestVersion);
+                    }
+                }
+                //已安装了最新版本
+                else
+                {
+                    EditorGUILayout.LabelField($"FUICompiler Installed Is Latest:{latestVersion}");
+                }
 
+                //安装了编译器 才显示设置
                 if (!string.IsNullOrEmpty(installedVersion))
                 {
                     setting.solutionPath = EditorGUILayout.TextField("SolutionPath", setting.solutionPath);
@@ -74,6 +83,7 @@ namespace FUI.Editor
                     setting.output = EditorGUILayout.TextField("Output", setting.output);
                     setting.generateType =(BindingContextGenerateType) EditorGUILayout.EnumPopup("GenerateType", setting.generateType);
                     setting.bindingInfoOutputPath = EditorGUILayout.TextField("BindingInfoOutputPath", setting.bindingInfoOutputPath);
+                    
                     if(GUILayout.Button("Save Settings"))
                     {
                         EditorUtility.SetDirty(setting);
@@ -86,20 +96,48 @@ namespace FUI.Editor
 
         }
 
-        async void DownloadCompiler(string downloadPath)
+        /// <summary>
+        /// 下载对应版本的编译器
+        /// </summary>
+        /// <param name="version">要下载的版本</param>
+        async void DownloadCompiler(string version)
         {
-            using (UnityWebRequest webRequest = UnityWebRequest.Get(compilerUrl))
+            if (string.IsNullOrEmpty(version))
             {
-                UnityEngine.Debug.Log($"start download compiler...");
-                await webRequest.SendWebRequest();
+                EditorUtility.DisplayDialog("Download FUICompiler Error", "can not find latest version, please check network connection...", "OK");
+                return;
+            }
+
+            var downloadUrl = $"https://github.com/fujisheng/FUICompiler/releases/download/{version}/FUICompiler-{version}-{Utility.GetPlatformInfo()}.zip";
+
+            var downloadPath = $"{installPath}/{Utility.GetPlatformInfo()}";
+
+            using (UnityWebRequest webRequest = UnityWebRequest.Get(downloadUrl))
+            {
+                var request = webRequest.SendWebRequest();
+                while(true)
+                {
+                    if(request.isDone || request.webRequest.result != UnityWebRequest.Result.InProgress)
+                    {
+                        EditorUtility.ClearProgressBar();
+                        break;
+                    }
+
+                    await System.Threading.Tasks.Task.Delay(1);
+                    EditorUtility.DisplayProgressBar("Download FUICompiler", "Downloading...", request.progress);
+                }
 
                 if (webRequest.result != UnityWebRequest.Result.Success)
                 {
-                    UnityEngine.Debug.LogError("download compiler error" + webRequest.error);
+                    EditorUtility.DisplayDialog("Download FUICompiler Error", webRequest.error, "OK");
                 }
                 else
                 {
-                    Directory.Delete(downloadPath, true );
+                    if (Directory.Exists(downloadPath))
+                    {
+                        Directory.Delete(downloadPath, true);
+                    }
+                    
                     TryCreateDirectory(downloadPath);
 
                     using(var stream = new MemoryStream(webRequest.downloadHandler.data))
@@ -107,22 +145,71 @@ namespace FUI.Editor
                     {
                         zipFile.ExtractToDirectory(downloadPath);
                     }
-                    UnityEngine.Debug.Log("download sucess");
-                    setting.compilerPath = $"{downloadPath}/FUICompiler/FUICompiler.exe";
+
+                    setting.compilerPath = $"{downloadPath}/FUICompiler.exe";
+                    installedVersion = version;
+                    SaveVersion(version);
+                    EditorUtility.SetDirty(setting);
+                    AssetDatabase.SaveAssets();
+
+                    ShowNotification(new GUIContent("Download FUICompiler Sucess"));
                 }
             }
         }
 
+        /// <summary>
+        /// 保存安装的版本信息
+        /// </summary>
+        /// <param name="version"></param>
+        void SaveVersion(string version)
+        {
+            var versionPath = $"{installPath}/{Utility.GetPlatformInfo()}/version.txt";
+            File.WriteAllBytes(versionPath, System.Text.Encoding.UTF8.GetBytes(version));
+        }
+
+        /// <summary>
+        /// 获取已安装的版本
+        /// </summary>
+        /// <returns></returns>
         string GetInstalledVersion()
         {
-            return "0.0.1";
+            var versionPath = $"{installPath}/{Utility.GetPlatformInfo()}/version.txt";
+            if (!File.Exists(versionPath))
+            {
+                return string.Empty;
+            }
+            return System.Text.Encoding.UTF8.GetString(File.ReadAllBytes(versionPath));
         }
 
-        string GetLatestVersion()
+        class ReleaseInfo
         {
-            return "0.0.2";
+            public string tag_name;
         }
 
+        /// <summary>
+        /// 获取最新版本
+        /// </summary>
+        async void GetLatestVersion()
+        {
+            using (UnityWebRequest webRequest = UnityWebRequest.Get(compilerReleasedUrl))
+            {
+                await webRequest.SendWebRequest();
+                if(webRequest.result != UnityWebRequest.Result.Success)
+                {
+                    UnityEngine.Debug.LogError("GetLatestVersion Error" + webRequest.error);
+                    this.latestVersion = string.Empty;
+                    return;
+                }
+                
+                this.latestVersion = JsonUtility.FromJson<ReleaseInfo>(webRequest.downloadHandler.text).tag_name;
+                UnityEngine.Debug.Log($"the latest FUICompiler version is {this.latestVersion}");
+            }
+        }
+
+        /// <summary>
+        /// 创建或者加载一个编译器设置
+        /// </summary>
+        /// <returns></returns>
         CompilerSetting LoadOrCreateSetting() 
         {
             var directory = Path.GetDirectoryName(settingPath);
@@ -134,7 +221,7 @@ namespace FUI.Editor
                 setting.solutionPath = GetDefaultSolutionPath();
                 setting.generatedPath = $"{dataPath}/Generated";
                 setting.output = "./Library/ScriptAssemblies";
-                setting.compilerPath = $"{installPath}/FUICompiler/FUICompiler.exe";
+                setting.compilerPath = $"{installPath}/{Utility.GetPlatformInfo()}/FUICompiler.exe";
                 setting.bindingInfoOutputPath = $"{dataPath}/BindingInfo";
                 AssetDatabase.CreateAsset(setting, settingPath);
 
@@ -143,6 +230,10 @@ namespace FUI.Editor
             return setting;
         }
 
+        /// <summary>
+        /// 获取默认解决方案路径
+        /// </summary>
+        /// <returns></returns>
         string GetDefaultSolutionPath()
         {
             var files = Directory.GetFiles("./", "*.sln", SearchOption.TopDirectoryOnly);
@@ -154,6 +245,10 @@ namespace FUI.Editor
             return files[0];
         }
 
+        /// <summary>
+        /// 尝试创建一个目录
+        /// </summary>
+        /// <param name="path">要创建的目录路径</param>
         void TryCreateDirectory(string path)
         {
             if(Directory.Exists(path))

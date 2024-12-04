@@ -136,6 +136,12 @@ namespace FUI.Editor
         static void ProcessMessage(string message)
         {
             var msg = Message.ReadMessage(message);
+            if(msg == null)
+            {
+                UnityEngine.Debug.Log(message);
+                return;
+            }
+
             if(msg is LogMessage log)
             {
                 switch (log.Level)

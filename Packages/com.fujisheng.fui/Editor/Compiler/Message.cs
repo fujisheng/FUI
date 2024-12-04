@@ -55,7 +55,20 @@ namespace FUI.Editor
                 return null;
             }
 
-            var msg = JsonConvert.DeserializeObject<Message>(msgString);
+            Message msg;
+            try
+            {
+                msg = JsonConvert.DeserializeObject<Message>(msgString);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
+            if (msg == null)
+            {
+                return null;
+            }
             switch (msg.Type)
             {
                 case MessageType.Log:

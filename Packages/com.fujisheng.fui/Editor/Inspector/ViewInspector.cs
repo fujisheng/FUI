@@ -1,4 +1,5 @@
-﻿using FUI.UGUI;
+﻿using FUI.Bindable;
+using FUI.UGUI;
 
 using UnityEditor;
 
@@ -141,6 +142,13 @@ namespace FUI.Editor
                     var target = (this.target as IView).GetChild(info.targetInfo.path, targetType);
                     EditorGUIUtility.PingObject((target as View).gameObject);
                 }
+                if(GUILayout.Button("?", GUILayout.Width(20)))
+                {
+                    var targetType = info.targetInfo.type.GetNamedType();
+                    var target = (this.target as IView).GetChild(info.targetInfo.path, targetType);
+                    var targetProperty = targetType.GetProperty(info.targetInfo.propertyName);
+                    var property = targetProperty.GetValue(target);
+                }
 
                 //转换器信息
                 if (info.converterInfo != null)
@@ -158,7 +166,7 @@ namespace FUI.Editor
                         converterContent.tooltip = $"{info.converterInfo.type}({info.converterInfo.sourceType}->{info.converterInfo.targetType})";
                     }
 
-                    GUILayout.Button(converterContent, GUILayout.Width(200));
+                    GUILayout.Button(converterContent, GUILayout.MinWidth(200));
                 }
             }
             EditorGUILayout.EndHorizontal();

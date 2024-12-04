@@ -112,5 +112,10 @@ namespace FUI.Bindable
             this.OnValueChanged = null;
             this.value = default;
         }
+
+        public override string ToString()
+        {
+            return $"Type:{this.GetType()}  Value:{Value}({typeof(T)})";
+        }
     }
 }
