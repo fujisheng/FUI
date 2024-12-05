@@ -115,7 +115,7 @@ namespace FUI.Bindable
 
         public override string ToString()
         {
-            return $"Type:{this.GetType()}  Value:{Value}({typeof(T)})";
+            return $"Value:{Value}";
         }
     }
 }

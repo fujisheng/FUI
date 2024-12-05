@@ -77,12 +77,18 @@ namespace FUI.Editor
                 //安装了编译器 才显示设置
                 if (!string.IsNullOrEmpty(installedVersion))
                 {
-                    setting.solutionPath = EditorGUILayout.TextField("SolutionPath", setting.solutionPath);
-                    setting.targetProject = (AssemblyDefinitionAsset)EditorGUILayout.ObjectField("TargetProject", setting.targetProject, typeof(AssemblyDefinitionAsset), false);
-                    setting.generatedPath = EditorGUILayout.TextField("GeneratedPath", setting.generatedPath);
-                    setting.output = EditorGUILayout.TextField("Output", setting.output);
-                    setting.generateType =(BindingContextGenerateType) EditorGUILayout.EnumPopup("GenerateType", setting.generateType);
-                    setting.bindingInfoOutputPath = EditorGUILayout.TextField("BindingInfoOutputPath", setting.bindingInfoOutputPath);
+                    var solutionPathContent = new GUIContent("SolutionPath", "[Required] project solution path.");
+                    setting.solutionPath = EditorGUILayout.TextField(solutionPathContent, setting.solutionPath);
+                    var targetProjectContent = new GUIContent("TargetProject", "[Required] target project assembly definition asset.");
+                    setting.targetProject = (AssemblyDefinitionAsset)EditorGUILayout.ObjectField(targetProjectContent, setting.targetProject, typeof(AssemblyDefinitionAsset), false);
+                    var generatedPathContent = new GUIContent("GeneratedPath", "[Optional] generated code path, if you want to debug target project, please set a path.");
+                    setting.generatedPath = EditorGUILayout.TextField(generatedPathContent, setting.generatedPath);
+                    var outputContent = new GUIContent("Output", "[Required] target project dll output path, if there are no special reasons, please do not make any changes.");
+                    setting.output = EditorGUILayout.TextField(outputContent, setting.output);
+                    var generateTypeContent = new GUIContent("GenerateType", "[Required] binding context generate type.");
+                    setting.generateType =(BindingContextGenerateType) EditorGUILayout.EnumPopup(generateTypeContent, setting.generateType);
+                    var bindingInfoOutputPathContent = new GUIContent("BindingInfoOutputPath", "[Optional] binding info output path, will use it in view inspector.");
+                    setting.bindingInfoOutputPath = EditorGUILayout.TextField(bindingInfoOutputPathContent, setting.bindingInfoOutputPath);
                     
                     if(GUILayout.Button("Save Settings"))
                     {

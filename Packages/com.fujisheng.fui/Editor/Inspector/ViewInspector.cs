@@ -110,10 +110,17 @@ namespace FUI.Editor
             EditorGUILayout.BeginHorizontal();
             {
                 //属性信息
-                var propertyInfoContent = new GUIContent($"{info.propertyInfo.name}({info.propertyInfo.type.GetTypeName()})", $"{contextInfo.viewModelType}.{info.propertyInfo.name}({info.propertyInfo.type})");
+                var propertyInfoContent = new GUIContent($"{info.propertyInfo.name}({info.propertyInfo.type.GetTypeName()})");
                 if (GUILayout.Button(propertyInfoContent, GUILayout.Width(200)))
                 {
                     OpenFileAtLine(info.propertyInfo.location);
+                }
+                if(GUILayout.Button("?", GUILayout.Width(20)))
+                {
+                    var viewModel = entity.ViewModel;
+                    var property = viewModel.GetType().GetProperty(info.propertyInfo.name);
+                    var propertyValue = property.GetValue(viewModel);
+                    DetailsWindow.ShowDetails(Vector2.zero, "PropertyValue", propertyValue, $"{contextInfo.viewModelType}.{info.propertyInfo.name}({info.propertyInfo.type})");
                 }
 
                 //绑定模式
@@ -134,7 +141,7 @@ namespace FUI.Editor
                 GUILayout.Label(bindingModeContent, GUILayout.Width(20));
 
                 //目标信息
-                var targetInfoContent = new GUIContent($"{info.targetInfo.type.GetTypeName()}.{info.targetInfo.propertyName}({info.targetInfo.propertyValueType.GetTypeName()})", $"{info.targetInfo.type}.{info.targetInfo.propertyName}({info.targetInfo.propertyType})");
+                var targetInfoContent = new GUIContent($"{info.targetInfo.type.GetTypeName()}.{info.targetInfo.propertyName}({info.targetInfo.propertyValueType.GetTypeName()})");
 
                 if (GUILayout.Button(targetInfoContent, GUILayout.Width(300)))
                 {
@@ -148,6 +155,7 @@ namespace FUI.Editor
                     var target = (this.target as IView).GetChild(info.targetInfo.path, targetType);
                     var targetProperty = targetType.GetProperty(info.targetInfo.propertyName);
                     var property = targetProperty.GetValue(target);
+                    DetailsWindow.ShowDetails(Vector2.zero, "TargetValue", property, $"{info.targetInfo.type}.{info.targetInfo.propertyName}({info.targetInfo.propertyType})");
                 }
 
                 //转换器信息
@@ -186,7 +194,7 @@ namespace FUI.Editor
             {
                 //属性信息
                 var commandParameter = string.Join(",", info.commandInfo.parameters);
-                var propertyInfoContent = new GUIContent($"{info.commandInfo.name}({commandParameter})", $"{contextInfo.viewModelType}.{info.commandInfo.name}({commandParameter})");
+                var propertyInfoContent = new GUIContent($"{info.commandInfo.name}({commandParameter})");
                 if (GUILayout.Button(propertyInfoContent, GUILayout.Width(200)))
                 {
                     OpenFileAtLine(info.commandInfo.location);
@@ -196,7 +204,7 @@ namespace FUI.Editor
 
                 //目标信息
                 var targetParameter = string.Join(",", info.targetInfo.parameters);
-                var targetInfoContent = new GUIContent($"{info.targetInfo.type.GetTypeName()}.{info.targetInfo.propertyName}({targetParameter})", $"{info.targetInfo.type}.{info.targetInfo.propertyName}({targetParameter})");
+                var targetInfoContent = new GUIContent($"{info.targetInfo.type.GetTypeName()}.{info.targetInfo.propertyName}({targetParameter})");
 
                 if (GUILayout.Button(targetInfoContent, GUILayout.Width(300)))
                 {
