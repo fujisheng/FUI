@@ -11,7 +11,7 @@ namespace Test.Command
     [Binding("TestCommandView")]
     public class TestCommandViewModel : ViewModel
     {
-        [Binding("toggleValue", nameof(TextElement.Text), typeof(BoolToStringConverter))]
+        [Binding("toggleValue", nameof(TextElement.TextObject))]
         [Binding("toggle", nameof(ToggleElement.IsOn), bindingMode: BindingMode.TwoWay)]
         public bool ToggleValue { get; set; } = true;
 
