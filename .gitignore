@@ -8,7 +8,7 @@ Logs/
 .vs/
 obj/
 
-FUI/
+/FUI/
 Assets/Editor Default Resources/FUI/
 Assets/Editor Default Resources/FUI.meta
 UserSettings/
