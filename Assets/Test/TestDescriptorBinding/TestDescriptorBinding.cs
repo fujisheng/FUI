@@ -1,6 +1,8 @@
 using FUI;
 using FUI.Test;
 
+using System;
+
 using UnityEngine;
 
 namespace Test.Descriptor
@@ -20,6 +22,15 @@ namespace Test.Descriptor
         {
             UnityEngine.Debug.Log($"{this}");
         }
+
+        public event Action OnClickEvent;
+
+        public void OnDropDown(int index)
+        {
+
+        }
+
+        public event Action<int> OnDropdownEvent;
     }
 
     public class TestDescriptorViewBehavior : ViewBehavior<TestDescriptorViewModel>

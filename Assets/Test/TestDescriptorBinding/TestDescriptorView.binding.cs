@@ -35,6 +35,18 @@ namespace Test.Descriptor
             BindingCommand(VM.OnClick)
                 .ToTarget("btn_click")
                 .ToCommand(nameof(ButtonElement.OnClick)),
+
+            BindingCommand(nameof(VM.OnClickEvent))
+            .ToTarget("btn_click")
+            .ToCommand(nameof(ButtonElement.OnClick)),
+
+            BindingCommand<int>(VM.OnDropDown)
+            .ToTarget("dropdown")
+            .ToCommand(nameof(DropdownElement.OnValueChanged)),
+
+            BindingCommand(nameof(VM.OnDropdownEvent))
+            .ToTarget("dropdown")
+            .ToCommand(nameof(DropdownElement.OnValueChanged)),
         };
     }
 }

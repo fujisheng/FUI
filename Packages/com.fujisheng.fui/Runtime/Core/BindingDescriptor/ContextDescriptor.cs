@@ -30,6 +30,16 @@ namespace FUI.BindingDescriptor
             return new PropertyBindingDescriptor();
         }
 
+        /// <summary>
+        /// 用于绑定某个Event
+        /// </summary>
+        /// <param name="commandName"></param>
+        /// <returns></returns>
+        protected CommandBindingDescriptor BindingCommand(string commandName)
+        {
+            return new CommandBindingDescriptor();
+        }
+
         protected CommandBindingDescriptor BindingCommand(Action command)
         {
             return new CommandBindingDescriptor();
