@@ -86,7 +86,7 @@ namespace FUI.Editor
                     var outputContent = new GUIContent("Output", "[Required] target project dll output path, if there are no special reasons, please do not make any changes.");
                     setting.output = EditorGUILayout.TextField(outputContent, setting.output);
                     var generateTypeContent = new GUIContent("GenerateType", "[Required] binding context generate type.");
-                    setting.generateType =(BindingContextGenerateType) EditorGUILayout.EnumPopup(generateTypeContent, setting.generateType);
+                    setting.generateType =(BindingContextGenerateType) EditorGUILayout.EnumFlagsField(generateTypeContent, setting.generateType);
                     var bindingInfoOutputPathContent = new GUIContent("BindingInfoOutputPath", "[Optional] binding info output path, will use it in view inspector.");
                     setting.bindingInfoOutputPath = EditorGUILayout.TextField(bindingInfoOutputPathContent, setting.bindingInfoOutputPath);
                     

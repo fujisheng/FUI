@@ -106,7 +106,7 @@ namespace FUI.Editor
             process.StartInfo.ArgumentList.Add($"--output={setting.output}");
             process.StartInfo.ArgumentList.Add("--binding=.\\Binding\\");
             process.StartInfo.ArgumentList.Add($"--generated={setting.generatedPath}");
-            process.StartInfo.ArgumentList.Add($"--ctx_type={setting.generateType.ToString()}");
+            process.StartInfo.ArgumentList.Add($"--ctx_type={(int)setting.generateType}");
             process.StartInfo.ArgumentList.Add($"--binding_output={setting.bindingInfoOutputPath}");
 
             process.StartInfo.CreateNoWindow = true;

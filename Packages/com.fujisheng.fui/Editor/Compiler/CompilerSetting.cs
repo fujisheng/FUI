@@ -12,15 +12,15 @@ namespace FUI.Editor
         /// <summary>
         /// 通过特性生成
         /// </summary>
-        Attribute,
+        Attribute = 1 << 0,
         /// <summary>
         /// 通过配置文件生成
         /// </summary>
-        Config,
+        Config = 1 << 1,
         /// <summary>
-        /// 混合生成
+        /// 通过描述文件生成
         /// </summary>
-        Mix,
+        Descriptor = 1 << 2,
     }
 
     /// <summary>
