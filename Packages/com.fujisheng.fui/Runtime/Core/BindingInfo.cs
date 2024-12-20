@@ -178,17 +178,9 @@ namespace FUI
     /// </summary>
     public class ContextBindingInfo
     {
+        public string viewName = string.Empty;
         public string viewModelType;
         public List<PropertyBindingInfo> properties = new List<PropertyBindingInfo>();
         public List<CommandBindingInfo> commands = new List<CommandBindingInfo>();
-    }
-
-    /// <summary>
-    /// 所有绑定信息
-    /// </summary>
-    public class BindingInfo
-    {
-        public string viewName = string.Empty;
-        public List<ContextBindingInfo> contexts = new List<ContextBindingInfo>();
     }
 }
