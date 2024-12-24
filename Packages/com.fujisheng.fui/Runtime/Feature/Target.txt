@@ -1,0 +1,8 @@
+Context<Battle>.AllOf<PlayerComponent>()
+	.NoneOf<VertigoComponent>()
+	.Where(x=> x.Get<PlayerComponent>().PlayerId == 1)
+	.OnAdded<VertigoComponent>>()
+	.Subscribe(x=>
+		{
+			x.Get<VertigoComponent>().Vertigo = 0.5f;
+		});
