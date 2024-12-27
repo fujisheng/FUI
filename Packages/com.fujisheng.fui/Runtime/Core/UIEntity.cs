@@ -47,7 +47,7 @@ namespace FUI
         /// <summary>
         /// 视图行为
         /// </summary>
-        public ViewBehavior Behavior { get; private set; }
+        IViewBehavior<ObservableObject> Behavior { get; set; }
 
         /// <summary>
         /// 层级
@@ -92,12 +92,12 @@ namespace FUI
         /// 更新视图行为，当前视图和视图模型不变
         /// </summary>
         /// <param name="behavior"></param>
-        public void UpdateBehavior<TBehavior>() where TBehavior : ViewBehavior
+        public void UpdateBehavior<TBehavior>() where TBehavior : IViewBehavior<ObservableObject>
         {
             EnsureNotDestroyed();
 
             //需要校验新的行为是否和当前的视图模型匹配
-            var behavior = Activator.CreateInstance(typeof(TBehavior)) as ViewBehavior;
+            var behavior = Activator.CreateInstance(typeof(TBehavior)) as IViewBehavior<ObservableObject>;
             this.Behavior = behavior;
             this.Behavior.UpdateViewModel(ViewModel);
         }

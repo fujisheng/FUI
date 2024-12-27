@@ -14,7 +14,7 @@ namespace FUI
         /// <param name="bindingContext">绑定的上下文</param>
         /// <param name="behavior">行为</param>
         /// <returns></returns>
-        public static UIEntity Create(BindingContext bindingContext, ViewBehavior behavior)
+        static UIEntity Create(BindingContext bindingContext, IViewBehavior<ObservableObject> behavior)
         {
             var entity = new UIEntity
             {
@@ -81,27 +81,7 @@ namespace FUI
             var bindingContext = Activator.CreateInstance(contextType, view, viewModel) as BindingContext;
             BindingContextTypeResolver.TryGetBehaviorType(viewBehaviorType, resultViewModelType, out var behaviorType);
             //如果没有指定视图行为且没有默认的视图行为, 则使用EmptyViewBehavior
-            var behavior = behaviorType == null ? new EmptyViewBehavior() : Activator.CreateInstance(behaviorType) as ViewBehavior;
-            return Create(bindingContext, behavior);
-        }
-
-        /// <summary>
-        /// 创建一个UI实体
-        /// </summary>
-        /// <param name="viewName">视图名</param>
-        /// <param name="viewFactory">视图工厂</param>
-        /// <param name="viewModel">视图模型</param>
-        /// <param name="behavior">视图行为</param>
-        /// <returns></returns>
-        public static UIEntity Create(string viewName, IViewFactory viewFactory, ObservableObject viewModel, ViewBehavior behavior)
-        {
-            if (!BindingContextTypeResolver.TryGetContextType(viewModel.GetType(), viewName, out var contextType, out _))
-            {
-                return null;
-            }
-
-            var view = viewFactory.Create(viewName);
-            var bindingContext = Activator.CreateInstance(contextType, view, viewModel) as BindingContext;
+            var behavior = behaviorType == null ? new EmptyViewBehavior() : Activator.CreateInstance(behaviorType) as IViewBehavior<ObservableObject>;
             return Create(bindingContext, behavior);
         }
 
@@ -117,7 +97,7 @@ namespace FUI
             BindingContextTypeResolver.TryGetContextType(viewModelType, view.Name, out var contextType, out _);
             BindingContextTypeResolver.TryGetBehaviorType(null, viewModelType, out var behaviorType);
             //如果没有指定视图行为且没有默认的视图行为, 则使用EmptyViewBehavior
-            var behavior = behaviorType == null ? new EmptyViewBehavior() : Activator.CreateInstance(behaviorType) as ViewBehavior;
+            var behavior = behaviorType == null ? new EmptyViewBehavior() : Activator.CreateInstance(behaviorType) as IViewBehavior<ObservableObject>;
             var bindingContext = Activator.CreateInstance(contextType, view, viewModel) as BindingContext;
             return Create(bindingContext, behavior);
         }

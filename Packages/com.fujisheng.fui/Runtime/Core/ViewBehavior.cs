@@ -1,25 +1,68 @@
 ﻿using FUI.Bindable;
 
+using System;
+
 namespace FUI
 {
     /// <summary>
     /// 视图行为
     /// </summary>
-    public abstract class ViewBehavior
+    /// <typeparam name="TObservableObject">视图类型</typeparam>
+    public interface IViewBehavior<in TObservableObject> where TObservableObject : ObservableObject
     {
         /// <summary>
-        /// 所对应的视图模型
+        /// 可以处理的视图模型类型
         /// </summary>
-        protected ObservableObject VM { get; private set; }
+        internal Type ViewModelType { get; }
 
         /// <summary>
-        /// 设置ViewModel
+        /// 更新视图模型
         /// </summary>
-        /// <param name="vm"></param>
-        internal virtual void UpdateViewModel(ObservableObject vm)
-        {
-            this.VM = vm;
-        }
+        /// <param name="vm">视图模型</param>
+        internal void UpdateViewModel(TObservableObject vm);
+
+        /// <summary>
+        /// 当创建这个视图行为的时候
+        /// </summary>
+        /// <param name="vm">创建时的视图模型</param>
+        internal void InternalOnCreate(TObservableObject vm);
+
+        /// <summary>
+        /// 当打开这个View的时候
+        /// </summary>
+        /// <param name="param">打开时的参数</param>
+        internal void InternalOnOpen(object param);
+
+        /// <summary>
+        /// 当这个界面是当前聚焦的View的时候
+        /// </summary>
+        internal void InternalOnFocus();
+
+        /// <summary>
+        /// 当这个界面失焦的时候
+        /// </summary>
+        internal void InternalOnUnfocus();
+
+        /// <summary>
+        /// 当这个界面关闭的时候
+        /// </summary>
+        internal void InternalOnClose();
+
+        /// <summary>
+        /// 当这个界面销毁的时候
+        /// </summary>
+        internal void InternalOnDestroy();
+    }
+
+    /// <summary>
+    /// 视图行为
+    /// </summary>
+    public abstract class ViewBehavior<TObservableObject> : IViewBehavior<TObservableObject> where TObservableObject : ObservableObject
+    {
+        /// <summary>
+        /// 这个视图行为所对应的视图模型
+        /// </summary>
+        protected TObservableObject VM { get; private set; }
 
         /// <summary>
         /// 当创建这个视图行为的时候
@@ -54,44 +97,29 @@ namespace FUI
         protected virtual void OnDestroy() { }
 
         #region 内部调用
-        internal void InternalOnCreate(ObservableObject vm) 
+
+        Type IViewBehavior<TObservableObject>.ViewModelType => typeof(TObservableObject);
+
+        void IViewBehavior<TObservableObject>.UpdateViewModel(TObservableObject vm)
         {
-            UpdateViewModel(vm);
+            this.VM = vm;
+        }
+
+        void IViewBehavior<TObservableObject>.InternalOnCreate(TObservableObject vm)
+        {
+            this.VM = vm;
             OnCreate();
         }
-        internal void InternalOnOpen(object param) => OnOpen(param);
-        internal void InternalOnFocus() => OnFocus();
-        internal void InternalOnUnfocus() => OnUnfocus();
-        internal void InternalOnClose() => OnClose();
-        internal void InternalOnDestroy() => OnDestroy();
+        void IViewBehavior<TObservableObject>.InternalOnOpen(object param) => OnOpen(param);
+        void IViewBehavior<TObservableObject>.InternalOnFocus() => OnFocus();
+        void IViewBehavior<TObservableObject>.InternalOnUnfocus() => OnUnfocus();
+        void IViewBehavior<TObservableObject>.InternalOnClose() => OnClose();
+        void IViewBehavior<TObservableObject>.InternalOnDestroy() => OnDestroy();
         #endregion
-    }
-
-    /// <summary>
-    /// 视图行为
-    /// </summary>
-    public abstract class ViewBehavior<TObservableObject> : ViewBehavior where TObservableObject : ObservableObject
-    {
-        /// <summary>
-        /// 这个视图行为所对应的视图模型
-        /// </summary>
-        protected new TObservableObject VM { get; private set; }
-
-        /// <summary>
-        /// 设置ViewModel
-        /// </summary>
-        /// <param name="vm"></param>
-        internal sealed override void UpdateViewModel(ObservableObject vm)
-        {
-            if(vm is TObservableObject tvm)
-            {
-                this.VM = tvm;
-            }
-        }
     }
 
     /// <summary>
     /// 空的视图行为 用于不需要行为的View
     /// </summary>
-    public class EmptyViewBehavior : ViewBehavior { }
+    public class EmptyViewBehavior : ViewBehavior<ObservableObject> { }
 }

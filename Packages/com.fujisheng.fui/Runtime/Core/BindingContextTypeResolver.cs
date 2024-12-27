@@ -180,7 +180,7 @@ namespace FUI
         /// </summary>
         static void ResolveViewModelDefaultBehavior(Type type)
         {
-            if (!typeof(ViewBehavior).IsAssignableFrom(type) || type.IsAbstract)
+            if (!typeof(IViewBehavior<ObservableObject>).IsAssignableFrom(type) || type.IsAbstract)
             {
                 return;
             }
