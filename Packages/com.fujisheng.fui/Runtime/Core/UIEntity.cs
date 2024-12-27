@@ -5,13 +5,24 @@ using System;
 namespace FUI
 {
     /// <summary>
-    /// UI实体
+    /// UI实体 对应一个视图
     /// </summary>
     public partial class UIEntity
     {
-        public string Name { get; private set; }
+        /// <summary>
+        /// 这个实体的名字
+        /// </summary>
+        public string Name { get; set; }
 
+        /// <summary>
+        /// view对应的类型
+        /// </summary>
         Type viewType;
+
+        /// <summary>
+        /// 是否已经被销毁
+        /// </summary>
+        bool destroyed = false;
 
         /// <summary>
         /// 绑定上下文
@@ -48,21 +59,29 @@ namespace FUI
         /// </summary>
         public int Order { get; private set; }
 
-
         UIEntity() { }
 
-        public override string ToString()=> $"UIEntity Name:{Name} ViewModel:{ViewModel} ViewBahavior:{Behavior} View:{View}";
+        public override string ToString()=> $"UIEntity Name:{Name} ViewModel:{ViewModel} ViewBahavior:{Behavior} View:{View} Context:{bindingContext.GetType().ToString()}";
 
         /// <summary>
-        /// 更新视图模型，当前视图和视图行为不变
+        /// 更新视图模型，当前视图和视图行为不变 允许更新成子类
         /// </summary>
         /// <param name="viewModel">视图模型</param>
         public void UpdateViewModel(ObservableObject viewModel)
         {
+            EnsureNotDestroyed();
+
             if(this.ViewModel == viewModel || viewModel == null)
             {
                 return;
             }
+
+            //TODO:允许更新成对应的子类
+            if (this.ViewModel.GetType() != ViewModel.GetType())
+            {
+                throw new System.Exception($"{this.GetType()}  UpdateViewModel Error {viewModel} not {this.ViewModel.GetType()}");
+            }
+
             this.bindingContext.UpdateViewModel(viewModel);
             this.ViewModel = viewModel;
             this.Behavior.UpdateViewModel(viewModel);
@@ -73,10 +92,14 @@ namespace FUI
         /// 更新视图行为，当前视图和视图模型不变
         /// </summary>
         /// <param name="behavior"></param>
-        public void UpdateBehavior(ViewBehavior behavior)
+        public void UpdateBehavior<TBehavior>() where TBehavior : ViewBehavior
         {
+            EnsureNotDestroyed();
+
+            //需要校验新的行为是否和当前的视图模型匹配
+            var behavior = Activator.CreateInstance(typeof(TBehavior)) as ViewBehavior;
             this.Behavior = behavior;
-            this.Behavior.UpdateViewModel(this.ViewModel);
+            this.Behavior.UpdateViewModel(ViewModel);
         }
 
         /// <summary>
@@ -84,10 +107,21 @@ namespace FUI
         /// </summary>
         public void SynchronizeProperties()
         {
-            if(this.ViewModel is ISynchronizeProperties synchronizeProperties)
+            EnsureNotDestroyed();
+
+            if (this.ViewModel is ISynchronizeProperties synchronizeProperties)
             {
                 synchronizeProperties.Synchronize();
             }
+        }
+
+        /// <summary>
+        /// 当创建这个UI实体的时候
+        /// </summary>
+        void OnCreated()
+        {
+            this.Behavior.InternalOnCreate(ViewModel);
+            OnEntityCreated?.Invoke(this);
         }
 
         /// <summary>
@@ -95,6 +129,8 @@ namespace FUI
         /// </summary>
         public void Enable(object param = null)
         {
+            EnsureNotDestroyed();
+
             this.bindingContext.InternalBinding();
             SynchronizeProperties();
             this.View.Visible = true;
@@ -108,6 +144,8 @@ namespace FUI
         /// </summary>
         public void Disable()
         {
+            EnsureNotDestroyed();
+
             this.Behavior.InternalOnClose();
             this.View.Visible = false;
             this.bindingContext.InternalUnbinding();
@@ -120,6 +158,8 @@ namespace FUI
         /// </summary>
         public void Focus()
         {
+            EnsureNotDestroyed();
+
             this.Behavior.InternalOnFocus();
 
             OnEntityFocused?.Invoke(this);
@@ -130,6 +170,8 @@ namespace FUI
         /// </summary>
         public void Unfocus()
         {
+            EnsureNotDestroyed();
+
             this.Behavior.InternalOnUnfocus();
 
             OnEntityUnfocused?.Invoke(this);
@@ -140,11 +182,15 @@ namespace FUI
         /// </summary>
         public void Destroy()
         {
+            EnsureNotDestroyed();
+
             this.bindingContext.InternalUnbinding();
             this.Behavior.InternalOnDestroy();
             this.View.Destroy();
 
             OnEntityDestoryed?.Invoke(this);
+
+            destroyed = true;
         }
 
         /// <summary>
@@ -152,6 +198,8 @@ namespace FUI
         /// </summary>
         public void Freeze()
         {
+            EnsureNotDestroyed();
+
             this.bindingContext.InternalUnbinding();
             this.View.Destroy();
             this.View = null;
@@ -164,6 +212,13 @@ namespace FUI
         /// </summary>
         public void Unfreeze(IViewFactory factory)
         {
+            EnsureNotDestroyed();
+
+            if(this.View != null)
+            {
+                return;
+            }
+
             var view = factory.Create(Name);
             if(view == null)
             {
@@ -186,6 +241,8 @@ namespace FUI
         /// <param name="layer">层级</param>
         public void SetLayer(int layer)
         {
+            EnsureNotDestroyed();
+
             this.View.Layer = layer;
             this.Layer = layer;
         }
@@ -196,8 +253,22 @@ namespace FUI
         /// <param name="order"></param>
         public void SetOrder(int order)
         {
+            EnsureNotDestroyed();
+
             this.View.Order = order;
             this.Order = order;
+        }
+
+        /// <summary>
+        /// 确保这个实体还没有被销毁
+        /// </summary>
+        /// <exception cref="System.Exception">如果已经被销毁了但是确还在访问则抛出异常</exception>
+        void EnsureNotDestroyed()
+        {
+            if (destroyed)
+            {
+                throw new System.Exception($"{this} has been destroyed, but you're still trying to access it");
+            }
         }
     }
 }

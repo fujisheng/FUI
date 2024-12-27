@@ -13,7 +13,7 @@ namespace FUI.Manager
 
         static ViewConfigCache()
         {
-            foreach(var contextType in BindingContextTypeCache.BindingContexts)
+            foreach(var contextType in BindingContextTypeResolver.Types)
             {
                 var config = contextType.viewModelType.GetCustomAttribute<DefaultViewConfigAttribute>(false)?.config ?? ViewConfig.Default;
                 viewModelViewConfigLookup.Add(contextType.viewModelType, config);

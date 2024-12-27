@@ -1,7 +1,8 @@
 using FUI.Bindable;
-using System.Threading.Tasks;
-using System.Threading;
+
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace FUI
 {
@@ -25,9 +26,7 @@ namespace FUI
                 viewType = bindingContext.View.GetType(),
             };
 
-            behavior.InternalOnCreate(entity.ViewModel);
-
-            OnEntityCreated?.Invoke(entity);
+            entity.OnCreated();
             return entity;
         }
 
@@ -73,14 +72,14 @@ namespace FUI
             {
                 return null;
             }
-            if (!BindingContextTypeCache.TryGetContextType(viewModelType, view.Name, out var contextType, out var resultViewModelType))
+            if (!BindingContextTypeResolver.TryGetContextType(viewModelType, view.Name, out var contextType, out var resultViewModelType))
             {
                 return null;
             }
 
             var viewModel = Activator.CreateInstance(resultViewModelType) as ObservableObject;
             var bindingContext = Activator.CreateInstance(contextType, view, viewModel) as BindingContext;
-            BindingContextTypeCache.TryGetBehaviorType(viewBehaviorType, resultViewModelType, out var behaviorType);
+            BindingContextTypeResolver.TryGetBehaviorType(viewBehaviorType, resultViewModelType, out var behaviorType);
             //如果没有指定视图行为且没有默认的视图行为, 则使用EmptyViewBehavior
             var behavior = behaviorType == null ? new EmptyViewBehavior() : Activator.CreateInstance(behaviorType) as ViewBehavior;
             return Create(bindingContext, behavior);
@@ -96,7 +95,7 @@ namespace FUI
         /// <returns></returns>
         public static UIEntity Create(string viewName, IViewFactory viewFactory, ObservableObject viewModel, ViewBehavior behavior)
         {
-            if (!BindingContextTypeCache.TryGetContextType(viewModel.GetType(), viewName, out var contextType, out _))
+            if (!BindingContextTypeResolver.TryGetContextType(viewModel.GetType(), viewName, out var contextType, out _))
             {
                 return null;
             }
@@ -115,8 +114,8 @@ namespace FUI
         public static UIEntity Create(IView view, ObservableObject viewModel)
         {
             var viewModelType = viewModel.GetType();
-            BindingContextTypeCache.TryGetContextType(viewModelType, view.Name, out var contextType, out _);
-            BindingContextTypeCache.TryGetBehaviorType(null, viewModelType, out var behaviorType);
+            BindingContextTypeResolver.TryGetContextType(viewModelType, view.Name, out var contextType, out _);
+            BindingContextTypeResolver.TryGetBehaviorType(null, viewModelType, out var behaviorType);
             //如果没有指定视图行为且没有默认的视图行为, 则使用EmptyViewBehavior
             var behavior = behaviorType == null ? new EmptyViewBehavior() : Activator.CreateInstance(behaviorType) as ViewBehavior;
             var bindingContext = Activator.CreateInstance(contextType, view, viewModel) as BindingContext;

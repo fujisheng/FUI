@@ -60,12 +60,6 @@ namespace FUI
                 return;
             }
 
-            //TODO：是否允许更新成子类
-            if(this.ViewModel.GetType() != ViewModel.GetType())
-            {
-                throw new System.Exception($"{this.GetType()}  UpdateViewModel Error {viewModel} not {this.ViewModel.GetType()}");
-            }
-
             InternalUnbinding();
             ViewModel = viewModel;
             InternalBinding();
