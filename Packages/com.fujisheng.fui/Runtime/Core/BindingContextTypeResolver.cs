@@ -140,7 +140,7 @@ namespace FUI
         /// </summary>
         static void ResolveAllBindingContext(Type type)
         {
-            if(!typeof(BindingContext).IsAssignableFrom(type) || type.IsAbstract)
+            if (!typeof(IBindingContext<ObservableObject>).IsAssignableFrom(type) || type.IsAbstract)
             {
                 return;
             }

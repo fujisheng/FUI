@@ -22,12 +22,12 @@ namespace FUI
         /// <summary>
         /// 是否已经被销毁
         /// </summary>
-        bool destroyed = false;
+        bool destroyed;
 
         /// <summary>
         /// 绑定上下文
         /// </summary>
-        BindingContext bindingContext;
+        IBindingContext<ObservableObject> bindingContext;
 
         /// <summary>
         /// 绑定上下文类型
@@ -76,13 +76,11 @@ namespace FUI
                 return;
             }
 
-            //TODO:允许更新成对应的子类
-            if (this.ViewModel.GetType() != ViewModel.GetType())
+            if (!this.bindingContext.UpdateViewModel(viewModel)) 
             {
                 throw new System.Exception($"{this.GetType()}  UpdateViewModel Error {viewModel} not {this.ViewModel.GetType()}");
             }
 
-            this.bindingContext.UpdateViewModel(viewModel);
             this.ViewModel = viewModel;
             this.Behavior.UpdateViewModel(viewModel);
             SynchronizeProperties();
@@ -120,7 +118,7 @@ namespace FUI
         /// </summary>
         void OnCreated()
         {
-            this.Behavior.InternalOnCreate(ViewModel);
+            this.Behavior.OnCreate(ViewModel);
             OnEntityCreated?.Invoke(this);
         }
 
@@ -131,10 +129,10 @@ namespace FUI
         {
             EnsureNotDestroyed();
 
-            this.bindingContext.InternalBinding();
+            this.bindingContext.Binding();
             SynchronizeProperties();
             this.View.Visible = true;
-            this.Behavior.InternalOnOpen(param);
+            this.Behavior.OnOpen(param);
 
             OnEntityEnabled?.Invoke(this);
         }
@@ -146,9 +144,9 @@ namespace FUI
         {
             EnsureNotDestroyed();
 
-            this.Behavior.InternalOnClose();
+            this.Behavior.OnClose();
             this.View.Visible = false;
-            this.bindingContext.InternalUnbinding();
+            this.bindingContext.Unbinding();
 
             OnEntityDisabled?.Invoke(this);
         }
@@ -160,7 +158,7 @@ namespace FUI
         {
             EnsureNotDestroyed();
 
-            this.Behavior.InternalOnFocus();
+            this.Behavior.OnFocus();
 
             OnEntityFocused?.Invoke(this);
         }
@@ -172,7 +170,7 @@ namespace FUI
         {
             EnsureNotDestroyed();
 
-            this.Behavior.InternalOnUnfocus();
+            this.Behavior.OnUnfocus();
 
             OnEntityUnfocused?.Invoke(this);
         }
@@ -184,8 +182,8 @@ namespace FUI
         {
             EnsureNotDestroyed();
 
-            this.bindingContext.InternalUnbinding();
-            this.Behavior.InternalOnDestroy();
+            this.bindingContext.Unbinding();
+            this.Behavior.OnDestroy();
             this.View.Destroy();
 
             OnEntityDestoryed?.Invoke(this);
@@ -200,7 +198,7 @@ namespace FUI
         {
             EnsureNotDestroyed();
 
-            this.bindingContext.InternalUnbinding();
+            this.bindingContext.Unbinding();
             this.View.Destroy();
             this.View = null;
 
