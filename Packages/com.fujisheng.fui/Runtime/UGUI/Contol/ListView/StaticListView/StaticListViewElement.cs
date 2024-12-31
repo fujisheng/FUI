@@ -16,9 +16,9 @@ namespace FUI.UGUI.Control
 
         List<(UIEntity entity, GameObject gameObject)> items;
 
-        protected override void Initialize()
+        protected override void OnInitialize()
         {
-            base.Initialize();
+            base.OnInitialize();
             itemPrefab.SetActive(false);
             items = new List<(UIEntity context, GameObject gameObject)>();
         }

@@ -40,9 +40,9 @@ namespace FUI.UGUI.Control
         /// </summary>
         public BindableProperty<Color> Color { get; private set; }
 
-        protected override void Initialize()
+        protected override void OnInitialize()
         {
-            base.Initialize();
+            base.OnInitialize();
 
             Text = new BindableProperty<string>(Component.text, (oldValue, newValue) => Component.text = newValue);
             TextObject = new BindableProperty<object>(Component.text, (oldValue, newValue) => Text.Value = newValue?.ToString());
@@ -52,9 +52,9 @@ namespace FUI.UGUI.Control
             Color = new BindableProperty<Color>(Component.color, (oldValue, newValue) => Component.color = newValue);
         }
 
-        protected override void Destroy()
+        protected override void OnDestroy()
         {
-            base.Destroy();
+            base.OnDestroy();
 
             Text.Dispose();
             TextObject.Dispose();

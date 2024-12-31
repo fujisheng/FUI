@@ -16,7 +16,7 @@ namespace FUI.UGUI.Control
         /// </summary>
         public BindableProperty<ObservableObject> Data { get; private set; }
 
-        protected override void Initialize()
+        protected override void OnInitialize()
         {
             view = View.Create(this.AssetLoader, this.gameObject, gameObject.name, true);
 
@@ -49,7 +49,7 @@ namespace FUI.UGUI.Control
             this.data = newValue;
         }
 
-        protected override void Destroy()
+        protected override void OnDestroy()
         {
             Data.Dispose();
             entity.Disable();

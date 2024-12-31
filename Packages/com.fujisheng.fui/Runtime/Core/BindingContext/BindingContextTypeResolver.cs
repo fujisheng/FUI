@@ -140,7 +140,7 @@ namespace FUI
         /// </summary>
         static void ResolveAllBindingContext(Type type)
         {
-            if (!typeof(IBindingContext<ObservableObject>).IsAssignableFrom(type) || type.IsAbstract)
+            if (!typeof(IBindingContext).IsAssignableFrom(type) || type.IsAbstract)
             {
                 return;
             }
@@ -180,7 +180,7 @@ namespace FUI
         /// </summary>
         static void ResolveViewModelDefaultBehavior(Type type)
         {
-            if (!typeof(IViewBehavior<ObservableObject>).IsAssignableFrom(type) || type.IsAbstract)
+            if (!typeof(IViewBehavior).IsAssignableFrom(type) || type.IsAbstract)
             {
                 return;
             }

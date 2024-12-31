@@ -172,8 +172,8 @@ namespace FUI.Manager
             }
 
             var viewConfig = ViewConfigCache.Get(entity.ViewModel);
-            entity.SetLayer(viewConfig.layer);
-            entity.SetOrder(uiStack.Count == 0 ? 0 : uiStack.Peek().View.Order + 1);
+            entity.Layer = viewConfig.layer;
+            entity.Order = uiStack.Count == 0 ? 0 : uiStack.Peek().Order + 1;
 
             //如果是全屏界面则使得背后的所有界面都不可见
             if (viewConfig.flag.HasFlag(ViewFlag.FullScreen))
@@ -181,7 +181,7 @@ namespace FUI.Manager
                 for (int i = uiStack.Count - 1; i >= 0; i--)
                 {
                     var view = uiStack[i];
-                    if (view.View.Layer <= entity.View.Layer)
+                    if (view.Layer <= entity.Layer)
                     {
                         view.Disable();
                     }

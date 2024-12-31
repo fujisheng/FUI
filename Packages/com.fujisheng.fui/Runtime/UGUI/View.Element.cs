@@ -21,7 +21,8 @@ namespace FUI.UGUI
 
 		public IElement Parent { get; private set; }
 
-		public IElement[] Children { get; private set; }
+		List<IElement> children;
+		public IReadOnlyList<IElement> Children => children;
 
 		/// <summary>
 		/// 初始化这个界面的视觉元素
@@ -30,6 +31,7 @@ namespace FUI.UGUI
 		{
 			this.elements = new Dictionary<ElementKey, IElement>();
 			this.namedElements = new Dictionary<string, List<IElement>>();
+			this.children = new List<IElement>();
 
 			var openList = new Queue<Transform>();
 			openList.Enqueue(this.gameObject.transform);
@@ -91,7 +93,8 @@ namespace FUI.UGUI
 
 			var key = new ElementKey(element.Name, element.GetType());
 			elements[key] = uguiElement;
-			AddChildToNamedElements(uguiElement);
+			children.Add(uguiElement);
+            AddChildToNamedElements(uguiElement);
 		}
 
 		/// <summary>
@@ -126,7 +129,8 @@ namespace FUI.UGUI
 			}
 
 			elements.Remove(new ElementKey(element.Name, element.GetType()));
-			uguiElement.Destroy();
+            children.Remove(uguiElement);
+            uguiElement.OnDestroy();
 			RemoveFromNamedElements(uguiElement);
 		}
 

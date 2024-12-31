@@ -83,7 +83,7 @@ namespace FUI.UGUI.Control
 
         #endregion
 
-        protected override void Initialize()
+        protected override void OnInitialize()
         {
             Component = GetComponent<TComponent>();
             if(Component == null)
@@ -108,7 +108,7 @@ namespace FUI.UGUI.Control
             OffsetMax = new BindableProperty<Vector2>(RectTransform.offsetMax, (oldValue, newValue) => RectTransform.offsetMax = newValue);
         }
 
-        protected override void Destroy()
+        protected override void OnDestroy()
         {
             Position.Dispose();
             LocalPosition.Dispose();

@@ -47,7 +47,7 @@ namespace FUI.Editor
                 return null;
             }
 
-            return Entities.FirstOrDefault(item => item.View == view);
+            return Entities.FirstOrDefault(item => item.OwnsView(view));
         }
     }
 }

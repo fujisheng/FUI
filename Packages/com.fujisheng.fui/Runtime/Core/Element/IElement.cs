@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FUI
 {
@@ -17,7 +18,7 @@ namespace FUI
         /// <summary>
         /// 所有子节点
         /// </summary>
-        IElement[] Children { get; }
+        IReadOnlyList<IElement> Children { get; }
 
         /// <summary>
         /// 添加一个子节点

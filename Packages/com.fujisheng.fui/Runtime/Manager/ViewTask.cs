@@ -239,8 +239,8 @@ namespace FUI.Manager
         /// <param name="entity">当前ui实体</param>
         void SetLayer(UIStack stack, UIEntity entity, ViewConfig viewConfig)
         {
-            entity.SetLayer(viewConfig.layer);
-            entity.SetOrder(stack.Count == 0 ? 0 : stack.Peek().View.Order + 1);
+            entity.Layer = viewConfig.layer;
+            entity.Order = stack.Count == 0 ? 0 : stack.Peek().Order + 1;
         }
 
         void OnComplete(UIStack stack, UIEntity entity, ViewConfig viewConfig)
@@ -251,7 +251,7 @@ namespace FUI.Manager
                 for (int i = stack.Count - 1; i >= 0; i--)
                 {
                     var view = stack[i];
-                    if(view.View.Layer <= entity.View.Layer)
+                    if(view.Layer <= entity.Layer)
                     {
                         view.Disable();
                     }
@@ -314,7 +314,7 @@ namespace FUI.Manager
                         continue;
                     }
 
-                    if(view.View.Layer <= entity.View.Layer)
+                    if(view.Layer <= entity.Layer)
                     {
                         view.Enable();
                     }

@@ -25,9 +25,9 @@ namespace FUI.UGUI.Control
         /// </summary>
         public Command<int> OnValueChanged { get; private set; }
 
-        protected override void Initialize()
+        protected override void OnInitialize()
         {
-            base.Initialize();
+            base.OnInitialize();
 
             Value = new BindableProperty<int>(Component.value);
             Options = new BindableProperty<List<string>>(new List<string>(), OnSetOptions);
@@ -48,9 +48,9 @@ namespace FUI.UGUI.Control
             Component.AddOptions(newValue);
         }
 
-        protected override void Destroy()
+        protected override void OnDestroy()
         {
-            base.Destroy();
+            base.OnDestroy();
 
             this.Component.onValueChanged.RemoveAllListeners();
             Value.Dispose();

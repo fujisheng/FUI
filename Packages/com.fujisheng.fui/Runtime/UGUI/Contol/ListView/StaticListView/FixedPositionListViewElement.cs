@@ -11,9 +11,9 @@ namespace FUI.UGUI.Control
     {
         List<Transform> positions;
 
-        protected override void Initialize()
+        protected override void OnInitialize()
         {
-            base.Initialize();
+            base.OnInitialize();
             positions = new List<Transform>(transform.childCount);
             for(int i = 0; i < transform.childCount; i++)
             {

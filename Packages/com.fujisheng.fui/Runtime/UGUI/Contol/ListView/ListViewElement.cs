@@ -22,7 +22,7 @@ namespace FUI.UGUI.Control
         /// </summary>
         protected List<UIEntity> ItemEntites { get; private set; }
 
-        protected override void Initialize()
+        protected override void OnInitialize()
         {
             List = new BindableProperty<IReadOnlyObservableList<ObservableObject>>(null, (oldValue, newValue) =>
             {
@@ -122,7 +122,7 @@ namespace FUI.UGUI.Control
             return entity;
         }
 
-        protected override void Destroy()
+        protected override void OnDestroy()
         {
             List.Dispose();
 

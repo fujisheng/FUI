@@ -51,9 +51,9 @@ namespace FUI.UGUI.Control
         /// </summary>
         public BindableProperty<float> FadeDuration { get; private set; }
 
-        protected override void Initialize()
+        protected override void OnInitialize()
         {
-            base.Initialize();
+            base.OnInitialize();
 
             Colors = new BindableProperty<ColorBlock>(
                 Component.colors,
@@ -164,9 +164,9 @@ namespace FUI.UGUI.Control
             Component.interactable = interactable;
         }
 
-        protected override void Destroy()
+        protected override void OnDestroy()
         {
-            base.Destroy();
+            base.OnDestroy();
 
             Colors.Dispose();
             NormalColor.Dispose();

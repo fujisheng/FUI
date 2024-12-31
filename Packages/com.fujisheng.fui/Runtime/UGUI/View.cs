@@ -127,7 +127,7 @@ namespace FUI.UGUI
             InitializeElements();
 
             //初始化View
-            Initialize();
+            OnInitialize();
         }
 
         /// <summary>
@@ -220,30 +220,34 @@ namespace FUI.UGUI
 
             DestroyChildren();
 
+            OnDestroy();
             AssetLoader.DestroyGameObject(gameObject);
             AssetLoader.Release();
-
-            Destroy();
         }
 
         void DestroyChildren()
         {
             foreach (var child in Children)
             {
-                (child as View).Destroy();
+                if(child.Equals(this))
+                {
+                    continue;
+                }
+                (child as View).OnDestroy();
             }
             elements.Clear();
             namedElements.Clear();
+            children.Clear();
         }
 
         /// <summary>
         /// 初始化View
         /// </summary>
-        protected virtual void Initialize() { }
+        protected virtual void OnInitialize() { }
 
         /// <summary>
         /// 销毁View
         /// </summary>
-        protected virtual void Destroy() { }
+        protected virtual void OnDestroy() { }
     }
 }

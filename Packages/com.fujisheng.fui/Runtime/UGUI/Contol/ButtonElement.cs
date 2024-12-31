@@ -38,9 +38,9 @@ namespace FUI.UGUI.Control
         /// </summary>
         public BindableProperty<string> ImageSpriteSource { get; private set; }
 
-        protected override void Initialize()
+        protected override void OnInitialize()
         {
-            base.Initialize();
+            base.OnInitialize();
 
             OnClick = new Command();
             TextElement = new BindableProperty<TextElement>(Component.GetComponentInChildren<TextElement>());
@@ -90,9 +90,9 @@ namespace FUI.UGUI.Control
             ImageElement.Value.SpriteSource.Value = newValue;
         }
 
-        protected override void Destroy()
+        protected override void OnDestroy()
         {
-            base.Destroy();
+            base.OnDestroy();
 
             Component.onClick.RemoveAllListeners();
             OnClick.ClearListeners();

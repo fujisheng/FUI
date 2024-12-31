@@ -38,9 +38,9 @@ namespace FUI.UGUI.Control
         /// </summary>
         public BindableProperty<float> FillAmount { get; private set; }
 
-        protected override void Initialize()
+        protected override void OnInitialize()
         {
-            base.Initialize();
+            base.OnInitialize();
 
             Sprite = new BindableProperty<Sprite>(Component.sprite, (oldValue, newValue) => Component.sprite = newValue);
             SpriteSource = new BindableProperty<string>(null, (oldValue, newValue) => Sprite.Value = AssetLoader.Load<Sprite>(newValue));
@@ -50,9 +50,9 @@ namespace FUI.UGUI.Control
             FillAmount = new BindableProperty<float>(Component.fillAmount, (oldValue, newValue) => Component.fillAmount = newValue);
         }
 
-        protected override void Destroy()
+        protected override void OnDestroy()
         {
-            base.Destroy();
+            base.OnDestroy();
 
             Sprite.Dispose();
             SpriteSource.Dispose();
