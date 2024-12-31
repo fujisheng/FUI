@@ -3,6 +3,8 @@ using FUI.Test;
 using FUI.UGUI;
 using FUI.UGUI.Control;
 
+using PlasticGui.WorkspaceWindow.Items;
+
 using System.Threading.Tasks;
 
 using UnityEngine;
@@ -26,7 +28,12 @@ namespace Test.Entity
     {
         protected override void OnOpen(object param)
         {
-            VM.TestString = "Hello, code binding";
+            VM.TestString = $"Hello, ViewModel1:{this.VM}";
+        }
+
+        protected override void OnUpdateViewModel(TestUIEntityViewModel oldViewModel, TestUIEntityViewModel newViewModel)
+        {
+            VM.TestString = $"Hello, ViewModel2:{newViewModel}";
         }
     }
 
