@@ -33,15 +33,15 @@ namespace Test.Multiple
     {
         async void Start()
         {
-            TestLauncher.Instance.UIManager.OpenAsync("TestMultipleView", "exp +1");
-            await Task.Delay(500);
-            TestLauncher.Instance.UIManager.OpenAsync("TestMultipleView", "hp +10");
-            await Task.Delay(500);
-            TestLauncher.Instance.UIManager.OpenAsync("TestMultipleView", "exp +4");
-            await Task.Delay(500);
-            TestLauncher.Instance.UIManager.OpenAsync("TestMultipleView", "hp +1");
-            await Task.Delay(500);
-            TestLauncher.Instance.UIManager.OpenAsync("TestMultipleView", "hp +40");
+            await TestLauncher.Instance.UIManager.OpenAsync("TestMultipleView", "exp +1");
+            await Task.Delay(1000);
+            await TestLauncher.Instance.UIManager.OpenAsync("TestMultipleView", "hp +10");
+            await Task.Delay(1000);
+            await TestLauncher.Instance.UIManager.OpenAsync("TestMultipleView", "exp +4");
+            await Task.Delay(1000);
+            await TestLauncher.Instance.UIManager.OpenAsync("TestMultipleView", "hp +1");
+            await Task.Delay(1000);
+            await TestLauncher.Instance.UIManager.OpenAsync("TestMultipleView", "hp +40");
         }
     }
 }

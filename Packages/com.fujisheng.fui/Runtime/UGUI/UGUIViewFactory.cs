@@ -45,7 +45,7 @@ namespace FUI.UGUI
             return View.Create(assetLoader, viewObj, viewName);
         }
 
-        public async Task<IView> CreateAsync(string viewName, CancellationToken token)
+        public async ValueTask<IView> CreateAsync(string viewName, CancellationToken token)
         {
             EnsureAssetLoaderFactory();
             if (string.IsNullOrEmpty(viewName))

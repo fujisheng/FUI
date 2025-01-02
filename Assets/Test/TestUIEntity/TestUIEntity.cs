@@ -3,8 +3,6 @@ using FUI.Test;
 using FUI.UGUI;
 using FUI.UGUI.Control;
 
-using PlasticGui.WorkspaceWindow.Items;
-
 using System.Threading.Tasks;
 
 using UnityEngine;
@@ -71,6 +69,10 @@ namespace Test.Entity
             await Task.Delay(2000);
             Debug.Log($"TestUIEntity Destroy");
             entity.Destroy();
+
+            Debug.Log(entity);
+
+            Debug.Log($"isNull ==:{entity == null}  equals:{entity.Equals(null)}");
 
             await Task.Delay(2000);
             Debug.Log($"TestUIEntity Enable");

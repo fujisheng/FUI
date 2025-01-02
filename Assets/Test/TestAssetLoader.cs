@@ -43,7 +43,7 @@ namespace FUI.Test
             return UnityEngine.Object.Instantiate(prefab);
         }
 
-        public async Task<GameObject> CreateGameObjectAsync(string path, CancellationToken? cancellationToken)
+        public async ValueTask<GameObject> CreateGameObjectAsync(string path, CancellationToken? cancellationToken)
         {
             var prefab = await LoadAsync<GameObject>(path, cancellationToken);
             return UnityEngine.Object.Instantiate(prefab);
@@ -59,7 +59,7 @@ namespace FUI.Test
             return Resources.Load<T>(path);
         }
 
-        public async Task<T> LoadAsync<T>(string path, CancellationToken? cancellationToken) where T : UnityEngine.Object
+        public async ValueTask<T> LoadAsync<T>(string path, CancellationToken? cancellationToken) where T : UnityEngine.Object
         {
             var request = Resources.LoadAsync(path);
             await request;

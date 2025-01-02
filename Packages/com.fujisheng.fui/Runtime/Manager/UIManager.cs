@@ -68,7 +68,7 @@ namespace FUI.Manager
         /// 通过默认的ViewModel异步打开一个界面
         /// </summary>
         /// <param name="viewName">界面名字</param>
-        public async Task OpenAsync(string viewName, object param = null)
+        public async ValueTask OpenAsync(string viewName, object param = null)
         {
             OpenView(new UIOpenTaskParam(viewName, viewFactory, param: param, isAsync: true));
             await WaitingForAllTaskComplete();
@@ -89,7 +89,7 @@ namespace FUI.Manager
         /// </summary>
         /// <typeparam name="TViewModel">指定的ViewModel类型</typeparam>
         /// <param name="viewName">要打开的界面名字</param>
-        public async Task OpenAsync<TViewModel>(string viewName, object param) where TViewModel : ObservableObject
+        public async ValueTask OpenAsync<TViewModel>(string viewName, object param) where TViewModel : ObservableObject
         {
             OpenView(new UIOpenTaskParam(viewName, viewFactory, typeof(TViewModel), param: param, isAsync: true));
             await WaitingForAllTaskComplete();
@@ -112,7 +112,7 @@ namespace FUI.Manager
         /// <typeparam name="TViewModel">指定的ViewModel类型</typeparam>
         /// <typeparam name="TBehavior">指定的ViewBehavior类型</typeparam>
         /// <param name="viewName">要打开的界面名字</param>
-        public async Task OpenAsync<TViewModel, TBehavior>(string viewName, object param) where TViewModel : ObservableObject where TBehavior : ViewBehavior<TViewModel>
+        public async ValueTask OpenAsync<TViewModel, TBehavior>(string viewName, object param) where TViewModel : ObservableObject where TBehavior : ViewBehavior<TViewModel>
         {
             OpenView(new UIOpenTaskParam(viewName, viewFactory, typeof(TViewModel), typeof(TBehavior), param, true));
             await WaitingForAllTaskComplete();
@@ -284,7 +284,7 @@ namespace FUI.Manager
         /// 等待所有命令执行完毕
         /// </summary>
         /// <returns></returns>
-        public async Task WaitingForAllTaskComplete()
+        public async ValueTask WaitingForAllTaskComplete()
         {
             if(taskQueue.Count == 0)
             {
