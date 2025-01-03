@@ -51,93 +51,67 @@ namespace FUI.Bindable
         {
             invocationList.Clear();
         }
+
+        /// <summary>
+        /// 安全执行  因为有可能在委托执行过程中修改集合
+        /// </summary>
+        /// <param name="action">要执行的内容</param>
+        protected void SafeInvoke(Action<T> action)
+        {
+            if (invocationList.Count == 0)
+            {
+                return;
+            }
+
+            for (int i = invocationList.Count - 1; i >= 0; i--)
+            {
+                if (i >= invocationList.Count)
+                {
+                    continue;
+                }
+
+                action?.Invoke(invocationList[i]);
+            }
+        }
     }
 
     public class Command : CommandTemplate<Action>
     {
-        public void Invoke()
-        {
-            foreach (var action in invocationList)
-            {
-                action?.Invoke();
-            }
-        }
+        public void Invoke() => SafeInvoke((item) => item.Invoke());
     }
 
     public class Command<TArgs> : CommandTemplate<Action<TArgs>>
     {
-        public void Invoke(TArgs args)
-        {
-            foreach (var action in invocationList)
-            {
-                action?.Invoke(args);
-            }
-        }
+        public void Invoke(TArgs args) => SafeInvoke((item) => item.Invoke(args));
     }
 
     public class Command<TArgs1, TArgs2> : CommandTemplate<Action<TArgs1, TArgs2>>
     {
-        public void Invoke(TArgs1 args1, TArgs2 args2)
-        {
-            foreach (var action in invocationList)
-            {
-                action?.Invoke(args1, args2);
-            }
-        }
+        public void Invoke(TArgs1 args1, TArgs2 args2) => SafeInvoke((item) => item.Invoke(args1, args2));
     }
 
     public class Command<TArgs1, TArgs2, TArgs3> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3>>
     {
-        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3)
-        {
-            foreach (var action in invocationList)
-            {
-                action?.Invoke(args1, args2, args3);
-            }
-        }
+        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3) => SafeInvoke((item) => item.Invoke(args1, args2, args3));
     }
 
     public class Command<TArgs1, TArgs2, TArgs3, TArgs4> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3, TArgs4>>
     {
-        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4)
-        {
-            foreach (var action in invocationList)
-            {
-                action?.Invoke(args1, args2, args3, args4);
-            }
-        }
+        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4)=> SafeInvoke((item) => item.Invoke(args1, args2, args3, args4));
     }
 
     public class Command<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5>>
     {
-        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4, TArgs5 args5)
-        {
-            foreach (var action in invocationList)
-            {
-                action?.Invoke(args1, args2, args3, args4, args5);
-            }
-        }
+        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4, TArgs5 args5)=> SafeInvoke((item) => item.Invoke(args1, args2, args3, args4, args5));
     }
 
     public class Command<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5, TArgs6> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5, TArgs6>>
     {
-        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4, TArgs5 args5, TArgs6 args6)
-        {
-            foreach (var action in invocationList)
-            {
-                action?.Invoke(args1, args2, args3, args4, args5, args6);
-            }
-        }
+        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4, TArgs5 args5, TArgs6 args6)=> SafeInvoke((item) => item.Invoke(args1, args2, args3, args4, args5, args6));
     }
 
     public class Command<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5, TArgs6, TArgs7> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5, TArgs6, TArgs7>>
     {
-        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4, TArgs5 args5, TArgs6 args6, TArgs7 args7)
-        {
-            foreach (var action in invocationList)
-            {
-                action?.Invoke(args1, args2, args3, args4, args5, args6, args7);
-            }
-        }
+        public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4, TArgs5 args5, TArgs6 args6, TArgs7 args7)=> SafeInvoke((item) => item.Invoke(args1, args2, args3, args4, args5, args6, args7));
     }
 }

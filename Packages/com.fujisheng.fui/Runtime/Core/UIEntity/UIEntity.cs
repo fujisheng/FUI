@@ -301,6 +301,11 @@ namespace FUI
         {
             SafeExecute(() =>
             {
+                if (State.HasFlag(UIEntityState.Enabled))
+                {
+                    this.behavior.OnDisable();
+                }
+
                 this.behavior.OnDestroy();
                 this.bindingContext?.Unbinding();
                 this.view?.Destroy();

@@ -40,7 +40,7 @@ namespace Test.Entity
         async void Start()
         {
             var assetLoaderFactory = new TestAssetLoaderFactory();
-            var viewFactory = new UGUIViewFactory(assetLoaderFactory);
+            var viewFactory = new ViewFactory(assetLoaderFactory);
 
             var entity = UIEntity.Create("TestUIEntityView", viewFactory);
             UnityEngine.Debug.Log("TestUIEntity created.");

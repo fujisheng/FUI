@@ -45,9 +45,9 @@ namespace FUI.UGUI.Control
             MaterialSource = new BindableProperty<string>(null, (oldValue, newValue) => Material.Value = AssetLoader.Load<Material>(newValue));
         }
 
-        protected override void OnDestroy()
+        protected override void OnRelease()
         {
-            base.OnDestroy();
+            base.OnRelease();
 
             Texture.Dispose();
             TextureSource.Dispose();

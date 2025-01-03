@@ -22,20 +22,27 @@ namespace FUI.UGUI.Control
         {
             base.OnInitialize();
 
-            Text = new BindableProperty<string>(Component.text, (oldValue, newValue) => Component.text = newValue);
+            Text = new BindableProperty<string>(Component.text, (oldValue, newValue) => Component.text = UnifiedString(newValue));
             OnValueChanged = new Command<string>();
             Component.onValueChanged.AddListener(OnInputFieldValueChanged);
         }
 
         void OnInputFieldValueChanged(string value)
         {
-            this.Text.Value = value;
-            OnValueChanged.Invoke(value);
+            this.Text.Value = UnifiedString(value);
+            OnValueChanged.Invoke(UnifiedString(value));
         }
 
-        protected override void OnDestroy()
+        /// <summary>
+        /// 统一字符串  这个地方如果给Component.text赋值为空字符串会触发事件InputFieldValueChanged，值为null，导致无限循环
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        string UnifiedString(string value)=> string.IsNullOrEmpty(value) ? string.Empty : value;
+
+        protected override void OnRelease()
         {
-            base.OnDestroy();
+            base.OnRelease();
 
             this.Component.onValueChanged.RemoveAllListeners();
             Text.Dispose();

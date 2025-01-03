@@ -5,7 +5,7 @@ namespace FUI
     /// <summary>
     /// 适用于列表的视图元素
     /// </summary>
-    public interface IListView : IView
+    public interface IListView : IElement
     {
         /// <summary>
         /// 数据

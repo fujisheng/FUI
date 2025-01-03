@@ -9,7 +9,6 @@ namespace FUI.UGUI.Control
     {
         UIEntity entity;
         ObservableObject data;
-        IView view;
 
         /// <summary>
         /// 数据
@@ -18,7 +17,7 @@ namespace FUI.UGUI.Control
 
         protected override void OnInitialize()
         {
-            view = View.Create(this.AssetLoader, this.gameObject, gameObject.name, true);
+            base.OnInitialize();
 
             Data = new BindableProperty<ObservableObject>(null, OnUpdateData);
         }
@@ -39,7 +38,7 @@ namespace FUI.UGUI.Control
 
             if (entity == null || newValue.GetType() != data.GetType())
             {
-                entity = UIEntity.Create(view, newValue);
+                entity = UIEntity.Create(this, newValue);
                 entity.Enable();
             }
             else
@@ -49,7 +48,7 @@ namespace FUI.UGUI.Control
             this.data = newValue;
         }
 
-        protected override void OnDestroy()
+        protected override void OnRelease()
         {
             Data.Dispose();
             entity.Disable();

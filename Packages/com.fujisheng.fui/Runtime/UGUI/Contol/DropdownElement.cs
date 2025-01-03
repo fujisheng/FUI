@@ -48,9 +48,9 @@ namespace FUI.UGUI.Control
             Component.AddOptions(newValue);
         }
 
-        protected override void OnDestroy()
+        protected override void OnRelease()
         {
-            base.OnDestroy();
+            base.OnRelease();
 
             this.Component.onValueChanged.RemoveAllListeners();
             Value.Dispose();

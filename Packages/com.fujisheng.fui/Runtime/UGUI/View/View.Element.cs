@@ -10,32 +10,31 @@ namespace FUI.UGUI
 		/// <summary>
 		/// 存储所有的视觉元素
 		/// </summary>
-		Dictionary<ElementKey, IElement> elements;
+		Dictionary<ElementUniqueKey, IElement> elements;
 
 		/// <summary>
 		/// 根据名字存储的视觉元素
 		/// </summary>
 		Dictionary<string, List<IElement>> namedElements;
 
-		string IElement.Name => gameObject.name;
-
-		public IElement Parent { get; private set; }
-
 		List<IElement> children;
-		public IReadOnlyList<IElement> Children => children;
+        /// <summary>
+        /// 这个View的所有视觉元素 包含自身
+        /// </summary>
+        public IReadOnlyList<IElement> Elements => children;
 
 		/// <summary>
 		/// 初始化这个界面的视觉元素
 		/// </summary>
 		protected virtual void InitializeElements()
 		{
-			this.elements = new Dictionary<ElementKey, IElement>();
+			this.elements = new Dictionary<ElementUniqueKey, IElement>();
 			this.namedElements = new Dictionary<string, List<IElement>>();
 			this.children = new List<IElement>();
 
 			var openList = new Queue<Transform>();
 			openList.Enqueue(this.gameObject.transform);
-			var elementsTemp = new List<View>();
+			var elementsTemp = new List<Element>();
 			//获取所有的视觉元素组件 包含自身
 			while (openList.Count > 0)
 			{
@@ -48,16 +47,15 @@ namespace FUI.UGUI
                     //如果这个元素是自身则添加到子元素中 不再初始化且不用设置AssetLoader
                     if (element.gameObject == this.gameObject)
 					{
-						AddChild(element);
+						AddElement(element);
                     }
                     //如果这个元素是视觉元素且不是自己则初始化
                     else
 					{
                         element.Parent = this;
-                        element.AssetLoader = AssetLoader;
-                        element.InternalInitialize();
+                        element.InternalInitialize(AssetLoader);
 
-                        AddChild(element);
+                        AddElement(element);
                     }
 
 					//如果这个元素是容器元素且不是自身则不再继续向下查找
@@ -84,14 +82,14 @@ namespace FUI.UGUI
 		/// 添加一个视觉元素
 		/// </summary>
 		/// <param name="element">要添加的视觉元素</param>
-		public void AddChild(IElement element)
+		public void AddElement(IElement element)
 		{
-			if (!(element is View uguiElement))
+			if (!(element is Element uguiElement))
 			{
 				return;
 			}
 
-			var key = new ElementKey(element.Name, element.GetType());
+			var key = new ElementUniqueKey(element.Name, element.GetType());
 			elements[key] = uguiElement;
 			children.Add(uguiElement);
             AddChildToNamedElements(uguiElement);
@@ -121,16 +119,16 @@ namespace FUI.UGUI
 		/// 移除一个子元素
 		/// </summary>
 		/// <param name="element"></param>
-		public void RemoveChild(IElement element)
+		public void RemoveElement(IElement element)
 		{
-			if (!(element is View uguiElement))
+			if (!(element is Element uguiElement))
 			{
 				return;
 			}
 
-			elements.Remove(new ElementKey(element.Name, element.GetType()));
+			elements.Remove(new ElementUniqueKey(element.Name, element.GetType()));
             children.Remove(uguiElement);
-            uguiElement.OnDestroy();
+			uguiElement.InternalOnRelease();
 			RemoveFromNamedElements(uguiElement);
 		}
 
@@ -154,11 +152,11 @@ namespace FUI.UGUI
 		/// <summary>
 		/// 移除所有的子元素
 		/// </summary>
-		public void RemoveAllChildren()
+		public void RemoveAllElements()
 		{
 			foreach (var item in elements.Values)
 			{
-				RemoveChild(item);
+				RemoveElement(item);
 			}
 		}
 
@@ -168,9 +166,9 @@ namespace FUI.UGUI
 		/// <typeparam name="T">视觉元素类型</typeparam>
 		/// <param name="path">路径</param>
 		/// <returns></returns>
-		public T GetChild<T>(string path) where T : IElement
+		public T GetElement<T>(string path) where T : IElement
 		{
-			return (T)GetChild(path, typeof(T));
+			return (T)GetElement(path, typeof(T));
 		}
 
         /// <summary>
@@ -179,9 +177,9 @@ namespace FUI.UGUI
         /// <param name="path">路径</param>
         /// <param name="elementType">元素类型</param>
         /// <returns></returns>
-        public IElement GetChild(string path, Type elementType)
+        public IElement GetElement(string path, Type elementType)
         {
-            var key = new ElementKey(path, elementType);
+            var key = new ElementUniqueKey(path, elementType);
             if (!elements.TryGetValue(key, out var element))
             {
                 return GetOrCacheElement(path, elementType);
@@ -209,7 +207,7 @@ namespace FUI.UGUI
                     continue;
                 }
 
-                var key = new ElementKey(path, elementType);
+                var key = new ElementUniqueKey(path, elementType);
                 elements[key] = item;
                 return item;
             }

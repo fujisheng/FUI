@@ -10,7 +10,7 @@ namespace FUI.UGUI.Control
     /// <summary>
     /// 列表视图元素基类
     /// </summary>
-    public abstract class ListViewElement : View, IContainerElement, IListView
+    public abstract class ListViewElement : UIElement, IContainerElement, IListView
     {
         /// <summary>
         /// 数据
@@ -122,7 +122,7 @@ namespace FUI.UGUI.Control
             return entity;
         }
 
-        protected override void OnDestroy()
+        protected override void OnRelease()
         {
             List.Dispose();
 

@@ -38,9 +38,6 @@ namespace Test.CodeBinding
             VM.TestString = "Hello, code binding";
             VM.TestFloat = 3.14f;
             VM.TestBool = true;
-
-            //故意让其报错  来查看错误堆栈是否正确显示
-            UnityEngine.Debug.Log(param.ToString());
         }
     }
 

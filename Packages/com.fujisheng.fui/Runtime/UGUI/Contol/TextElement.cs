@@ -52,9 +52,9 @@ namespace FUI.UGUI.Control
             Color = new BindableProperty<Color>(Component.color, (oldValue, newValue) => Component.color = newValue);
         }
 
-        protected override void OnDestroy()
+        protected override void OnRelease()
         {
-            base.OnDestroy();
+            base.OnRelease();
 
             Text.Dispose();
             TextObject.Dispose();

@@ -12,15 +12,10 @@ namespace FUI.Extensions
         /// <exception cref="System.Exception"></exception>
         public static TElement GetElement<TElement>(this IView view, string elementPath) where TElement : class, IElement
         {
-            if (!(view is IElement e))
-            {
-                throw new System.Exception($"{view.Name} not FUI.IElement");
-            }
-
-            var element = e.GetChild<TElement>(elementPath);
+            var element = view.GetElement<TElement>(elementPath);
             if (element == null)
             {
-                throw new System.Exception($"{view.Name} not found {elementPath}:{typeof(TElement)}");
+                throw new System.Exception($"{view.Name} not found {elementPath}({typeof(TElement)})");
             }
 
             return element;

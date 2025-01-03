@@ -7,19 +7,14 @@ namespace FUI.UGUI
     /// <summary>
     /// 适用于UGUI的view基类
     /// </summary>
-    public partial class View : MonoBehaviour, IView
+    public partial class View : UIElement, IView
     {
-        /// <summary>
-        /// 资源加载器
-        /// </summary>
-        protected IAssetLoader AssetLoader { get; private set; }
-
         string viewName;
 
         /// <summary>
         /// 界面名字
         /// </summary>
-        string IView.Name => viewName;
+        string IView.Name => string.IsNullOrEmpty(viewName) ? (this as IElement).Name : viewName;
 
         /// <summary>
         /// 层级属性
@@ -50,74 +45,28 @@ namespace FUI.UGUI
         }
 
         /// <summary>
-        /// 可见性属性
-        /// </summary>
-        public BindableProperty<bool> Visible { get; private set; }
-
-        /// <summary>
-        /// 可见性
-        /// </summary>
-        bool IView.Visible
-        {
-            get { return Visible.Value; }
-            set { Visible.Value = value; }
-        }
-
-        /// <summary>
         /// 可交互属性
         /// </summary>
         public BindableProperty<bool> Interactable { get; private set; }
 
         /// <summary>
-        /// 创建一个UGUIView
+        /// 当这个View被创建时
         /// </summary>
-        /// <param name="assetLoader">资源加载器</param>
-        /// <param name="assetPath">资源路径</param>
-        /// <param name="viewName">view名字</param>
-        /// <param name="initialized">已初始化的</param>
-        /// <returns></returns>
-        public static View Create(IAssetLoader assetLoader, string assetPath, string viewName, bool initialized = false)
-        {
-            var go = assetLoader.CreateGameObject(assetPath);
-            return Create(assetLoader, go, viewName, initialized);
-        }
+        /// <param name="assetLoader">这个view对应的资源加载器</param>
+        void OnCreate(IAssetLoader assetLoader) => InternalInitialize(assetLoader);
 
         /// <summary>
-        /// 创建一个UGUIView
+        /// 当这个View被销毁时
         /// </summary>
-        /// <param name="assetLoader">资源加载器</param>
-        /// <param name="go">游戏实体</param>
-        /// <param name="viewName">view名字</param>
-        /// <param name="initialized">已初始化的</param>
-        /// <returns></returns>
-        public static View Create(IAssetLoader assetLoader, GameObject go, string viewName, bool initialized = false)
-        {
-            if (go == null)
-            {
-                return null;
-            }
-
-            if (!go.TryGetComponent<View>(out var view))
-            {
-                view = go.AddComponent<View>();
-            }
-
-            view.viewName = viewName;
-            view.AssetLoader = assetLoader;
-
-            //如果没有初始化，需要初始化
-            if (!initialized)
-            {
-                view.InternalInitialize();
-            }
-            return view;
-        }
-
+        void IView.Destroy() => InternalOnRelease();
+        
         /// <summary>
-        /// 内部初始化
+        /// 初始化
         /// </summary>
-        void InternalInitialize()
+        protected override void OnInitialize()
         {
+            base.OnInitialize();
+
             Layer = new BindableProperty<int>(GetLayer(), SetLayer);
             Visible = new BindableProperty<bool>(IsVisible(), SetVisible);
             Order = new BindableProperty<int>(GetOrder(), SetOrder);
@@ -125,9 +74,6 @@ namespace FUI.UGUI
 
             //初始化所有的子元素
             InitializeElements();
-
-            //初始化View
-            OnInitialize();
         }
 
         /// <summary>
@@ -208,46 +154,38 @@ namespace FUI.UGUI
             }
         }
 
-        /// <summary>
-        /// 销毁这个View
-        /// </summary>
-        void IView.Destroy()
+        protected override void OnRelease()
         {
+            base.OnRelease();
+
             Visible.Dispose();
             Layer.Dispose();
             Order.Dispose();
             Interactable.Dispose();
 
-            DestroyChildren();
-
-            OnDestroy();
+            ReleaseChildren();
             AssetLoader.DestroyGameObject(gameObject);
             AssetLoader.Release();
         }
 
-        void DestroyChildren()
+        void ReleaseChildren()
         {
-            foreach (var child in Children)
+            foreach (var child in Elements)
             {
                 if(child.Equals(this))
                 {
                     continue;
                 }
-                (child as View).OnDestroy();
+
+                if(child is Element element)
+                {
+                    element.InternalOnRelease();
+                }
             }
+
             elements.Clear();
             namedElements.Clear();
             children.Clear();
         }
-
-        /// <summary>
-        /// 初始化View
-        /// </summary>
-        protected virtual void OnInitialize() { }
-
-        /// <summary>
-        /// 销毁View
-        /// </summary>
-        protected virtual void OnDestroy() { }
     }
 }

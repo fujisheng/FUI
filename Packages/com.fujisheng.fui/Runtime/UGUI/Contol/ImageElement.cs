@@ -50,9 +50,9 @@ namespace FUI.UGUI.Control
             FillAmount = new BindableProperty<float>(Component.fillAmount, (oldValue, newValue) => Component.fillAmount = newValue);
         }
 
-        protected override void OnDestroy()
+        protected override void OnRelease()
         {
-            base.OnDestroy();
+            base.OnRelease();
 
             Sprite.Dispose();
             SpriteSource.Dispose();

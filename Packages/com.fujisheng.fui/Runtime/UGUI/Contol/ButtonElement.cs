@@ -90,9 +90,9 @@ namespace FUI.UGUI.Control
             ImageElement.Value.SpriteSource.Value = newValue;
         }
 
-        protected override void OnDestroy()
+        protected override void OnRelease()
         {
-            base.OnDestroy();
+            base.OnRelease();
 
             Component.onClick.RemoveAllListeners();
             OnClick.ClearListeners();

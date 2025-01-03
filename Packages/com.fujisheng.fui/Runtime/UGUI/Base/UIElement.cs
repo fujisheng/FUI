@@ -2,43 +2,17 @@ using FUI.Bindable;
 
 using UnityEngine;
 
-namespace FUI.UGUI.Control
+namespace FUI.UGUI
 {
     /// <summary>
     /// 适用于UGUI的元素基类
     /// </summary>
-    /// <typeparam name="TComponent"></typeparam>
-    public abstract class UIElement<TComponent> : View where TComponent : Component
+    public abstract class UIElement : Element
     {
-        protected TComponent Component { get; private set; }
+        /// <summary>
+        /// RectTransform
+        /// </summary>
         protected RectTransform RectTransform { get; private set; }
-
-        #region Transform
-        /// <summary>
-        /// transform.position
-        /// </summary>
-        public BindableProperty<Vector3> Position { get; private set; }
-
-        /// <summary>
-        /// transform.localPosition
-        /// </summary>
-        public BindableProperty<Vector3> LocalPosition { get; private set; }
-
-        /// <summary>
-        /// transform.rotation
-        /// </summary>
-        public BindableProperty<Quaternion> Rotation { get; private set; }
-
-        /// <summary>
-        /// transform.localRotation
-        /// </summary>
-        public BindableProperty<Quaternion> LocalRotation { get; private set; }
-
-        /// <summary>
-        /// transform.localScale
-        /// </summary>
-        public BindableProperty<Vector3> LocalScale { get; private set; }
-        #endregion
 
         #region RectTransform
         /// <summary>
@@ -85,19 +59,10 @@ namespace FUI.UGUI.Control
 
         protected override void OnInitialize()
         {
-            Component = GetComponent<TComponent>();
-            if(Component == null)
-            {
-                throw new System.Exception($"{name} {this.GetType()} RequireComponent {typeof(TComponent)} is null!!!");
-            }
+            base.OnInitialize();
 
             RectTransform = transform.GetComponent<RectTransform>();
 
-            Position = new BindableProperty<Vector3>(transform.position, (oldValue, newValue) => transform.position = newValue);
-            LocalPosition = new BindableProperty<Vector3>(transform.localPosition, (oldValue, newValue) => transform.localPosition = newValue);
-            Rotation = new BindableProperty<Quaternion>(transform.rotation, (oldValue, newValue) => transform.rotation = newValue);
-            LocalRotation = new BindableProperty<Quaternion>(transform.localRotation, (oldValue, newValue) => transform.localRotation = newValue);
-            LocalScale = new BindableProperty<Vector3>(transform.localScale, (oldValue, newValue) => transform.localScale = newValue);
             AnchorMin = new BindableProperty<Vector2>(RectTransform.anchorMin, (oldValue, newValue) => RectTransform.anchorMin = newValue);
             AnchorMax = new BindableProperty<Vector2>(RectTransform.anchorMax, (oldValue, newValue) => RectTransform.anchorMax = newValue);
             AnchoredPostion = new BindableProperty<Vector2>(RectTransform.anchoredPosition, (oldValue, newValue) => RectTransform.anchoredPosition = newValue);
@@ -108,13 +73,10 @@ namespace FUI.UGUI.Control
             OffsetMax = new BindableProperty<Vector2>(RectTransform.offsetMax, (oldValue, newValue) => RectTransform.offsetMax = newValue);
         }
 
-        protected override void OnDestroy()
+        protected override void OnRelease()
         {
-            Position.Dispose();
-            LocalPosition.Dispose();
-            Rotation.Dispose();
-            LocalRotation.Dispose();
-            LocalScale.Dispose();
+            base.OnRelease();
+
             AnchorMin.Dispose();
             AnchorMax.Dispose();
             AnchoredPostion.Dispose();
@@ -123,6 +85,25 @@ namespace FUI.UGUI.Control
             Piovt.Dispose();
             OffsetMin.Dispose();
             OffsetMax.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// 适用于UGUI的元素基类
+    /// </summary>
+    /// <typeparam name="TComponent"></typeparam>
+    public abstract class UIElement<TComponent> : UIElement where TComponent : Component
+    {
+        protected TComponent Component { get; private set; }
+
+        protected override void OnInitialize()
+        {
+            base.OnInitialize();
+            Component = GetComponent<TComponent>();
+            if(Component == null)
+            {
+                throw new System.Exception($"{name} {this.GetType()} RequireComponent {typeof(TComponent)} is null!!!");
+            }
         }
     }
 }

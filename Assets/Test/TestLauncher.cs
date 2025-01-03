@@ -21,6 +21,7 @@ namespace FUI.Test
                     if(GameObject.Find("[Test]") == null)
                     {
                         GameObject go = new GameObject("[Test]");
+                        GameObject.DontDestroyOnLoad(go);
                         instance = go.AddComponent<TestLauncher>();
                     }
                     else
@@ -35,7 +36,7 @@ namespace FUI.Test
         {
             Models.Instance.Initialize();
             var assetLoaderFactory = new TestAssetLoaderFactory();
-            var viewFactory = new UGUIViewFactory(assetLoaderFactory);
+            var viewFactory = new ViewFactory(assetLoaderFactory);
             UIManager = new UIManager(viewFactory);
             UIManager.Initialize();
             UnityEngine.Debug.Log($"uiManager  initialize.......");

@@ -3,7 +3,7 @@ using FUI.Bindable;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace FUI.UGUI.Control
+namespace FUI.UGUI
 {
     /// <summary>
     /// 可选择元素
@@ -11,6 +11,11 @@ namespace FUI.UGUI.Control
     /// <typeparam name="T">元素类型</typeparam>
     public abstract class SelectableElement<T> : UIElement<T> where T : Selectable
     {
+        /// <summary>
+        /// 可交互
+        /// </summary>
+        public BindableProperty<bool> Interactable { get; private set; }
+
         /// <summary>
         /// selectable.colors
         /// </summary>
@@ -54,6 +59,11 @@ namespace FUI.UGUI.Control
         protected override void OnInitialize()
         {
             base.OnInitialize();
+
+            Interactable = new BindableProperty<bool>(
+                Component.interactable,
+                (oldValue, newValue) => Component.interactable = newValue
+            );
 
             Colors = new BindableProperty<ColorBlock>(
                 Component.colors,
@@ -159,15 +169,11 @@ namespace FUI.UGUI.Control
             );
         }
 
-        protected sealed override void SetInteractable(bool oldInteractable, bool interactable)
+        protected override void OnRelease()
         {
-            Component.interactable = interactable;
-        }
+            base.OnRelease();
 
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-
+            Interactable.Dispose();
             Colors.Dispose();
             NormalColor.Dispose();
             HighlightedColor.Dispose();

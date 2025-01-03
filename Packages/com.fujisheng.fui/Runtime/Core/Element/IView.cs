@@ -1,4 +1,7 @@
-﻿namespace FUI
+﻿using System;
+using System.Collections.Generic;
+
+namespace FUI
 {
     /// <summary>
     /// 视图接口
@@ -21,9 +24,25 @@
         int Order { get; set; }
 
         /// <summary>
-        /// 可见性
+        /// 所有子节点
         /// </summary>
-        bool Visible { get; set; }
+        IReadOnlyList<IElement> Elements { get; }
+
+        /// <summary>
+        /// 获取一个子节点
+        /// </summary>
+        /// <typeparam name="T">子节点的类型</typeparam>
+        /// <param name="path">子节点的路径</param>
+        /// <returns></returns>
+        T GetElement<T>(string path) where T : IElement;
+
+        /// <summary>
+        /// 获取一个子节点
+        /// </summary>
+        /// <param name="path">子节点路径</param>
+        /// <param name="elementType">子节点类型</param>
+        /// <returns></returns>
+        IElement GetElement(string path, Type elementType);
 
         /// <summary>
         /// 销毁

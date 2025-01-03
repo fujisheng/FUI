@@ -146,13 +146,13 @@ namespace FUI.Editor
                 if (GUILayout.Button(targetInfoContent, GUILayout.Width(300)))
                 {
                     var targetType = info.targetInfo.type.GetNamedType();
-                    var target = (this.target as IView).GetChild(info.targetInfo.path, targetType);
-                    EditorGUIUtility.PingObject((target as View).gameObject);
+                    var target = (this.target as IView).GetElement(info.targetInfo.path, targetType);
+                    EditorGUIUtility.PingObject((target as Element).gameObject);
                 }
                 if(GUILayout.Button("?", GUILayout.Width(20)))
                 {
                     var targetType = info.targetInfo.type.GetNamedType();
-                    var target = (this.target as IView).GetChild(info.targetInfo.path, targetType);
+                    var target = (this.target as IView).GetElement(info.targetInfo.path, targetType);
                     var targetProperty = targetType.GetProperty(info.targetInfo.propertyName);
                     var property = targetProperty.GetValue(target);
                     DetailsWindow.ShowDetails(Vector2.zero, "TargetValue", property, $"{info.targetInfo.type}.{info.targetInfo.propertyName}({info.targetInfo.propertyType})");
@@ -209,8 +209,8 @@ namespace FUI.Editor
                 if (GUILayout.Button(targetInfoContent, GUILayout.Width(300)))
                 {
                     var targetType = info.targetInfo.type.GetNamedType();
-                    var target = (this.target as IView).GetChild(info.targetInfo.path, targetType);
-                    EditorGUIUtility.PingObject((target as View).gameObject);
+                    var target = (this.target as IView).GetElement(info.targetInfo.path, targetType);
+                    EditorGUIUtility.PingObject((target as Element).gameObject);
                 }
             }
             EditorGUILayout.EndHorizontal();

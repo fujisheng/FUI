@@ -2,12 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+using UnityEngine;
+
 namespace FUI.UGUI
 {
     /// <summary>
     /// uguiView构造工厂
     /// </summary>
-    public class UGUIViewFactory : IViewFactory
+    public class ViewFactory : IViewFactory
     {
         readonly IAssetLoaderFactory assetLoaderFactory;
 
@@ -15,7 +17,7 @@ namespace FUI.UGUI
         /// 构造一个UGUIView工厂
         /// </summary>
         /// <param name="assetLoaderFactory">AssetLoader工厂</param>
-        public UGUIViewFactory(IAssetLoaderFactory assetLoaderFactory)
+        public ViewFactory(IAssetLoaderFactory assetLoaderFactory)
         {
             this.assetLoaderFactory = assetLoaderFactory;
         }
@@ -41,6 +43,7 @@ namespace FUI.UGUI
             }
             var assetLoader = assetLoaderFactory.Create(viewName);
             var viewObj = assetLoader.CreateGameObject(viewName);
+            GameObject.DontDestroyOnLoad(viewObj);
             viewObj.SetActive(false);
             return View.Create(assetLoader, viewObj, viewName);
         }
@@ -54,6 +57,7 @@ namespace FUI.UGUI
             }
             var assetLoader = assetLoaderFactory.Create(viewName);
             var viewObj = await assetLoader.CreateGameObjectAsync(viewName, token);
+            GameObject.DontDestroyOnLoad(viewObj);
             viewObj.SetActive(false);
 
             return View.Create(assetLoader, viewObj, viewName);
