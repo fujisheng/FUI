@@ -10,7 +10,6 @@ namespace FUI.UGUI
         /// <param name="assetLoader">资源加载器</param>
         /// <param name="assetPath">资源路径</param>
         /// <param name="viewName">view名字</param>
-        /// <param name="initialized">已初始化的</param>
         /// <returns></returns>
         public static View Create(IAssetLoader assetLoader, string assetPath, string viewName)
         {
@@ -24,7 +23,6 @@ namespace FUI.UGUI
         /// <param name="assetLoader">资源加载器</param>
         /// <param name="go">游戏实体</param>
         /// <param name="viewName">view名字</param>
-        /// <param name="initialized">已初始化的</param>
         /// <returns></returns>
         public static View Create(IAssetLoader assetLoader, GameObject go, string viewName)
         {

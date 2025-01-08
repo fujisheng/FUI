@@ -121,7 +121,7 @@ namespace FUI.Manager
         void OpenView(UIOpenTaskParam param)
         {
             EnsureViewFactory();
-            var viewConfig = ViewConfigCache.GetDefault(param.viewName);
+            var viewConfig = UIConfigResolver.GetDefault(param.viewName);
 
             foreach (var item in taskQueue.Tasks)
             {
@@ -131,7 +131,7 @@ namespace FUI.Manager
                 }
 
                 //不允许多个实例的界面 已经在打开中了 直接返回
-                if((item is OpenViewTask) && viewConfig != null && !viewConfig.Value.flag.HasFlag(ViewFlag.AllowMultiple))
+                if((item is OpenViewTask) && viewConfig != null && !viewConfig.Value.flag.HasFlag(Attributes.AllowMultiple))
                 {
                     return;
                 }
@@ -147,7 +147,7 @@ namespace FUI.Manager
             }
 
             //要打开的界面已经被打开了 且标记为不允许多个实例 则直接置顶
-            if(viewConfig!= null && !viewConfig.Value.flag.HasFlag(ViewFlag.AllowMultiple) && uiStack.GetUIEntity(param.viewName)!=null)
+            if(viewConfig!= null && !viewConfig.Value.flag.HasFlag(Attributes.AllowMultiple) && uiStack.GetUIEntity(param.viewName)!=null)
             {
                 Topping(param.viewName);
                 return;
@@ -171,12 +171,12 @@ namespace FUI.Manager
                 return;
             }
 
-            var viewConfig = ViewConfigCache.Get(entity.ViewModel);
+            var viewConfig = UIConfigResolver.Get(entity.ViewModel);
             entity.Layer = viewConfig.layer;
             entity.Order = uiStack.Count == 0 ? 0 : uiStack.Peek().Order + 1;
 
             //如果是全屏界面则使得背后的所有界面都不可见
-            if (viewConfig.flag.HasFlag(ViewFlag.FullScreen))
+            if (viewConfig.flag.HasFlag(Attributes.FullScreen))
             {
                 for (int i = uiStack.Count - 1; i >= 0; i--)
                 {

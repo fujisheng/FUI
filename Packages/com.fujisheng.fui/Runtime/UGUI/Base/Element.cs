@@ -96,7 +96,7 @@ namespace FUI.UGUI
         /// <summary>
         /// 释放 内部调用
         /// </summary>
-        internal void InternalOnRelease()
+        internal void InternalRelease()
         {
             Visible.Dispose();
             Position.Dispose();

@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Test.Multiple
 {
     //可以取消掉AllowMultiple或者FullScreen标签，看看效果
-    [DefaultViewConfig(FUI.Manager.Layer.Foreground, ViewFlag.FullScreen | ViewFlag.AllowMultiple)]
+    [Config(FUI.Manager.Layer.Foreground, Attributes.FullScreen | Attributes.AllowMultiple)]
     [Binding("TestMultipleView")]
     public class TestMultipleViewModel : ViewModel
     {

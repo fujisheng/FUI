@@ -8,7 +8,6 @@ namespace FUI.UGUI.Control
     public class ViewElement : View, IContainerElement
     {
         UIEntity entity;
-        ObservableObject data;
 
         /// <summary>
         /// 数据
@@ -30,13 +29,13 @@ namespace FUI.UGUI.Control
             }
 
             //如果这个Entity不为空且要更新的数据类型不是之前的数据类型  则需要先禁用之前的Entity
-            if(entity != null && newValue.GetType() != data.GetType())
+            if(entity != null && newValue.GetType() != oldValue.GetType())
             {
                 entity.Disable();
                 entity = null;
             }
 
-            if (entity == null || newValue.GetType() != data.GetType())
+            if (entity == null || newValue.GetType() != oldValue.GetType())
             {
                 entity = UIEntity.Create(this, newValue);
                 entity.Enable();
@@ -45,7 +44,6 @@ namespace FUI.UGUI.Control
             {
                 entity.UpdateViewModel(newValue);
             }
-            this.data = newValue;
         }
 
         protected override void OnRelease()

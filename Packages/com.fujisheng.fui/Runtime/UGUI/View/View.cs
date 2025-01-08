@@ -58,7 +58,7 @@ namespace FUI.UGUI
         /// <summary>
         /// 当这个View被销毁时
         /// </summary>
-        void IView.Destroy() => InternalOnRelease();
+        void IView.Destroy() => InternalRelease();
         
         /// <summary>
         /// 初始化
@@ -179,13 +179,11 @@ namespace FUI.UGUI
 
                 if(child is Element element)
                 {
-                    element.InternalOnRelease();
+                    element.InternalRelease();
                 }
             }
 
-            elements.Clear();
-            namedElements.Clear();
-            children.Clear();
+            ClearElements();
         }
     }
 }

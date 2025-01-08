@@ -6,8 +6,7 @@ using System;
 
 namespace FUI.Samples
 {
-    [DefaultViewConfig(Layer.Foreground)]
-    [Binding("TipsView")]
+    [Binding("TipsView"), Config(Layer.Foreground)]
     public class TipsViewModel : ViewModel
     {
         [Binding("title", nameof(TextElement.Text))]

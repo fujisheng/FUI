@@ -3,13 +3,13 @@ using System;
 namespace FUI.Manager
 {
     /// <summary>
-    /// 界面标签
+    /// 界面特性
     /// </summary>
     [Flags]
-    public enum ViewFlag
+    public enum Attributes
     {
         /// <summary>
-        /// 无任何标签
+        /// 无任何特性
         /// </summary>
         None = 0,
 

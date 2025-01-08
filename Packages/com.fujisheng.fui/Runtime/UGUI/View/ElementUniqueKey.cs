@@ -10,12 +10,12 @@ namespace FUI.UGUI
         /// <summary>
         /// 路径
         /// </summary>
-        readonly string elementPath;
+        internal readonly string elementPath;
 
         /// <summary>
         /// 类型
         /// </summary>
-        readonly Type elementType;
+        internal readonly Type elementType;
 
         /// <summary>
         /// 缓存的哈希值

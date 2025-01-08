@@ -8,9 +8,9 @@ namespace FUI.UGUI
 	public partial class View
 	{
 		/// <summary>
-		/// 存储所有的视觉元素
+		/// 视觉元素唯一标识查找表
 		/// </summary>
-		Dictionary<ElementUniqueKey, IElement> elements;
+		Dictionary<ElementUniqueKey, IElement> elementUniqueLookup;
 
 		/// <summary>
 		/// 根据名字存储的视觉元素
@@ -28,53 +28,49 @@ namespace FUI.UGUI
 		/// </summary>
 		protected virtual void InitializeElements()
 		{
-			this.elements = new Dictionary<ElementUniqueKey, IElement>();
+			this.elementUniqueLookup = new Dictionary<ElementUniqueKey, IElement>();
 			this.namedElements = new Dictionary<string, List<IElement>>();
 			this.children = new List<IElement>();
 
 			var openList = new Queue<Transform>();
 			openList.Enqueue(this.gameObject.transform);
-			var elementsTemp = new List<Element>();
+			var elementsBuffer = new List<Element>();
 			//获取所有的视觉元素组件 包含自身
 			while (openList.Count > 0)
 			{
 				var current = openList.Dequeue();
-				elementsTemp.Clear();
-				current.GetComponents(elementsTemp);
+
+				//获取当前元素的所有元素组件
+				elementsBuffer.Clear();
+				current.GetComponents(elementsBuffer);
+
 				bool continueFind = true;
-				foreach (var element in elementsTemp)
+				foreach (var element in elementsBuffer)
 				{
-                    //如果这个元素是自身则添加到子元素中 不再初始化且不用设置AssetLoader
-                    if (element.gameObject == this.gameObject)
-					{
-						AddElement(element);
-                    }
-                    //如果这个元素是视觉元素且不是自己则初始化
-                    else
+                    //如果这个元素不是自身则需要初始化
+                    if (element != this)
 					{
                         element.Parent = this;
                         element.InternalInitialize(AssetLoader);
-
-                        AddElement(element);
                     }
 
+					AddElement(element);
+
 					//如果这个元素是容器元素且不是自身则不再继续向下查找
-					if (element is IContainerElement && element.gameObject != this.gameObject)
+					if (element is IContainerElement && element != this)
 					{
 						continueFind = false;
 					}
 				}
 
-				if (!continueFind)
+				if (continueFind)
 				{
-					continue;
-				}
-
-				//否则继续向下查找
-				for (int i = 0; i < current.transform.childCount; i++)
-				{
-					openList.Enqueue(current.transform.GetChild(i));
-				}
+                    //否则继续向下查找
+                    for (int i = 0; i < current.transform.childCount; i++)
+                    {
+                        openList.Enqueue(current.transform.GetChild(i));
+                    }
+                }
 			}
 		}
 
@@ -84,15 +80,20 @@ namespace FUI.UGUI
 		/// <param name="element">要添加的视觉元素</param>
 		public void AddElement(IElement element)
 		{
-			if (!(element is Element uguiElement))
+			if (string.IsNullOrEmpty(element.Name))
+			{
+				throw new Exception($"{this} ass element failed, element name is null or empty.");
+			}
+
+			var key = new ElementUniqueKey(element.Name, element.GetType());
+			if (elementUniqueLookup.ContainsKey(key))
 			{
 				return;
 			}
 
-			var key = new ElementUniqueKey(element.Name, element.GetType());
-			elements[key] = uguiElement;
-			children.Add(uguiElement);
-            AddChildToNamedElements(uguiElement);
+			elementUniqueLookup[key] = element;
+			children.Add(element);
+            AddChildToNamedElements(element);
 		}
 
 		/// <summary>
@@ -103,7 +104,9 @@ namespace FUI.UGUI
 		{
 			if (!namedElements.TryGetValue(element.Name, out var list))
 			{
-				list = new List<IElement> { };
+				list = new List<IElement> { element };
+				namedElements[element.Name] = list;
+				return;
 			}
 
 			if (list.Contains(element))
@@ -112,7 +115,6 @@ namespace FUI.UGUI
 			}
 
 			list.Add(element);
-			namedElements[element.Name] = list;
 		}
 
 		/// <summary>
@@ -121,15 +123,15 @@ namespace FUI.UGUI
 		/// <param name="element"></param>
 		public void RemoveElement(IElement element)
 		{
-			if (!(element is Element uguiElement))
-			{
-				return;
-			}
+			var key = new ElementUniqueKey(element.Name, element.GetType());
+			elementUniqueLookup.Remove(key);
+            children.Remove(element);
+            RemoveFromNamedElements(element);
 
-			elements.Remove(new ElementUniqueKey(element.Name, element.GetType()));
-            children.Remove(uguiElement);
-			uguiElement.InternalOnRelease();
-			RemoveFromNamedElements(uguiElement);
+			if(element is Element uguiElement)
+			{
+				uguiElement.InternalRelease();
+			}
 		}
 
         /// <summary>
@@ -143,10 +145,7 @@ namespace FUI.UGUI
 				return;
 			}
 
-			if (list.Contains(element))
-			{
-				list.Remove(element);
-			}
+			list.Remove(element);
 		}
 
 		/// <summary>
@@ -154,11 +153,26 @@ namespace FUI.UGUI
 		/// </summary>
 		public void RemoveAllElements()
 		{
-			foreach (var item in elements.Values)
+			if(children.Count <= 0)
 			{
-				RemoveElement(item);
+				return;
+			}
+
+            for (int i = children.Count - 1; i >= 0; i--)
+			{
+				RemoveElement(children[i]);
 			}
 		}
+
+		/// <summary>
+		/// 清空所有子元素
+		/// </summary>
+		public void ClearElements()
+		{
+            elementUniqueLookup.Clear();
+            namedElements.Clear();
+            children.Clear();
+        }
 
 		/// <summary>
 		/// 获取一个视觉元素
@@ -179,10 +193,15 @@ namespace FUI.UGUI
         /// <returns></returns>
         public IElement GetElement(string path, Type elementType)
         {
+			if(string.IsNullOrEmpty(path) || elementType == null)
+			{
+				throw new Exception($"{this} get element failed 'path:{path} type:{elementType}', path or element type is null.");
+			}
+
             var key = new ElementUniqueKey(path, elementType);
-            if (!elements.TryGetValue(key, out var element))
+            if (!elementUniqueLookup.TryGetValue(key, out var element))
             {
-                return GetOrCacheElement(path, elementType);
+                return GetOrCacheElementToElementUniqueLookup(ref key);
             }
             return element;
         }
@@ -193,22 +212,21 @@ namespace FUI.UGUI
         /// <typeparam name="T">ElementType</typeparam>
         /// <param name="path">ElementPath</param>
         /// <returns></returns>
-        IElement GetOrCacheElement(string path, Type elementType)
+        IElement GetOrCacheElementToElementUniqueLookup(ref ElementUniqueKey key)
 		{
-            if (!namedElements.TryGetValue(path, out var list))
+            if (!namedElements.TryGetValue(key.elementPath, out var list))
             {
                 return default;
             }
 
             foreach (var item in list)
             {
-                if (item.GetType() != elementType)
+                if (item.GetType() != key.elementType)
                 {
                     continue;
                 }
 
-                var key = new ElementUniqueKey(path, elementType);
-                elements[key] = item;
+                elementUniqueLookup[key] = item;
                 return item;
             }
 

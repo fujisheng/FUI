@@ -6,16 +6,16 @@ using System.Reflection;
 
 namespace FUI.Manager
 {
-    internal static class ViewConfigCache
+    internal static class UIConfigResolver
     {
-        static readonly Dictionary<Type, ViewConfig> viewModelViewConfigLookup = new Dictionary<Type, ViewConfig>();
-        static readonly Dictionary<string, List<ViewConfig>> viewViewConfigLookup = new Dictionary<string, List<ViewConfig>>();
+        static readonly Dictionary<Type, UIConfig> viewModelViewConfigLookup = new Dictionary<Type, UIConfig>();
+        static readonly Dictionary<string, List<UIConfig>> viewViewConfigLookup = new Dictionary<string, List<UIConfig>>();
 
-        static ViewConfigCache()
+        static UIConfigResolver()
         {
             foreach(var contextType in BindingContextTypeResolver.Types)
             {
-                var config = contextType.viewModelType.GetCustomAttribute<DefaultViewConfigAttribute>(false)?.config ?? ViewConfig.Default;
+                var config = contextType.viewModelType.GetCustomAttribute<ConfigAttribute>(false)?.config ?? UIConfig.Default;
                 viewModelViewConfigLookup.Add(contextType.viewModelType, config);
 
                 if(string.IsNullOrEmpty(contextType.viewName))
@@ -25,7 +25,7 @@ namespace FUI.Manager
 
                 if(!viewViewConfigLookup.TryGetValue(contextType.viewName, out var configList))
                 {
-                    configList = new List<ViewConfig>();
+                    configList = new List<UIConfig>();
                     viewViewConfigLookup.Add(contextType.viewName, configList);
                 }
                 
@@ -37,21 +37,21 @@ namespace FUI.Manager
             }
         }
 
-        internal static ViewConfig Get(ObservableObject viewModel)
+        internal static UIConfig Get(ObservableObject viewModel)
         {
             var type = viewModel.GetType();
             return Get(type);
         }
 
-        internal static ViewConfig Get(Type viewModelType)
+        internal static UIConfig Get(Type viewModelType)
         {
             if (viewModelViewConfigLookup.TryGetValue(viewModelType, out var config))
             {
                 return config;
             }
 
-            var attribute = viewModelType.GetCustomAttribute<DefaultViewConfigAttribute>(false);
-            config = attribute == null ? ViewConfig.Default : attribute.config;
+            var attribute = viewModelType.GetCustomAttribute<ConfigAttribute>(false);
+            config = attribute == null ? UIConfig.Default : attribute.config;
             viewModelViewConfigLookup.Add(viewModelType, config);
             return config;
         }
@@ -61,7 +61,7 @@ namespace FUI.Manager
         /// </summary>
         /// <param name="viewName">½çÃæÃû×Ö</param>
         /// <returns></returns>
-        internal static ViewConfig? GetDefault(string viewName)
+        internal static UIConfig? GetDefault(string viewName)
         {
             if(viewViewConfigLookup.TryGetValue(viewName, out var configList))
             {

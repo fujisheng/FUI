@@ -6,7 +6,7 @@ using System;
 
 namespace FUI.Samples
 {
-    [DefaultViewConfig(Layer.Common, ViewFlag.FullScreen)]
+    [Config(Layer.Common, Attributes.FullScreen)]
     [Binding("LoginView")]
     public class LoginViewModel : ViewModel
     {
@@ -37,6 +37,7 @@ namespace FUI.Samples
             if(VM.Password == "12345" && VM.UserName == "fui")
             {
                 // 登录成功 打开主界面
+                TestLauncher.Instance.UIManager.Open("HomeView");
             }
             else
             {

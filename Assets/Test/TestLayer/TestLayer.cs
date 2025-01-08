@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Test.Layer
 {
-    [DefaultViewConfig(FUI.Manager.Layer.Background, ViewFlag.FullScreen)]
+    [Config(FUI.Manager.Layer.Background, Attributes.FullScreen)]
     [Binding("TestBackgroundView")]
     public class BackgroundViewModel : ViewModel
     {
@@ -23,7 +23,7 @@ namespace Test.Layer
         }
     }
 
-    [DefaultViewConfig(FUI.Manager.Layer.Common, ViewFlag.FullScreen)]
+    [Config(FUI.Manager.Layer.Common, Attributes.FullScreen)]
     [Binding("TestCommonView")]
     public class CommonViewModel : ViewModel
     {
@@ -37,7 +37,7 @@ namespace Test.Layer
         }
     }
 
-    [DefaultViewConfig(FUI.Manager.Layer.Foreground, ViewFlag.FullScreen)]
+    [Config(FUI.Manager.Layer.Foreground, Attributes.FullScreen)]
     [Binding("TestForegroundView")]
     public class ForegroundViewModel : ViewModel
     {
@@ -51,7 +51,7 @@ namespace Test.Layer
         }
     }
 
-    [DefaultViewConfig(FUI.Manager.Layer.Top, ViewFlag.FullScreen)]
+    [Config(FUI.Manager.Layer.Top, Attributes.FullScreen)]
     [Binding("TestTopView")]
     public class TopViewModel : ViewModel
     {
@@ -65,7 +65,7 @@ namespace Test.Layer
         }
     }
 
-    [DefaultViewConfig(FUI.Manager.Layer.Common)]
+    [Config(FUI.Manager.Layer.Common)]
     [Binding("TestPopupView1")]
     public class PopupViewModel : ViewModel
     {
