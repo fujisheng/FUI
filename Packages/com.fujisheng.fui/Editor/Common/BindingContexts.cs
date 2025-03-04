@@ -40,6 +40,11 @@ namespace FUI.Editor
 
         void LoadAllBindingContextInfo(string path)
         {
+            if (!Directory.Exists(path))
+            {
+                return;
+            }
+
             var files = Directory.GetFiles(path, "*.binding", SearchOption.AllDirectories);
             contexts = new Dictionary<string, ContextBindingInfo>(files.Length);
             foreach (var filePath in files)
@@ -59,6 +64,11 @@ namespace FUI.Editor
         public ContextBindingInfo GetContextInfo(UIEntity entity)
         {
             if(entity == null)
+            {
+                return null;
+            }
+
+            if(contexts == null)
             {
                 return null;
             }
