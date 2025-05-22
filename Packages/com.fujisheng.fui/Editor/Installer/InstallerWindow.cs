@@ -11,7 +11,7 @@ using UnityEngine.Networking;
 namespace FUI.Editor
 {
     /// <summary>
-    /// ±àÒëÆ÷°²×°´°¿Ú
+    /// ç¼–è¯‘å™¨å®‰è£…çª—å£
     /// </summary>
     public class InstallerWindow : EditorWindow
     {
@@ -50,7 +50,7 @@ namespace FUI.Editor
         {
             EditorGUILayout.BeginVertical();
             {
-                //Ã»ÓĞ°²×°±àÒëÆ÷
+                //æ²¡æœ‰å®‰è£…ç¼–è¯‘å™¨
                 if (string.IsNullOrEmpty(installedVersion))
                 {
                     EditorGUILayout.LabelField($"Not Find FUICompiler, Please Install First (Lastest:{latestVersion})");
@@ -59,7 +59,7 @@ namespace FUI.Editor
                         DownloadCompiler(latestVersion);
                     }
                 }
-                //ÒÑ°²×°±àÒëÆ÷µ«²»ÊÇ×îĞÂ°æ±¾
+                //å·²å®‰è£…ç¼–è¯‘å™¨ä½†ä¸æ˜¯æœ€æ–°ç‰ˆæœ¬
                 else if (!string.IsNullOrEmpty(installedVersion) && installedVersion != latestVersion)
                 {
                     EditorGUILayout.LabelField($"Installed Version:{installedVersion}  (Latest:{latestVersion})");
@@ -68,13 +68,13 @@ namespace FUI.Editor
                         DownloadCompiler(latestVersion);
                     }
                 }
-                //ÒÑ°²×°ÁË×îĞÂ°æ±¾
+                //å·²å®‰è£…äº†æœ€æ–°ç‰ˆæœ¬
                 else
                 {
                     EditorGUILayout.LabelField($"FUICompiler Installed Is Latest:{latestVersion}");
                 }
 
-                //°²×°ÁË±àÒëÆ÷ ²ÅÏÔÊ¾ÉèÖÃ
+                //å®‰è£…äº†ç¼–è¯‘å™¨ æ‰æ˜¾ç¤ºè®¾ç½®
                 if (!string.IsNullOrEmpty(installedVersion))
                 {
                     var solutionPathContent = new GUIContent("SolutionPath", "[Required] project solution path.");
@@ -89,8 +89,11 @@ namespace FUI.Editor
                     setting.generateType =(BindingContextGenerateType) EditorGUILayout.EnumFlagsField(generateTypeContent, setting.generateType);
                     var bindingInfoOutputPathContent = new GUIContent("BindingInfoOutputPath", "[Optional] binding info output path, will use it in view inspector.");
                     setting.bindingInfoOutputPath = EditorGUILayout.TextField(bindingInfoOutputPathContent, setting.bindingInfoOutputPath);
-                    
-                    if(GUILayout.Button("Save Settings"))
+
+                    var modifiedObservableObjectPathContent = new GUIContent("ModifiedObservableObjectPath", "[Optional] modified observable object output path");
+                    setting.modifiedObservableObjectPath = EditorGUILayout.TextField(modifiedObservableObjectPathContent, setting.modifiedObservableObjectPath);
+
+                    if (GUILayout.Button("Save Settings"))
                     {
                         EditorUtility.SetDirty(setting);
                         AssetDatabase.SaveAssets();
@@ -103,9 +106,9 @@ namespace FUI.Editor
         }
 
         /// <summary>
-        /// ÏÂÔØ¶ÔÓ¦°æ±¾µÄ±àÒëÆ÷
+        /// ä¸‹è½½å¯¹åº”ç‰ˆæœ¬çš„ç¼–è¯‘å™¨
         /// </summary>
-        /// <param name="version">ÒªÏÂÔØµÄ°æ±¾</param>
+        /// <param name="version">è¦ä¸‹è½½çš„ç‰ˆæœ¬</param>
         async void DownloadCompiler(string version)
         {
             if (string.IsNullOrEmpty(version))
@@ -164,7 +167,7 @@ namespace FUI.Editor
         }
 
         /// <summary>
-        /// ±£´æ°²×°µÄ°æ±¾ĞÅÏ¢
+        /// ä¿å­˜å®‰è£…çš„ç‰ˆæœ¬ä¿¡æ¯
         /// </summary>
         /// <param name="version"></param>
         void SaveVersion(string version)
@@ -174,7 +177,7 @@ namespace FUI.Editor
         }
 
         /// <summary>
-        /// »ñÈ¡ÒÑ°²×°µÄ°æ±¾
+        /// è·å–å·²å®‰è£…çš„ç‰ˆæœ¬
         /// </summary>
         /// <returns></returns>
         string GetInstalledVersion()
@@ -193,7 +196,7 @@ namespace FUI.Editor
         }
 
         /// <summary>
-        /// »ñÈ¡×îĞÂ°æ±¾
+        /// è·å–æœ€æ–°ç‰ˆæœ¬
         /// </summary>
         async void GetLatestVersion()
         {
@@ -213,7 +216,7 @@ namespace FUI.Editor
         }
 
         /// <summary>
-        /// ´´½¨»òÕß¼ÓÔØÒ»¸ö±àÒëÆ÷ÉèÖÃ
+        /// åˆ›å»ºæˆ–è€…åŠ è½½ä¸€ä¸ªç¼–è¯‘å™¨è®¾ç½®
         /// </summary>
         /// <returns></returns>
         CompilerSetting LoadOrCreateSetting() 
@@ -229,6 +232,7 @@ namespace FUI.Editor
                 setting.output = "./Library/ScriptAssemblies";
                 setting.compilerPath = $"{installPath}/{Utility.GetPlatformInfo()}/FUICompiler.exe";
                 setting.bindingInfoOutputPath = $"{dataPath}/BindingInfo";
+                setting.modifiedObservableObjectPath = $"{dataPath}/ModifiedObservableObject";
                 AssetDatabase.CreateAsset(setting, settingPath);
 
                 AssetDatabase.Refresh();
@@ -237,7 +241,7 @@ namespace FUI.Editor
         }
 
         /// <summary>
-        /// »ñÈ¡Ä¬ÈÏ½â¾ö·½°¸Â·¾¶
+        /// è·å–é»˜è®¤è§£å†³æ–¹æ¡ˆè·¯å¾„
         /// </summary>
         /// <returns></returns>
         string GetDefaultSolutionPath()
@@ -252,9 +256,9 @@ namespace FUI.Editor
         }
 
         /// <summary>
-        /// ³¢ÊÔ´´½¨Ò»¸öÄ¿Â¼
+        /// å°è¯•åˆ›å»ºä¸€ä¸ªç›®å½•
         /// </summary>
-        /// <param name="path">Òª´´½¨µÄÄ¿Â¼Â·¾¶</param>
+        /// <param name="path">è¦åˆ›å»ºçš„ç›®å½•è·¯å¾„</param>
         void TryCreateDirectory(string path)
         {
             if(Directory.Exists(path))

@@ -2,63 +2,70 @@
 {
     class CloseViewTask : ViewTask
     {
+        UIManager manager;
         readonly UIStack uiStack;
-        internal override string ViewName { get; set; }
-        internal override bool IsCompleted { get; set; }
-        internal override UIEntity Result { get; set; }
 
-        internal CloseViewTask(string viewName, UIStack uiStack)
+        internal CloseViewTask(UIManager manager, string viewName, UIStack uiStack) : base(viewName)
         {
-            this.ViewName = viewName;
+            this.manager = manager;
             this.uiStack = uiStack;
         }
 
         internal override void Execute()
         {
-            Result = uiStack.GetUIEntity(ViewName);
-            IsCompleted = true;
-            UnityEngine.Debug.Log($"关闭界面：{ViewName}");
+            result = uiStack.GetUIEntity(viewName);
+            UnityEngine.Debug.Log($"关闭界面：{viewName}");
+            isComplated = true;
+            OnComplated?.Invoke();
         }
 
         internal override void Cancel()
         {
-            Result = null;
-            UnityEngine.Debug.Log($"取消关闭界面：{ViewName}");
+            result = null;
+            UnityEngine.Debug.Log($"取消关闭界面：{viewName}");
         }
 
-        internal override void Complete()
+        internal override bool TryComplete()
         {
-            if (Result == null)
+            if (!isComplated)
             {
-                return;
+                return false;
             }
 
-            OnComplete(uiStack, Result, UIConfigResolver.Get(Result.ViewModel));
-            Result.Destroy();
-            uiStack.Remove(Result);
-            UnityEngine.Debug.Log($"关闭界面完成：{ViewName}");
+            if(result == null)
+            {
+                return true;
+            }
+
+            manager.Disable(result);
+            uiStack.Remove(result);
+            OnComplete(uiStack, result, UISettingsResolver.Get(result.ViewModel));
+            UnityEngine.Debug.Log($"关闭界面完成：{viewName}");
+            result.Destroy();
             //TODO是否缓存被关闭的界面
+            //UnityEngine.Debug.Log(uiStack);
+            return true;
         }
 
-        void OnComplete(UIStack viewStack, UIEntity entity, UIConfig viewConfig)
+        void OnComplete(UIStack viewStack, UIEntity entity, UISettings settings)
         {
             //如果是全屏界面则使得背后的所有界面都可见直到遇到下一个全屏界面
-            if(viewConfig.flag.HasFlag(Attributes.FullScreen))
+            if(settings.flag.HasFlag(Attributes.FullScreen))
             {
                 for (int i = viewStack.Count - 1; i >= 0; i--)
                 {
                     var view = viewStack[i];
-                    if(view == entity)
+                    if(view.Entity == entity)
                     {
                         continue;
                     }
 
-                    if(view.Layer <= entity.Layer)
+                    if(view.Entity.Layer <= entity.Layer)
                     {
-                        view.Enable();
+                        manager.Enable(view.Entity);
                     }
 
-                    var cfg = UIConfigResolver.Get(view.ViewModel);
+                    var cfg = UISettingsResolver.Get(view.Entity.ViewModel);
 
                     if(cfg.flag.HasFlag(Attributes.FullScreen))
                     {

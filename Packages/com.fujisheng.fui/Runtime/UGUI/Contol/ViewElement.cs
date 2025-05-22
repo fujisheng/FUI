@@ -21,7 +21,7 @@ namespace FUI.UGUI.Control
             Data = new BindableProperty<ObservableObject>(null, OnUpdateData);
         }
 
-        void OnUpdateData(ObservableObject oldValue, ObservableObject newValue)
+        protected virtual void OnUpdateData(ObservableObject oldValue, ObservableObject newValue)
         {
             if (newValue == null)
             {
@@ -29,7 +29,7 @@ namespace FUI.UGUI.Control
             }
 
             //如果这个Entity不为空且要更新的数据类型不是之前的数据类型  则需要先禁用之前的Entity
-            if(entity != null && newValue.GetType() != oldValue.GetType())
+            if(entity != null && newValue.GetType() != oldValue?.GetType())
             {
                 entity.Disable();
                 entity = null;
@@ -37,7 +37,7 @@ namespace FUI.UGUI.Control
 
             if (entity == null || newValue.GetType() != oldValue.GetType())
             {
-                entity = UIEntity.Create(this, newValue);
+                entity = UIEntity.Create(CreateView(), newValue);
                 entity.Enable();
             }
             else
@@ -46,10 +46,15 @@ namespace FUI.UGUI.Control
             }
         }
 
+        protected virtual IView CreateView()
+        {
+            return this;
+        }
+
         protected override void OnRelease()
         {
             Data.Dispose();
-            entity.Disable();
+            entity?.Disable();
             entity = null;
         }
     }

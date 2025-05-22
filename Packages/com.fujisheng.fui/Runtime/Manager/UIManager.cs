@@ -1,13 +1,14 @@
 ﻿using FUI.Bindable;
 
 using System.Collections.Generic;
-using System.Threading;
+using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace FUI.Manager
 {
     /// <summary>
-    /// UI管理器
+    /// UI管理器  TODO：重构
     /// </summary>
     public class UIManager
     {
@@ -28,7 +29,7 @@ namespace FUI.Manager
         /// <summary>
         /// 所有打开的UI实体
         /// </summary>
-        public IReadOnlyList<UIEntity> OpeningEntities => uiStack.Items;
+        //public IReadOnlyList<UIEntity> OpeningEntities => uiStack.Items;
 
         public UIManager(IViewFactory viewFactory)
         {
@@ -121,11 +122,11 @@ namespace FUI.Manager
         void OpenView(UIOpenTaskParam param)
         {
             EnsureViewFactory();
-            var viewConfig = UIConfigResolver.GetDefault(param.viewName);
+            var viewConfig = UISettingsResolver.GetDefault(param.viewName);
 
             foreach (var item in taskQueue.Tasks)
             {
-                if(item.ViewName != param.viewName)
+                if(item.viewName != param.viewName)
                 {
                     continue;
                 }
@@ -137,7 +138,7 @@ namespace FUI.Manager
                 }
 
                 //已经在关闭中了 取消关闭 并直接打开已有的
-                if((item is CloseViewTask) && item.ViewName == param.viewName)
+                if((item is CloseViewTask) && item.viewName == param.viewName)
                 {
                     Topping(param.viewName);
                     item.Cancel();
@@ -154,8 +155,7 @@ namespace FUI.Manager
             }
 
             //否则执行打开界面的任务
-            taskQueue.Execute(new OpenViewTask(param, uiStack));
-            OnUpdate();
+            taskQueue.Execute(new OpenViewTask(this, param, uiStack));
         }
 
         /// <summary>
@@ -165,44 +165,91 @@ namespace FUI.Manager
         public void Topping(string viewName)
         {
             var entity = uiStack.GetUIEntity(viewName);
+            if(entity.State != UIEntityState.Enabled)
+            {
+                Enable(entity);
+            }
+
             //已经在顶层了
-            if (uiStack.Count != 0 && uiStack.Peek() == entity)
+            if (uiStack.Count != 0 && uiStack.Peek().Value.Entity == entity)
             {
                 return;
             }
 
-            var viewConfig = UIConfigResolver.Get(entity.ViewModel);
-            entity.Layer = viewConfig.layer;
-            entity.Order = uiStack.Count == 0 ? 0 : uiStack.Peek().Order + 1;
-
+            var viewConfig = UISettingsResolver.Get(entity.ViewModel);
+            if (uiStack.Topping(entity, out var lastPeek))
+            {
+                entity.Layer = viewConfig.layer;
+                entity.Order = lastPeek == null ? 0 : lastPeek.Order + 1;
+            }
+            
             //如果是全屏界面则使得背后的所有界面都不可见
             if (viewConfig.flag.HasFlag(Attributes.FullScreen))
             {
                 for (int i = uiStack.Count - 1; i >= 0; i--)
                 {
                     var view = uiStack[i];
-                    if (view.Layer <= entity.Layer)
+                    if (view.ParentViewName != entity.Name 
+                        && view.Entity.Layer <= entity.Layer 
+                        && view.Entity.Order < entity.Order
+                        && view.Entity.State.HasFlag(UIEntityState.Enabled))
                     {
-                        view.Disable();
+                        Disable(view.Entity);
                     }
                 }
             }
         }
 
-        public void OnUpdate()
+        /// <summary>
+        /// 激活一个界面
+        /// </summary>
+        /// <param name="entity"></param>
+        internal void Enable(UIEntity entity, object param = null)
         {
-            if(taskQueue.Count == 0)
+            var viewConfig = UISettingsResolver.Get(entity.ViewModel);
+            if (viewConfig.preDependency != null)
             {
-                return;
+                foreach (var before in viewConfig.preDependency)
+                {
+                    OpenView(new UIOpenTaskParam(before, viewFactory, parent: entity));
+                }
+            }
+            entity.Enable(param);
+            if (viewConfig.postDependency != null)
+            {
+                foreach (var after in viewConfig.postDependency)
+                {
+                    OpenView(new UIOpenTaskParam(after, viewFactory, parent: entity));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 禁用一个界面
+        /// </summary>
+        /// <param name="entity"></param>
+        internal void Disable(UIEntity entity)
+        {
+            var viewConfig = UISettingsResolver.Get(entity.ViewModel);
+            //如果有前置依赖的界面则先关闭前置依赖的界面
+            if (viewConfig.preDependency != null)
+            {
+                foreach (var before in viewConfig.preDependency)
+                {
+                    Close(before);
+                }
             }
 
-            var peek = taskQueue.Peek();
-            if(!peek.IsCompleted)
+            //如果有后置依赖关闭后置依赖的界面
+            if (viewConfig.postDependency != null)
             {
-                return;
+                foreach (var after in viewConfig.postDependency)
+                {
+                    Close(after);
+                }
             }
 
-            taskQueue.Complete();
+            entity.Disable();
         }
 
         /// <summary>
@@ -213,7 +260,7 @@ namespace FUI.Manager
             //如果要关闭的这个界面正在打开中 则直接取消要打开的那个界面
             foreach (var task in taskQueue.Tasks)
             {
-                if ((task is OpenViewTask) && task.ViewName == viewName)
+                if ((task is OpenViewTask) && task.viewName == viewName)
                 {
                     task.Cancel();
                     taskQueue.Remove(task);
@@ -228,8 +275,7 @@ namespace FUI.Manager
                 return;
             }
 
-            taskQueue.Execute(new CloseViewTask(viewName, uiStack));
-            OnUpdate();
+            taskQueue.Execute(new CloseViewTask(this, viewName, uiStack));
         }
 
         /// <summary>
@@ -238,19 +284,17 @@ namespace FUI.Manager
         public void CloseAll()
         {
             //如果有正在打开中的界面 则取消打开
-            foreach (var task in taskQueue.Tasks)
+            var toRemove = taskQueue.Tasks.OfType<OpenViewTask>().ToList();
+            foreach (var task in toRemove)
             {
-                if (task is OpenViewTask)
-                {
-                    task.Cancel();
-                    taskQueue.Remove(task);
-                }
+                task.Cancel();
+                taskQueue.Remove(task);
             }
 
-            while(uiStack.Count > 0)
+            while (uiStack.Count > 0)
             {
-                var entity = uiStack.Pop();
-                entity.Destroy();
+                var stackInfo = uiStack.Pop();
+                stackInfo.Value.Entity.Destroy();
             }
         }
 
@@ -271,13 +315,21 @@ namespace FUI.Manager
         /// </summary>
         public void Back()
         {
-            var peek = uiStack.Peek();
-            if(peek == null)
+            if(uiStack.Count == 0)
             {
                 return;
             }
 
-            Close(peek.Name);
+            for(int i = uiStack.Count - 1; i >= 0; i--)
+            {
+                var current = uiStack[i];
+                //被依赖的界面不关闭
+                if (current.ParentViewName == null)
+                {
+                    Close(current.Entity.Name);
+                    break;
+                }
+            }
         }
 
         /// <summary>
@@ -286,18 +338,37 @@ namespace FUI.Manager
         /// <returns></returns>
         public async ValueTask WaitingForAllTaskComplete()
         {
-            if(taskQueue.Count == 0)
+            if (taskQueue.Count == 0)
             {
                 return;
             }
 
-            await Task.Run(() =>
+            var tcs = new TaskCompletionSource<bool>();
+            var isCompleted = false;
+            var lockObj = new object();
+
+            void OnTaskQueueChanged()
             {
-                while(taskQueue.Count > 0)
+                lock (lockObj)
                 {
-                    Thread.Sleep(1);
+                    if (taskQueue.Count == 0 && !isCompleted)
+                    {
+                        isCompleted = true;
+                        taskQueue.OnCollectionChanged -= OnTaskQueueChanged;
+                        tcs.TrySetResult(true);
+                    }
                 }
-            });
+            }
+
+            try
+            {
+                taskQueue.OnCollectionChanged += OnTaskQueueChanged;
+                await tcs.Task;
+            }
+            finally
+            {
+                taskQueue.OnCollectionChanged -= OnTaskQueueChanged;
+            }
         }
     }
 }

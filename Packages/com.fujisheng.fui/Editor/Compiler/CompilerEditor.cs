@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Text;
 
 using UnityEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEditor.Compilation;
 
 using UnityEngine;
@@ -13,7 +15,7 @@ using UnityEngine;
 namespace FUI.Editor
 {
     [InitializeOnLoad]
-    public class CompilerEditor : UnityEditor.Editor
+    public class CompilerEditor : UnityEditor.Editor, IPostBuildPlayerScriptDLLs
     {
         static CompilerSetting setting;
 
@@ -25,7 +27,26 @@ namespace FUI.Editor
         static CompilerEditor()
         {
             Initialize();
-            CompilationPipeline.assemblyCompilationFinished += AssemblyCompilationFinishedCallback;
+            CompilationPipeline.assemblyCompilationStarted += OnAssemblyCompilationStarted;
+        }
+
+        static void OnAssemblyCompilationStarted(string assemblyPath)
+        {
+            if (setting == null && !TryLoadSetting(out setting))
+            {
+                UnityEngine.Debug.LogError("InjectSetting not found");
+                return;
+            }
+
+            if (!assemblyPath.EndsWith($"{setting.targetProject.name}.dll"))
+            {
+                return;
+            }
+
+            // 终止Unity默认编译流程
+            CompilationPipeline.RequestScriptCompilation();
+            // 触发自定义编译器
+            Compile();
         }
 
         static void Initialize()
@@ -34,10 +55,10 @@ namespace FUI.Editor
             onCompilationComplate = new List<Action<string, List<object>>>();
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                foreach(var type in assembly.GetTypes())
+                foreach (var type in assembly.GetTypes())
                 {
                     var methods = type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-                    foreach(var method in methods)
+                    foreach (var method in methods)
                     {
                         if (method.GetCustomAttribute<AssemblyCompilationFinishedAttribute>() != null)
                         {
@@ -56,7 +77,7 @@ namespace FUI.Editor
         /// <param name="message">消息</param>
         static void InvokeCompilationFinishedCallback(string file, List<object> message)
         {
-            foreach(var action in onCompilationComplate)
+            foreach (var action in onCompilationComplate)
             {
                 action?.Invoke(file, message);
             }
@@ -73,26 +94,10 @@ namespace FUI.Editor
             return setting != null;
         }
 
-        static void AssemblyCompilationFinishedCallback(string file, UnityEditor.Compilation.CompilerMessage[] messages)
-        {
-            if(setting == null && !TryLoadSetting(out setting))
-            {
-                UnityEngine.Debug.LogError("InjectSetting not found");
-                return;
-            }
-
-            if (!file.EndsWith($"{setting.targetProject.name}.dll"))
-            {
-                return;
-            }
-
-            Compile();
-        }
-
         [MenuItem("FUI/Compile")]
         public static void Compile()
         {
-            if(setting == null && !TryLoadSetting(out setting))
+            if (setting == null && !TryLoadSetting(out setting))
             {
                 UnityEngine.Debug.LogError("InjectSetting not found");
                 return;
@@ -108,6 +113,7 @@ namespace FUI.Editor
             process.StartInfo.ArgumentList.Add($"--generated={setting.generatedPath}");
             process.StartInfo.ArgumentList.Add($"--ctx_type={(int)setting.generateType}");
             process.StartInfo.ArgumentList.Add($"--binding_output={setting.bindingInfoOutputPath}");
+            process.StartInfo.ArgumentList.Add($"--modified_output={setting.modifiedObservableObjectPath}");
 
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.UseShellExecute = false;
@@ -120,7 +126,7 @@ namespace FUI.Editor
             while (true)
             {
                 var line = process.StandardOutput.ReadLine();
-                if(line == null)
+                if (line == null)
                 {
                     break;
                 }
@@ -130,19 +136,24 @@ namespace FUI.Editor
             }
 
             var file = $"{setting.output}/{setting.GetTargetProjectName()}.dll";
+
+            UnityEngine.Debug.Log($"{setting.targetProject.name}.dll compilation completed at {file}");
+            AssetDatabase.Refresh();
+            EditorUtility.RequestScriptReload();
+            
             InvokeCompilationFinishedCallback(file, messages);
         }
 
         static void ProcessMessage(string message)
         {
             var msg = Message.ReadMessage(message);
-            if(msg == null)
+            if (msg == null)
             {
                 UnityEngine.Debug.Log(message);
                 return;
             }
 
-            if(msg is LogMessage log)
+            if (msg is LogMessage log)
             {
                 switch (log.Level)
                 {
@@ -158,22 +169,54 @@ namespace FUI.Editor
                 }
             }
 
-            if(msg is CompilerMessage compiler)
+            if (msg is CompilerMessage compiler)
             {
                 UnityEngine.Debug.LogError(compiler.Error);
             }
         }
 
-        static void OnCompilationStarted(object o)
-        {
-            UnityEngine.Debug.Log(o.GetType().FullName);
-        }
+        public int callbackOrder => 0;
 
-        [UnityEditor.Callbacks.OnOpenAsset]
-        static bool aaa(int instance, int line)
+        /// <summary>
+        /// 打包时替换unity编译的dll为自定义编译的dll
+        /// </summary>
+        /// <param name="report"></param>
+        public void OnPostBuildPlayerScriptDLLs(BuildReport report)
         {
-            UnityEngine.Debug.Log($"OnOpenAsset   instance:{instance}  line:{line}");
-            return false;
+            TryLoadSetting(out setting);
+            Compile();
+
+            var customDllPath = Path.Combine(setting.output, setting.GetTargetProjectName() + ".dll");
+            var dllName = Path.GetFileName(customDllPath);
+
+            var buildTarget = report.summary.platform;
+
+            var projectPath = Application.dataPath.Replace("/Assets", "");
+            var stagingManagedDir = Path.Combine(projectPath, "Temp", "StagingArea", "Managed");
+
+            if (report.summary.platform == BuildTarget.Android)
+            {
+                stagingManagedDir = Path.Combine(projectPath, "Temp", "StagingArea", "Data", "Managed");
+            }
+
+            if (!Directory.Exists(stagingManagedDir))
+            {
+                UnityEngine.Debug.LogError("目录不存在，请检查路径！");
+                return;
+            }
+
+            var targetPath = Path.Combine(stagingManagedDir, dllName);
+
+            if (File.Exists(customDllPath))
+            {
+                File.Copy(customDllPath, targetPath, overwrite: true);
+                UnityEngine.Debug.Log($"DLL替换成功！目标路径: {targetPath}");
+            }
+            else
+            {
+                UnityEngine.Debug.LogError($"DLL不存在于: {customDllPath}");
+            }
         }
     }
 }
+

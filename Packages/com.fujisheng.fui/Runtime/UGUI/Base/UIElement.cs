@@ -5,9 +5,9 @@ using UnityEngine;
 namespace FUI.UGUI
 {
     /// <summary>
-    /// ÊÊÓÃÓÚUGUIµÄÔªËØ»ùÀà
+    /// é€‚ç”¨äºUGUIçš„å…ƒç´ åŸºç±»
     /// </summary>
-    public abstract class UIElement : Element
+    public class UIElement : Element
     {
         /// <summary>
         /// RectTransform
@@ -89,10 +89,10 @@ namespace FUI.UGUI
     }
 
     /// <summary>
-    /// ÊÊÓÃÓÚUGUIµÄÔªËØ»ùÀà
+    /// é€‚ç”¨äºUGUIçš„å…ƒç´ åŸºç±»
     /// </summary>
     /// <typeparam name="TComponent"></typeparam>
-    public abstract class UIElement<TComponent> : UIElement where TComponent : Component
+    public abstract class UIElement<TComponent> : UIElement
     {
         protected TComponent Component { get; private set; }
 

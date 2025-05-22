@@ -62,6 +62,11 @@ namespace FUI.Editor
         /// </summary>
         public string bindingInfoOutputPath;
 
+        /// <summary>
+        /// 修改后的可观察对象输出路径
+        /// </summary>
+        public string modifiedObservableObjectPath;
+
         #region AssemblyDefinitionData
         [System.Serializable]
         class CustomScriptAssemblyData

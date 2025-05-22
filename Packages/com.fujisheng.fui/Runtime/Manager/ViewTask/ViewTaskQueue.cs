@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace FUI.Manager
@@ -8,6 +9,7 @@ namespace FUI.Manager
     class ViewTaskQueue
     {
         readonly List<ViewTask> tasks;
+        bool isProcessing;
 
         /// <summary>
         /// 所有的任务
@@ -15,12 +17,23 @@ namespace FUI.Manager
         internal IEnumerable<ViewTask> Tasks => tasks;
 
         /// <summary>
+        /// 当集合发生变化时
+        /// </summary>
+        internal event Action OnCollectionChanged;
+
+        /// <summary>
         /// 初始化一个队列
         /// </summary>
         internal ViewTaskQueue()
         {
             tasks = new List<ViewTask>();
+            isProcessing = false;
         }
+
+        /// <summary>
+        /// 最前面的任务
+        /// </summary>
+        ViewTask Peek => tasks[0];
 
         /// <summary>
         /// 入队
@@ -28,37 +41,45 @@ namespace FUI.Manager
         /// <param name="task">入队的任务</param>
         internal void Execute(ViewTask task)
         {
-            task.Execute();
             tasks.Add(task);
+            OnCollectionChanged?.Invoke();
+            task.Execute();
+            ProcessPeekTask();
         }
 
         /// <summary>
-        /// 出队
+        /// 处理下一个任务
         /// </summary>
-        /// <returns>出队的任务</returns>
-        internal ViewTask Complete()
+        void ProcessPeekTask()
         {
-            if (tasks.Count == 0)
+            if (isProcessing || tasks.Count == 0)
             {
-                return null;
+                return;
             }
+
+            isProcessing = true;
+
+            if (!Peek.TryComplete())
+            {
+                Peek.AddCompleteCallback(OnTaskCompleted);
+                return;
+            }
+
+            OnTaskCompleted();
+        }
+
+        /// <summary>
+        /// 任务完成时的回调
+        /// </summary>
+        void OnTaskCompleted()
+        {
             var task = tasks[0];
+            task.ClearComplateCallback();
             tasks.RemoveAt(0);
-            task.Complete();
-            return task;
-        }
-
-        /// <summary>
-        /// 获取最前面的任务
-        /// </summary>
-        /// <returns></returns>
-        internal ViewTask Peek()
-        {
-            if (tasks.Count == 0)
-            {
-                return null;
-            }
-            return tasks[0];
+            
+            OnCollectionChanged?.Invoke();
+            isProcessing = false;
+            ProcessPeekTask();
         }
 
         /// <summary>
@@ -68,6 +89,8 @@ namespace FUI.Manager
         internal void Remove(ViewTask task)
         {
             tasks.Remove(task);
+            task.ClearComplateCallback();
+            OnCollectionChanged?.Invoke();
         }
 
         /// <summary>
@@ -76,21 +99,16 @@ namespace FUI.Manager
         internal void Clear()
         {
             tasks.Clear();
+            foreach (var task in tasks)
+            {
+                task.ClearComplateCallback();
+            }
+            OnCollectionChanged?.Invoke();
         }
 
         /// <summary>
         /// 计数
         /// </summary>
         internal int Count => tasks.Count;
-
-        /// <summary>
-        /// 是否存在某个任务
-        /// </summary>
-        /// <param name="viewName"></param>
-        /// <returns></returns>
-        internal bool Exist(string viewName)
-        {
-            return tasks.Exists(c => c.ViewName == viewName);
-        }
     }
 }

@@ -1,30 +1,32 @@
 using FUI.Bindable;
+using System;
+
 using UnityEngine;
 
 namespace FUI.UGUI
 {
     /// <summary>
-    /// ÊÊÓÃÓÚUGUIµÄÔªËØ»ùÀà
+    /// é€‚ç”¨äºUGUIçš„å…ƒç´ åŸºç±»
     /// </summary>
     public class Element : MonoBehaviour, IElement
     {
         /// <summary>
-        /// ÔªËØÃû×Ö
+        /// å…ƒç´ åå­—
         /// </summary>
         public string Name { get; private set; }
 
         /// <summary>
-        /// ¸¸½Úµã
+        /// çˆ¶èŠ‚ç‚¹
         /// </summary>
         public IElement Parent { get; internal set; }
 
         /// <summary>
-        /// ×ÊÔ´¼ÓÔØÆ÷
+        /// èµ„æºåŠ è½½å™¨
         /// </summary>
         protected IAssetLoader AssetLoader { get; private set; }
 
         /// <summary>
-        /// ÊÇ·ñ¿É¼û
+        /// æ˜¯å¦å¯è§
         /// </summary>
         bool IElement.Visible
         {
@@ -33,7 +35,7 @@ namespace FUI.UGUI
         }
 
         /// <summary>
-        /// ¿É¼ûĞÔ
+        /// å¯è§æ€§
         /// </summary>
         public BindableProperty<bool> Visible;
 
@@ -67,9 +69,9 @@ namespace FUI.UGUI
         #endregion
 
         /// <summary>
-        /// ³õÊ¼»¯  ÄÚ²¿µ÷ÓÃ
+        /// åˆå§‹åŒ–  å†…éƒ¨è°ƒç”¨
         /// </summary>
-        /// <param name="assetLoader">×ÊÔ´¼ÓÔØÆ÷</param>
+        /// <param name="assetLoader">èµ„æºåŠ è½½å™¨</param>
         internal void InternalInitialize(IAssetLoader assetLoader)
         {
             if (initialized)
@@ -78,7 +80,7 @@ namespace FUI.UGUI
             }
 
             this.AssetLoader = assetLoader;
-            this.Name = gameObject.name;
+            this.Name = RemoveCloneSuffix(gameObject.name);
 
             Visible = new BindableProperty<bool>(gameObject.activeSelf, (oldValue, newValue) => gameObject.SetActive(newValue));
 
@@ -94,7 +96,22 @@ namespace FUI.UGUI
         }
 
         /// <summary>
-        /// ÊÍ·Å ÄÚ²¿µ÷ÓÃ
+        /// ç§»é™¤åå­—æœ«å°¾çš„ " (Clone)"
+        /// </summary>
+        /// <param name="name">åŸå§‹åå­—</param>
+        /// <returns>ç§»é™¤ååå­—</returns>
+        string RemoveCloneSuffix(string name)
+        {
+            const string cloneSuffix = "(Clone)";
+            if (name.AsSpan().EndsWith(cloneSuffix.AsSpan(), StringComparison.Ordinal))
+            {
+                return name.AsSpan(0, name.Length - cloneSuffix.Length).ToString();
+            }
+            return name;
+        }
+
+        /// <summary>
+        /// é‡Šæ”¾ å†…éƒ¨è°ƒç”¨
         /// </summary>
         internal void InternalRelease()
         {
@@ -110,12 +127,12 @@ namespace FUI.UGUI
         }
 
         /// <summary>
-        /// µ±³õÊ¼»¯Ê±
+        /// å½“åˆå§‹åŒ–æ—¶
         /// </summary>
         protected virtual void OnInitialize() { }
 
         /// <summary>
-        /// µ±ÊÍ·ÅÊ±
+        /// å½“é‡Šæ”¾æ—¶
         /// </summary>
         protected virtual void OnRelease() { }
     }

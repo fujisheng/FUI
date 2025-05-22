@@ -7,7 +7,7 @@ using UnityEngine;
 namespace FUI.UGUI.Control
 {
     /// <summary>
-    /// ÊÊÓÃÓÚ¾²Ì¬ÁĞ±íµÄÁĞ±íÊÓÍ¼ÔªËØ
+    /// é€‚ç”¨äºé™æ€åˆ—è¡¨çš„åˆ—è¡¨è§†å›¾å…ƒç´ 
     /// </summary>
     public class StaticListViewElement : ListViewElement
     {
@@ -25,7 +25,7 @@ namespace FUI.UGUI.Control
 
         protected override void OnAdd(int index, ObservableObject itemData)
         {
-            // Èç¹ûitemEntitiesµÄÊıÁ¿´óÓÚListµÄÊıÁ¿£¬±íÊ¾ÓĞ¶àÓàµÄitemEntity ÔòÖ±½Ó¸´ÓÃ
+            // å¦‚æœitemEntitiesçš„æ•°é‡å¤§äºListçš„æ•°é‡ï¼Œè¡¨ç¤ºæœ‰å¤šä½™çš„itemEntity åˆ™ç›´æ¥å¤ç”¨
             if (items.Count > List.Value.Count)
             {
                 for (int i = index; i < List.Value.Count; i++)
@@ -38,7 +38,7 @@ namespace FUI.UGUI.Control
                 return;
             }
 
-            // Èç¹ûitemEntitiesµÄÊıÁ¿Ğ¡ÓÚµÈÓÚListµÄÊıÁ¿£¬±íÊ¾Ã»ÓĞ¶àÓàµÄ Ôò´´½¨ĞÂµÄ
+            // å¦‚æœitemEntitiesçš„æ•°é‡å°äºç­‰äºListçš„æ•°é‡ï¼Œè¡¨ç¤ºæ²¡æœ‰å¤šä½™çš„ åˆ™åˆ›å»ºæ–°çš„
             var itemEntity = CreateItem(itemData, out var itemObject);
             SetParent(index, itemObject);
             itemEntity.Enable();
@@ -47,7 +47,7 @@ namespace FUI.UGUI.Control
 
         protected override void OnRemove(int index, ObservableObject item)
         {
-            //ÒªÒÆ³ıÖ±½ÓÒÆ³ı£¬È»ºó½«ÒÆ³ıµÄitemEntities·Åµ½×îºó²¢Òş²Ø
+            //è¦ç§»é™¤ç›´æ¥ç§»é™¤ï¼Œç„¶åå°†ç§»é™¤çš„itemEntitiesæ”¾åˆ°æœ€åå¹¶éšè—
             var removed = items[index];
             items.RemoveAt(index);
             removed.entity.Disable();
@@ -67,7 +67,17 @@ namespace FUI.UGUI.Control
                 var item = List.Value[index];
                 if (index < items.Count)
                 {
-                    items[index].entity.SynchronizeProperties();
+                    var entity = items[index].entity;
+                    if(entity.ViewModel != item)
+                    {
+                        entity.UpdateViewModel(item);
+                    }
+                    else
+                    {
+                        entity.SynchronizeProperties();
+                    }
+
+                    entity.Enable();
                 }
                 else
                 {
@@ -86,14 +96,14 @@ namespace FUI.UGUI.Control
 
         UIEntity CreateItem(ObservableObject item, out GameObject itemObject)
         {
-            itemObject = Instantiate(itemPrefab);
+            itemObject = Instantiate(itemPrefab, transform);
             return CreateItemEntity(item, itemObject);
         }
 
         /// <summary>
-        /// ÉèÖÃItemµÄ¸¸½Úµã
+        /// è®¾ç½®Itemçš„çˆ¶èŠ‚ç‚¹
         /// </summary>
-        /// <param name="index">Ë÷Òı</param>
+        /// <param name="index">ç´¢å¼•</param>
         /// <param name="item">item</param>
         protected virtual void SetParent(int index, GameObject item)
         {

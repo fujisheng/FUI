@@ -4,17 +4,17 @@ using System.Collections.Generic;
 namespace FUI.Bindable
 {
     /// <summary>
-    /// Öµ¸Ä±äÎ¯ÍĞ
+    /// å€¼æ”¹å˜å§”æ‰˜
     /// </summary>
-    /// <typeparam name="T">ÖµÀàĞÍ</typeparam>
-    /// <param name="newValue">Öµ</param>
-    /// <param name="oldValue">¸Ä±äÖ®Ç°µÄÖµ</param>
+    /// <typeparam name="T">å€¼ç±»å‹</typeparam>
+    /// <param name="newValue">å€¼</param>
+    /// <param name="oldValue">æ”¹å˜ä¹‹å‰çš„å€¼</param>
     public delegate void ValueChangedHandler<in T>(T oldValue, T newValue);
 
     /// <summary>
-    /// Ö»¶ÁµÄ¿É°ó¶¨ÊôĞÔ
+    /// åªè¯»çš„å¯ç»‘å®šå±æ€§
     /// </summary>
-    /// <typeparam name="T">ÊôĞÔÖµÀàĞÍ</typeparam>
+    /// <typeparam name="T">å±æ€§å€¼ç±»å‹</typeparam>
     public interface IReadOnlyBindableProperty<out T>
     {
         T Value { get; }
@@ -22,9 +22,9 @@ namespace FUI.Bindable
     }
 
     /// <summary>
-    /// Ö»Ğ´µÄ¿É°ó¶¨ÊôĞÔ
+    /// åªå†™çš„å¯ç»‘å®šå±æ€§
     /// </summary>
-    /// <typeparam name="T">ÊôĞÔÖµÀàĞÍ</typeparam>
+    /// <typeparam name="T">å±æ€§å€¼ç±»å‹</typeparam>
     public interface IWriteOnlyBindableProperty<in T>
     {
         T Value { set; }
@@ -33,24 +33,24 @@ namespace FUI.Bindable
     }
 
     /// <summary>
-    /// ¿É°ó¶¨ÊôĞÔ
+    /// å¯ç»‘å®šå±æ€§
     /// </summary>
-    /// <typeparam name="T">ÊôĞÔÖµÀàĞÍ</typeparam>
+    /// <typeparam name="T">å±æ€§å€¼ç±»å‹</typeparam>
     public interface IBindableProperty<T> : IReadOnlyBindableProperty<T>, IWriteOnlyBindableProperty<T>
     {
         event ValueChangedHandler<T> OnValueChanged;
     }
 
     /// <summary>
-    /// ¿É°ó¶¨µÄÊôĞÔ
+    /// å¯ç»‘å®šçš„å±æ€§
     /// </summary>
-    /// <typeparam name="T">ÊôĞÔÖµÀàĞÍ</typeparam>
+    /// <typeparam name="T">å±æ€§å€¼ç±»å‹</typeparam>
     public class BindableProperty<T> : IBindableProperty<T>, IDisposable
     {
         T value;
 
         /// <summary>
-        /// Õâ¸öÊôĞÔµÄÖµ
+        /// è¿™ä¸ªå±æ€§çš„å€¼
         /// </summary>
         public T Value
         {
@@ -59,7 +59,7 @@ namespace FUI.Bindable
         }
 
         /// <summary>
-        /// ÊôĞÔÖµ¸ü¸ÄÊÂ¼ş
+        /// å±æ€§å€¼æ›´æ”¹äº‹ä»¶
         /// </summary>
         public event ValueChangedHandler<T> OnValueChanged;
 

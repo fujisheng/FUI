@@ -8,17 +8,17 @@ using UnityEngine;
 namespace FUI.UGUI.Control
 {
     /// <summary>
-    /// ÁĞ±íÊÓÍ¼ÔªËØ»ùÀà
+    /// åˆ—è¡¨è§†å›¾å…ƒç´ åŸºç±»
     /// </summary>
     public abstract class ListViewElement : UIElement, IContainerElement, IListView
     {
         /// <summary>
-        /// Êı¾İ
+        /// æ•°æ®
         /// </summary>
         public BindableProperty<IReadOnlyObservableList<ObservableObject>> List { get; private set; }
 
         /// <summary>
-        /// ËùÓĞ×Ó½ÚµãÊµÌå
+        /// æ‰€æœ‰å­èŠ‚ç‚¹å®ä½“
         /// </summary>
         protected List<UIEntity> ItemEntites { get; private set; }
 
@@ -39,7 +39,7 @@ namespace FUI.UGUI.Control
 
         void IListView.OnAdd(object sender, int? index, object item)
         {
-            // Èç¹ûindexÎªnull»òÕßitemÎªnull£¬±íÊ¾Õû¸öÁĞ±í¶¼¸üĞÂÁË
+            // å¦‚æœindexä¸ºnullæˆ–è€…itemä¸ºnullï¼Œè¡¨ç¤ºæ•´ä¸ªåˆ—è¡¨éƒ½æ›´æ–°äº†
             if (index == null || item == null)
             {
                 OnUpdate();
@@ -80,38 +80,38 @@ namespace FUI.UGUI.Control
         }
 
         /// <summary>
-        /// µ±Ìí¼ÓÒ»¸öÔªËØµÄÊ±ºò
+        /// å½“æ·»åŠ ä¸€ä¸ªå…ƒç´ çš„æ—¶å€™
         /// </summary>
-        /// <param name="index">Ìí¼ÓµÄindex</param>
-        /// <param name="item">Ìí¼ÓµÄitem</param>
+        /// <param name="index">æ·»åŠ çš„index</param>
+        /// <param name="item">æ·»åŠ çš„item</param>
         protected virtual void OnAdd(int index, ObservableObject item) { }
 
         /// <summary>
-        /// µ±ÒÆ³ıÒ»¸öÔªËØµÄÊ±ºò
+        /// å½“ç§»é™¤ä¸€ä¸ªå…ƒç´ çš„æ—¶å€™
         /// </summary>
-        /// <param name="index">ÒÆ³ıµÄindex</param>
-        /// <param name="item">ÒÆ³ıµÄÏî</param>
+        /// <param name="index">ç§»é™¤çš„index</param>
+        /// <param name="item">ç§»é™¤çš„é¡¹</param>
         protected virtual void OnRemove(int index, ObservableObject item) { }
 
         /// <summary>
-        /// µ±Ìæ»»µÄÊ±ºò
+        /// å½“æ›¿æ¢çš„æ—¶å€™
         /// </summary>
-        /// <param name="index">Ìæ»»µÄindex</param>
-        /// <param name="oldItem">Ìæ»»Ç°µÄitem</param>
-        /// <param name="newItem">Ìæ»»ºóµÄitem</param>
+        /// <param name="index">æ›¿æ¢çš„index</param>
+        /// <param name="oldItem">æ›¿æ¢å‰çš„item</param>
+        /// <param name="newItem">æ›¿æ¢åçš„item</param>
         protected virtual void OnReplace(int index, ObservableObject oldItem, ObservableObject newItem) { }
 
 
         /// <summary>
-        /// µ±È«Á¿¸üĞÂµÄÊ±ºò
+        /// å½“å…¨é‡æ›´æ–°çš„æ—¶å€™
         /// </summary>
         protected abstract void OnUpdate();
 
         /// <summary>
-        /// ´´½¨Ò»¸öItemView
+        /// åˆ›å»ºä¸€ä¸ªItemView
         /// </summary>
-        /// <param name="itemViewModel">Õâ¸öItem¶ÔÓ¦µÄÊÓÍ¼Ä£ĞÍ</param>
-        /// <param name="itemObject">Õâ¸öItem¶ÔÓ¦µÄGameObject</param>
+        /// <param name="itemViewModel">è¿™ä¸ªItemå¯¹åº”çš„è§†å›¾æ¨¡å‹</param>
+        /// <param name="itemObject">è¿™ä¸ªItemå¯¹åº”çš„GameObject</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         protected UIEntity CreateItemEntity(ObservableObject itemViewModel, GameObject itemObject)

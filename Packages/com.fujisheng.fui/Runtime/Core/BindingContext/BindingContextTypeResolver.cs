@@ -257,7 +257,7 @@ namespace FUI
             }
 
             //如果有多个上下文, 则抛出异常需要指定视图模型
-            throw new Exception($"create view:{viewName} failed, there are multiple contexts, please assign viewModel");
+            throw new Exception($"create view [{viewName}] failed, there are multiple contexts, please assign viewModel");
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace FUI
                 return true;
             }
 
-            throw new Exception($"create view failed, there are multiple contexts, please select viewName");
+            throw new Exception($"create view failed, there are multiple contexts, please assign viewName");
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace FUI
             //没有指定视图模型, 但是没有这个视图名字的上下文, 则抛出异常
             if (!viewContextLookup.TryGetValue(viewName, out var contexts) && assignViewModelType == null)
             {
-                throw new Exception($"create view:{viewName} failed, cannot find any binding context");
+                throw new Exception($"create view [{viewName}] failed, cannot find any binding context");
             }
 
             //没有对应视图名所对应的上下文, 但是有对应视图模型的上下文
@@ -342,19 +342,19 @@ namespace FUI
                     return true;
                 }
 
-                throw new Exception($"create view:{viewName} failed, there are multiple contexts, please select viewModel");
+                throw new Exception($"create view [{viewName}] failed, there are multiple contexts, please assign viewModel");
             }
 
             //没有指定视图模型, 但是有多个这个viewName的上下文, 则抛出异常需要指定视图模型
             if (assignViewModelType == null && contexts.Count > 1)
             {
-                throw new Exception($"create view:{viewName} failed, there are multiple contexts, please select viewModel");
+                throw new Exception($"create view [{viewName}] failed, there are multiple contexts, please assign viewModel");
             }
 
             //指定了视图模型, 但是没有找到对应的上下文, 则抛出异常
             if (assignViewModelType != null && contexts.Count == 1 && !contexts[0].viewModelType.IsAssignableFrom(assignViewModelType))
             {
-                throw new Exception($"create view:{viewName} failed, cannot find {assignViewModelType} binding context");
+                throw new Exception($"create view [{viewName}] failed, cannot find {assignViewModelType} binding context");
             }
 
             //没有指定视图模型且只有一个上下文, 则直接使用这个上下文
@@ -380,7 +380,7 @@ namespace FUI
             }
             
 
-            throw new Exception($"create view:{viewName} failed, cannot find binding context");
+            throw new Exception($"create view [{viewName}] failed, cannot find binding context");
         }
 
         /// <summary>
@@ -402,13 +402,13 @@ namespace FUI
             //没有指定视图行为, 但是有多个这个viewModelType的行为, 则抛出异常需要指定视图行为
             if (inputBehaviorType == null && behaviors.Count > 1)
             {
-                throw new Exception($"create behavior:{viewModelType} failed, there are multiple behaviors, please select behavior");
+                throw new Exception($"create behavior [{viewModelType}] failed, there are multiple behaviors, please assign behavior");
             }
 
             //指定了视图行为, 但是没有找到对应的行为, 则抛出异常
             if (inputBehaviorType != null && behaviors.Count == 1 && !behaviors[0].IsAssignableFrom(inputBehaviorType))
             {
-                throw new Exception($"create behavior:{viewModelType} failed, cannot find {inputBehaviorType} behavior");
+                throw new Exception($"create behavior [{viewModelType}] failed, cannot find {inputBehaviorType} behavior");
             }
 
             //没有指定视图行为且只有一个行为, 则直接使用这个行为

@@ -8,23 +8,27 @@ namespace FUI.UGUI
 	public partial class View
 	{
 		/// <summary>
-		/// ÊÓ¾õÔªËØÎ¨Ò»±êÊ¶²éÕÒ±í
+		/// è§†è§‰å…ƒç´ å”¯ä¸€æ ‡è¯†æŸ¥æ‰¾è¡¨
 		/// </summary>
 		Dictionary<ElementUniqueKey, IElement> elementUniqueLookup;
 
 		/// <summary>
-		/// ¸ù¾İÃû×Ö´æ´¢µÄÊÓ¾õÔªËØ
+		/// æ ¹æ®åå­—å­˜å‚¨çš„è§†è§‰å…ƒç´ 
 		/// </summary>
 		Dictionary<string, List<IElement>> namedElements;
 
+		/// <summary>
+		/// æ‰€æœ‰çš„å­å…ƒç´ 
+		/// </summary>
 		List<IElement> children;
+
         /// <summary>
-        /// Õâ¸öViewµÄËùÓĞÊÓ¾õÔªËØ °üº¬×ÔÉí
+        /// è¿™ä¸ªViewçš„æ‰€æœ‰è§†è§‰å…ƒç´  åŒ…å«è‡ªèº«
         /// </summary>
         public IReadOnlyList<IElement> Elements => children;
 
 		/// <summary>
-		/// ³õÊ¼»¯Õâ¸ö½çÃæµÄÊÓ¾õÔªËØ
+		/// åˆå§‹åŒ–è¿™ä¸ªç•Œé¢çš„è§†è§‰å…ƒç´ 
 		/// </summary>
 		protected virtual void InitializeElements()
 		{
@@ -35,19 +39,19 @@ namespace FUI.UGUI
 			var openList = new Queue<Transform>();
 			openList.Enqueue(this.gameObject.transform);
 			var elementsBuffer = new List<Element>();
-			//»ñÈ¡ËùÓĞµÄÊÓ¾õÔªËØ×é¼ş °üº¬×ÔÉí
+			//è·å–æ‰€æœ‰çš„è§†è§‰å…ƒç´ ç»„ä»¶ åŒ…å«è‡ªèº«
 			while (openList.Count > 0)
 			{
 				var current = openList.Dequeue();
 
-				//»ñÈ¡µ±Ç°ÔªËØµÄËùÓĞÔªËØ×é¼ş
+				//è·å–å½“å‰å…ƒç´ çš„æ‰€æœ‰å…ƒç´ ç»„ä»¶
 				elementsBuffer.Clear();
 				current.GetComponents(elementsBuffer);
 
 				bool continueFind = true;
 				foreach (var element in elementsBuffer)
 				{
-                    //Èç¹ûÕâ¸öÔªËØ²»ÊÇ×ÔÉíÔòĞèÒª³õÊ¼»¯
+                    //å¦‚æœè¿™ä¸ªå…ƒç´ ä¸æ˜¯è‡ªèº«åˆ™éœ€è¦åˆå§‹åŒ–
                     if (element != this)
 					{
                         element.Parent = this;
@@ -56,7 +60,7 @@ namespace FUI.UGUI
 
 					AddElement(element);
 
-					//Èç¹ûÕâ¸öÔªËØÊÇÈİÆ÷ÔªËØÇÒ²»ÊÇ×ÔÉíÔò²»ÔÙ¼ÌĞøÏòÏÂ²éÕÒ
+					//å¦‚æœè¿™ä¸ªå…ƒç´ æ˜¯å®¹å™¨å…ƒç´ ä¸”ä¸æ˜¯è‡ªèº«åˆ™ä¸å†ç»§ç»­å‘ä¸‹æŸ¥æ‰¾
 					if (element is IContainerElement && element != this)
 					{
 						continueFind = false;
@@ -65,7 +69,7 @@ namespace FUI.UGUI
 
 				if (continueFind)
 				{
-                    //·ñÔò¼ÌĞøÏòÏÂ²éÕÒ
+                    //å¦åˆ™ç»§ç»­å‘ä¸‹æŸ¥æ‰¾
                     for (int i = 0; i < current.transform.childCount; i++)
                     {
                         openList.Enqueue(current.transform.GetChild(i));
@@ -75,14 +79,14 @@ namespace FUI.UGUI
 		}
 
 		/// <summary>
-		/// Ìí¼ÓÒ»¸öÊÓ¾õÔªËØ
+		/// æ·»åŠ ä¸€ä¸ªè§†è§‰å…ƒç´ 
 		/// </summary>
-		/// <param name="element">ÒªÌí¼ÓµÄÊÓ¾õÔªËØ</param>
+		/// <param name="element">è¦æ·»åŠ çš„è§†è§‰å…ƒç´ </param>
 		public void AddElement(IElement element)
 		{
 			if (string.IsNullOrEmpty(element.Name))
 			{
-				throw new Exception($"{this} ass element failed, element name is null or empty.");
+				throw new Exception($"{this} as element failed, element name is null or empty.");
 			}
 
 			var key = new ElementUniqueKey(element.Name, element.GetType());
@@ -97,9 +101,9 @@ namespace FUI.UGUI
 		}
 
 		/// <summary>
-		/// Ìí¼ÓÒ»¸öElementµ½Ãû×ÖÓ³ÉäÖĞ
+		/// æ·»åŠ ä¸€ä¸ªElementåˆ°åå­—æ˜ å°„ä¸­
 		/// </summary>
-		/// <param name="element">ÒªÌí¼ÓµÄElement</param>
+		/// <param name="element">è¦æ·»åŠ çš„Element</param>
 		void AddChildToNamedElements(IElement element)
 		{
 			if (!namedElements.TryGetValue(element.Name, out var list))
@@ -118,13 +122,17 @@ namespace FUI.UGUI
 		}
 
 		/// <summary>
-		/// ÒÆ³ıÒ»¸ö×ÓÔªËØ
+		/// ç§»é™¤ä¸€ä¸ªå­å…ƒç´ 
 		/// </summary>
 		/// <param name="element"></param>
 		public void RemoveElement(IElement element)
 		{
 			var key = new ElementUniqueKey(element.Name, element.GetType());
-			elementUniqueLookup.Remove(key);
+			if(!elementUniqueLookup.Remove(key))
+			{
+				return;
+			}
+
             children.Remove(element);
             RemoveFromNamedElements(element);
 
@@ -135,7 +143,7 @@ namespace FUI.UGUI
 		}
 
         /// <summary>
-        /// ÒÆ³ıÒ»¸öElement´ÓÃû×ÖÓ³ÉäÖĞ
+        /// ç§»é™¤ä¸€ä¸ªElementä»åå­—æ˜ å°„ä¸­
         /// </summary>
         /// <param name="element"></param>
         void RemoveFromNamedElements(IElement element)
@@ -149,7 +157,7 @@ namespace FUI.UGUI
 		}
 
 		/// <summary>
-		/// ÒÆ³ıËùÓĞµÄ×ÓÔªËØ
+		/// ç§»é™¤æ‰€æœ‰çš„å­å…ƒç´ 
 		/// </summary>
 		public void RemoveAllElements()
 		{
@@ -158,27 +166,28 @@ namespace FUI.UGUI
 				return;
 			}
 
-            for (int i = children.Count - 1; i >= 0; i--)
+			while(children.Count > 0)
 			{
-				RemoveElement(children[i]);
-			}
+				RemoveElement(children[children.Count - 1]);
+            }
 		}
 
 		/// <summary>
-		/// Çå¿ÕËùÓĞ×ÓÔªËØ
+		/// æ¸…ç©ºæ‰€æœ‰å­å…ƒç´ 
 		/// </summary>
 		public void ClearElements()
 		{
+            RemoveAllElements();
             elementUniqueLookup.Clear();
             namedElements.Clear();
             children.Clear();
         }
 
 		/// <summary>
-		/// »ñÈ¡Ò»¸öÊÓ¾õÔªËØ
+		/// è·å–ä¸€ä¸ªè§†è§‰å…ƒç´ 
 		/// </summary>
-		/// <typeparam name="T">ÊÓ¾õÔªËØÀàĞÍ</typeparam>
-		/// <param name="path">Â·¾¶</param>
+		/// <typeparam name="T">è§†è§‰å…ƒç´ ç±»å‹</typeparam>
+		/// <param name="path">è·¯å¾„</param>
 		/// <returns></returns>
 		public T GetElement<T>(string path) where T : IElement
 		{
@@ -186,10 +195,10 @@ namespace FUI.UGUI
 		}
 
         /// <summary>
-        /// »ñÈ¡Ò»¸öÊÓ¾õÔªËØ
+        /// è·å–ä¸€ä¸ªè§†è§‰å…ƒç´ 
         /// </summary>
-        /// <param name="path">Â·¾¶</param>
-        /// <param name="elementType">ÔªËØÀàĞÍ</param>
+        /// <param name="path">è·¯å¾„</param>
+        /// <param name="elementType">å…ƒç´ ç±»å‹</param>
         /// <returns></returns>
         public IElement GetElement(string path, Type elementType)
         {
@@ -207,7 +216,7 @@ namespace FUI.UGUI
         }
 
         /// <summary>
-        /// ³¢ÊÔ´Ó»º´æÖĞ»ñÈ¡Ò»¸öÊÓ¾õÔªËØ  Èç¹ûÃ»ÓĞÔò»º´æ  ·ÀÖ¹Í¨¹ı»ùÀàĞÍÀ´²éÕÒ
+        /// å°è¯•ä»ç¼“å­˜ä¸­è·å–ä¸€ä¸ªè§†è§‰å…ƒç´   å¦‚æœæ²¡æœ‰åˆ™ç¼“å­˜  é˜²æ­¢é€šè¿‡åŸºç±»å‹æ¥æŸ¥æ‰¾
         /// </summary>
         /// <typeparam name="T">ElementType</typeparam>
         /// <param name="path">ElementPath</param>
@@ -221,7 +230,7 @@ namespace FUI.UGUI
 
             foreach (var item in list)
             {
-                if (item.GetType() != key.elementType)
+				if(!key.elementType.IsAssignableFrom(item.GetType()))
                 {
                     continue;
                 }

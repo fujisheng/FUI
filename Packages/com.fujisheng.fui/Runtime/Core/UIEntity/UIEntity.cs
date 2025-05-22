@@ -180,6 +180,7 @@ namespace FUI
                 }
 
                 this.behavior.UpdateViewModel(viewModel);
+                this.ViewModel = viewModel;
                 SynchronizeProperties();
             });
         }
@@ -222,21 +223,28 @@ namespace FUI
         /// </summary>
         public void Enable(object param = null)
         {
-            SafeExecute(() =>
+            try
             {
-                if (State.HasFlag(UIEntityState.Freezed) || State.HasFlag(UIEntityState.Enabled))
+                SafeExecute(() =>
                 {
-                    return;
-                }
+                    if (State.HasFlag(UIEntityState.Freezed) || State.HasFlag(UIEntityState.Enabled))
+                    {
+                        return;
+                    }
 
-                this.bindingContext.Binding();
-                SynchronizeProperties();
-                this.behavior.OnEnable(param);
-                this.view.Visible = true;
+                    this.bindingContext.Binding();
+                    SynchronizeProperties();
+                    this.behavior.OnEnable(param);
+                    this.view.Visible = true;
 
-                State |= UIEntityState.Enabled;
-                OnEntityEnabled?.Invoke(this);
-            });
+                    State |= UIEntityState.Enabled;
+                    OnEntityEnabled?.Invoke(this);
+                });
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
         }
 
         /// <summary>
@@ -304,6 +312,7 @@ namespace FUI
                 if (State.HasFlag(UIEntityState.Enabled))
                 {
                     this.behavior.OnDisable();
+                    OnEntityDisabled?.Invoke(this);
                 }
 
                 this.behavior.OnDestroy();
@@ -430,7 +439,7 @@ namespace FUI
         public override string ToString()
         {
             return !State.HasFlag(UIEntityState.Alive) ? "null"
-                : $"UIEntity Name:{Name} ViewModel:{ViewModel} ViewBahavior:{behavior} View:{view} Context:{bindingContext.GetType().ToString()}";
+                : $"UIEntity Name:{Name} Layer:{Layer} Order:{Order} ViewModel:{ViewModel} ViewBahavior:{behavior} View:{view} Context:{bindingContext.GetType().ToString()}";
         }
 
         public override bool Equals(object obj)
@@ -438,39 +447,31 @@ namespace FUI
             return Equals(obj as UIEntity);
         }
 
+        static bool IsNull(UIEntity entity)
+        {
+            return ReferenceEquals(entity, null) || !entity.State.HasFlag(UIEntityState.Alive);
+        }
+
         public bool Equals(UIEntity other)
         {
-            if (ReferenceEquals(null, other))
-            {
-                return !State.HasFlag(UIEntityState.Alive);
-            }
+            var self = IsNull(this) ? null : this;
+            other = IsNull(other) ? null : other;
 
-            if(ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            return State.HasFlag(UIEntityState.Alive) && other.State.HasFlag(UIEntityState.Alive);
+            return ReferenceEquals(self, other);
         }
 
         public override int GetHashCode()
         {
+            // 如果未存活，返回固定的哈希值 0
             return !State.HasFlag(UIEntityState.Alive) ? 0 : HashCode.Combine(Name, ViewModel, view, bindingContext);
         }
 
         public static bool operator ==(UIEntity left, UIEntity right)
         {
-            if (ReferenceEquals(left, right))
-            {
-                return true;
-            }
+            left = IsNull(left) ? null : left;
+            right = IsNull(right) ? null : right;
 
-            if (ReferenceEquals(left, null))
-            {
-                return !right?.State.HasFlag(UIEntityState.Alive) ?? true;
-            }
-
-            return left.Equals(right);
+            return ReferenceEquals(left, right);
         }
 
         public static bool operator !=(UIEntity left, UIEntity right)

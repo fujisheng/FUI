@@ -5,7 +5,7 @@ using UnityEngine;
 namespace FUI.UGUI.Control
 {
     /// <summary>
-    /// ÊÊÓÃÓÚ¹Ì¶¨Î»ÖÃµÄÁĞ±íÊÓÍ¼ÔªËØ  ¼´ÊÇÒ»¸ö½ÚµãÏÂÓĞºÜ¶à×Ó½Úµã£¬ Ã¿¸ö×Ó½ÚµãÏÂ¶¼ÊÇÒ»¸öitem
+    /// é€‚ç”¨äºå›ºå®šä½ç½®çš„åˆ—è¡¨è§†å›¾å…ƒç´   å³æ˜¯ä¸€ä¸ªèŠ‚ç‚¹ä¸‹æœ‰å¾ˆå¤šå­èŠ‚ç‚¹ï¼Œ æ¯ä¸ªå­èŠ‚ç‚¹ä¸‹éƒ½æ˜¯ä¸€ä¸ªitem
     /// </summary>
     public class FixedPositionListViewElement : StaticListViewElement
     {
@@ -29,6 +29,7 @@ namespace FUI.UGUI.Control
             }
 
             item.transform.SetParent(positions[index]);
+            item.transform.localPosition = Vector3.zero;
         }
     }
 }

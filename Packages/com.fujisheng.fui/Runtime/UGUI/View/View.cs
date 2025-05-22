@@ -1,5 +1,7 @@
 ﻿using FUI.Bindable;
 
+using System;
+
 using UnityEngine;
 
 namespace FUI.UGUI
@@ -67,9 +69,9 @@ namespace FUI.UGUI
         {
             base.OnInitialize();
 
-            Layer = new BindableProperty<int>(GetLayer(), SetLayer);
+            Layer = new BindableProperty<int>(int.MinValue, SetLayer);
             Visible = new BindableProperty<bool>(IsVisible(), SetVisible);
-            Order = new BindableProperty<int>(GetOrder(), SetOrder);
+            Order = new BindableProperty<int>(int.MinValue, SetOrder);
             Interactable = new BindableProperty<bool>(true, SetInteractable);
 
             //初始化所有的子元素
@@ -86,34 +88,17 @@ namespace FUI.UGUI
         }
 
         /// <summary>
-        /// 获取层级
-        /// </summary>
-        /// <returns></returns>
-        protected virtual int GetLayer()
-        {
-            if(!gameObject.TryGetComponent<Canvas>(out var canvas))
-            {
-                return 0;
-            }
-            return canvas.sortingOrder;
-        }
-
-        /// <summary>
-        /// 获取顺序
-        /// </summary>
-        /// <returns></returns>
-        protected virtual int GetOrder()
-        {
-            return gameObject.transform.GetSiblingIndex();
-        }
-
-        /// <summary>
         /// 设置可见性
         /// </summary>
         /// <param name="oldVisible">之前的值</param>
         /// <param name="visible">现在的值</param>
         protected virtual void SetVisible(bool oldVisible, bool visible)
         {
+            if(this == null || this.gameObject == null)
+            {
+                return;
+            }
+
             this.gameObject.SetActive(visible);
         }
 
@@ -124,11 +109,7 @@ namespace FUI.UGUI
         /// <param name="layer">现在的值</param>
         protected virtual void SetLayer(int oldLayer, int layer)
         {
-            if (!gameObject.TryGetComponent<Canvas>(out var canvas))
-            {
-                return;
-            }
-            canvas.sortingOrder = layer;
+            UpdateShoringOrder();
         }
 
         /// <summary>
@@ -138,7 +119,29 @@ namespace FUI.UGUI
         /// <param name="order">现在的值</param>
         protected virtual void SetOrder(int oldOrder, int order)
         {
+            if (this == null || this.gameObject == null)
+            {
+                return;
+            }
+
             gameObject.transform.SetSiblingIndex(order);
+            UpdateShoringOrder();
+        }
+
+        /// <summary>
+        /// 更新顺序
+        /// </summary>
+        void UpdateShoringOrder()
+        {
+            if (this == null || this.gameObject == null)
+            {
+                return;
+            }
+
+            if (gameObject.TryGetComponent<Canvas>(out var canvas))
+            {
+                canvas.sortingOrder = Layer.Value + Order.Value;
+            }
         }
 
         /// <summary>
@@ -148,6 +151,11 @@ namespace FUI.UGUI
         /// <param name="interactable">现在的值</param>
         protected virtual void SetInteractable(bool oldInteractable, bool interactable)
         {
+            if (this == null || this.gameObject == null)
+            {
+                return;
+            }
+
             if (gameObject.TryGetComponent<CanvasGroup>(out var canvasGroup))
             {
                 canvasGroup.blocksRaycasts = interactable;
@@ -156,30 +164,43 @@ namespace FUI.UGUI
 
         protected override void OnRelease()
         {
+            if(this == null || gameObject == null)
+            {
+                return;
+            }
+
             base.OnRelease();
+
+            ReleaseChildren();
 
             Visible.Dispose();
             Layer.Dispose();
             Order.Dispose();
             Interactable.Dispose();
 
-            ReleaseChildren();
-            AssetLoader.DestroyGameObject(gameObject);
-            AssetLoader.Release();
+            AssetLoader?.DestroyGameObject(gameObject);
+            AssetLoader?.Release();
         }
 
         void ReleaseChildren()
         {
             foreach (var child in Elements)
             {
-                if(child.Equals(this))
+                if (child == null || child.Equals(this))
                 {
                     continue;
                 }
 
-                if(child is Element element)
+                if (child is Element element)
                 {
-                    element.InternalRelease();
+                    try
+                    {
+                        element.InternalRelease();
+                    }
+                    catch (Exception ex)
+                    {
+                        UnityEngine.Debug.LogException(ex);
+                    }
                 }
             }
 

@@ -3,12 +3,12 @@ namespace FUI.Extensions
     public static class ViewExtensions
     {
         /// <summary>
-        /// »ñÈ¡Ò»¸öViewµÄÄ³¸öÔªËØ
+        /// è·å–ä¸€ä¸ªViewçš„æŸä¸ªå…ƒç´ 
         /// </summary>
-        /// <typeparam name="TElement">ÔªËØÀàĞÍ</typeparam>
-        /// <param name="view">¶ÔÓ¦µÄView</param>
-        /// <param name="elementPath">ÔªËØÂ·¾¶</param>
-        /// <returns>¶ÔÓ¦µÄÔªËØ</returns>
+        /// <typeparam name="TElement">å…ƒç´ ç±»å‹</typeparam>
+        /// <param name="view">å¯¹åº”çš„View</param>
+        /// <param name="elementPath">å…ƒç´ è·¯å¾„</param>
+        /// <returns>å¯¹åº”çš„å…ƒç´ </returns>
         /// <exception cref="System.Exception"></exception>
         public static TElement GetElement<TElement>(this IView view, string elementPath) where TElement : class, IElement
         {

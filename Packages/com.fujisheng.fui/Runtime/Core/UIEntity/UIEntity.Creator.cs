@@ -9,12 +9,12 @@ namespace FUI
     public partial class UIEntity
     {
         /// <summary>
-        /// ´´½¨Ò»¸öUIÊµÌå
+        /// åˆ›å»ºä¸€ä¸ªUIå®ä½“
         /// </summary>
-        /// <param name="viewName">ÊÓÍ¼Ãû</param>
-        /// <param name="viewFactory">ÊÓÍ¼¹¤³§</param>
-        /// <param name="viewModelType">ÊÓÍ¼Ä£ĞÍÀàĞÍ</param>
-        /// <param name="viewBehaviorType">ÊÓÍ¼ĞĞÎªÀàĞÍ</param>
+        /// <param name="viewName">è§†å›¾å</param>
+        /// <param name="viewFactory">è§†å›¾å·¥å‚</param>
+        /// <param name="viewModelType">è§†å›¾æ¨¡å‹ç±»å‹</param>
+        /// <param name="viewBehaviorType">è§†å›¾è¡Œä¸ºç±»å‹</param>
         /// <returns></returns>
         public static UIEntity Create(string viewName, IViewFactory viewFactory, Type viewModelType = null, Type viewBehaviorType = null)
         {
@@ -23,13 +23,13 @@ namespace FUI
         }
 
         /// <summary>
-        /// Òì²½´´½¨Ò»¸öUIÊµÌå
+        /// å¼‚æ­¥åˆ›å»ºä¸€ä¸ªUIå®ä½“
         /// </summary>
-        /// <param name="viewName">ÊÓÍ¼Ãû</param>
-        /// <param name="viewFactory">ÊÓÍ¼¹¤³§</param>
-        /// <param name="viewModelType">ÊÓÍ¼Ä£ĞÍÀàĞÍ</param>
-        /// <param name="viewBehaviorType">ÊÓÍ¼ĞĞÎªÀàĞÍ</param>
-        /// <param name="token">È¡Ïû±ê¼Ç</param>
+        /// <param name="viewName">è§†å›¾å</param>
+        /// <param name="viewFactory">è§†å›¾å·¥å‚</param>
+        /// <param name="viewModelType">è§†å›¾æ¨¡å‹ç±»å‹</param>
+        /// <param name="viewBehaviorType">è§†å›¾è¡Œä¸ºç±»å‹</param>
+        /// <param name="token">å–æ¶ˆæ ‡è®°</param>
         /// <returns></returns>
         public static async Task<UIEntity> CreateAsync(string viewName, IViewFactory viewFactory, Type viewModelType = null, Type viewBehaviorType = null, CancellationToken token = default)
         {
@@ -38,11 +38,11 @@ namespace FUI
         }
 
         /// <summary>
-        /// ´´½¨Ò»¸öUIÊµÌå
+        /// åˆ›å»ºä¸€ä¸ªUIå®ä½“
         /// </summary>
-        /// <param name="view">ÊÓÍ¼</param>
-        /// <param name="viewModelType">ÊÓÍ¼Ä£ĞÍÀàĞÍ</param>
-        /// <param name="viewBehaviorType">ÊÓÍ¼ĞĞÎªÀàĞÍ</param>
+        /// <param name="view">è§†å›¾</param>
+        /// <param name="viewModelType">è§†å›¾æ¨¡å‹ç±»å‹</param>
+        /// <param name="viewBehaviorType">è§†å›¾è¡Œä¸ºç±»å‹</param>
         /// <returns></returns>
         public static UIEntity Create(IView view, Type viewModelType = null, Type viewBehaviorType = null)
         {
@@ -58,25 +58,41 @@ namespace FUI
             var viewModel = Activator.CreateInstance(resultViewModelType) as ObservableObject;
             var bindingContext = Activator.CreateInstance(contextType, view, viewModel) as IBindingContext;
             BindingContextTypeResolver.TryGetBehaviorType(viewBehaviorType, resultViewModelType, out var behaviorType);
-            //Èç¹ûÃ»ÓĞÖ¸¶¨ÊÓÍ¼ĞĞÎªÇÒÃ»ÓĞÄ¬ÈÏµÄÊÓÍ¼ĞĞÎª, ÔòÊ¹ÓÃEmptyViewBehavior
+            //å¦‚æœæ²¡æœ‰æŒ‡å®šè§†å›¾è¡Œä¸ºä¸”æ²¡æœ‰é»˜è®¤çš„è§†å›¾è¡Œä¸º, åˆ™ä½¿ç”¨EmptyViewBehavior
             var behavior = behaviorType == null ? new EmptyViewBehavior() : Activator.CreateInstance(behaviorType) as IViewBehavior;
             return new UIEntity(bindingContext, behavior);
         }
 
         /// <summary>
-        /// ´´½¨Ò»¸öUIÊµÌå
+        /// åˆ›å»ºä¸€ä¸ªUIå®ä½“
         /// </summary>
-        /// <param name="view">ÊÓÍ¼</param>
-        /// <param name="viewModel">ÊÓÍ¼Ä£ĞÍ</param>
+        /// <param name="view">è§†å›¾</param>
+        /// <param name="viewModel">è§†å›¾æ¨¡å‹</param>
         /// <returns></returns>
         public static UIEntity Create(IView view, ObservableObject viewModel)
         {
-            var viewModelType = viewModel.GetType();
-            BindingContextTypeResolver.TryGetContextType(viewModelType, view.Name, out var contextType, out _);
-            BindingContextTypeResolver.TryGetBehaviorType(null, viewModelType, out var behaviorType);
-            //Èç¹ûÃ»ÓĞÖ¸¶¨ÊÓÍ¼ĞĞÎªÇÒÃ»ÓĞÄ¬ÈÏµÄÊÓÍ¼ĞĞÎª, ÔòÊ¹ÓÃEmptyViewBehavior
+            ObservableObject viewModelInstance = viewModel;
+            Type viewModelType, behaviorType, contextType;
+
+            //å¦‚æœæ²¡æœ‰ViewModel, åˆ™ä½¿ç”¨EmptyViewModelå’ŒEmptyBindingContext é€‚ç”¨äºæ²¡æœ‰ä»»ä½•æ•°æ®çš„æƒ…å†µ ä¾‹å¦‚åªæ˜¯åˆ›å»ºä¸€ä¸ªç©ºçš„UI
+            if (viewModel == null)
+            {
+                viewModelType = typeof(EmptyViewModel);
+                contextType = typeof(EmptyBindingContext);
+                behaviorType = typeof(EmptyViewBehavior);
+                viewModelInstance = new EmptyViewModel();
+                UnityEngine.Debug.LogWarning($"Create UIEntity {view} ViewModel is null, using EmptyViewModel and EmptyBindingContext");
+            }
+            else
+            {
+                viewModelType = viewModel.GetType();
+                BindingContextTypeResolver.TryGetContextType(viewModelType, view.Name, out contextType, out _);
+                BindingContextTypeResolver.TryGetBehaviorType(null, viewModelType, out behaviorType);
+            }
+
+            //å¦‚æœæ²¡æœ‰æŒ‡å®šè§†å›¾è¡Œä¸ºä¸”æ²¡æœ‰é»˜è®¤çš„è§†å›¾è¡Œä¸º, åˆ™ä½¿ç”¨EmptyViewBehavior
             var behavior = behaviorType == null ? new EmptyViewBehavior() : Activator.CreateInstance(behaviorType) as IViewBehavior;
-            var bindingContext = Activator.CreateInstance(contextType, view, viewModel) as IBindingContext;
+            var bindingContext = Activator.CreateInstance(contextType, view, viewModelInstance) as IBindingContext;
             return new UIEntity(bindingContext, behavior);
         }
     }

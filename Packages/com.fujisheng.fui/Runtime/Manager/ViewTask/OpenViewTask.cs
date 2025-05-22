@@ -4,41 +4,46 @@ using System.Threading;
 namespace FUI.Manager
 {
     /// <summary>
-    /// ½çÃæ´´½¨²ÎÊı
+    /// ç•Œé¢åˆ›å»ºå‚æ•°
     /// </summary>
     internal struct UIOpenTaskParam
     {
         /// <summary>
-        /// ½çÃæÃû×Ö
+        /// ç•Œé¢åå­—
         /// </summary>
         internal readonly string viewName;
 
         /// <summary>
-        /// Ö¸¶¨µÄViewModelÀàĞÍ
+        /// æŒ‡å®šçš„ViewModelç±»å‹
         /// </summary>
         internal readonly Type viewModelType;
 
         /// <summary>
-        /// Ö¸¶¨µÄViewBehaviorÀàĞÍ
+        /// æŒ‡å®šçš„ViewBehaviorç±»å‹
         /// </summary>
         internal readonly Type viewBehaviorType;
 
         /// <summary>
-        /// ´ò¿ªÊ±´«ÈëµÄ²ÎÊı
+        /// æ‰“å¼€æ—¶ä¼ å…¥çš„å‚æ•°
         /// </summary>
         internal readonly object param;
 
         /// <summary>
-        /// ½çÃæ¹¤³§
+        /// ç•Œé¢å·¥å‚
         /// </summary>
         internal readonly IViewFactory factory;
 
         /// <summary>
-        /// ÊÇ·ñÊÇÒì²½´´½¨
+        /// æ˜¯å¦æ˜¯å¼‚æ­¥åˆ›å»º
         /// </summary>
         internal readonly bool isAsync;
 
-        internal UIOpenTaskParam(string viewName, IViewFactory factory, Type viewModelType = null, Type viewBehaviorType = null, object param = null, bool isAsync = false)
+        /// <summary>
+        /// çˆ¶çº§UIå®ä½“ è¢«è¿™ä¸ªç•Œé¢ä¾èµ–çš„
+        /// </summary>
+        internal readonly UIEntity parent;
+
+        internal UIOpenTaskParam(string viewName, IViewFactory factory, Type viewModelType = null, Type viewBehaviorType = null, object param = null, bool isAsync = false, UIEntity parent = null)
         {
             this.viewName = viewName;
             this.factory = factory;
@@ -46,6 +51,7 @@ namespace FUI.Manager
             this.viewBehaviorType = viewBehaviorType;
             this.param = param;
             this.isAsync = isAsync;
+            this.parent = parent;
         }
     }
 
@@ -54,99 +60,102 @@ namespace FUI.Manager
         readonly UIOpenTaskParam param;
         readonly CancellationTokenSource cancellationTokenSource;
         readonly UIStack uiStack;
+        readonly UIManager manager;
 
-        internal override string ViewName { get; set; }
-        internal override UIEntity Result { get; set; }
-        internal override bool IsCompleted { get; set; }
-
-        internal OpenViewTask(UIOpenTaskParam param, UIStack uiStack)
+        internal OpenViewTask(UIManager manager, UIOpenTaskParam param, UIStack uiStack) : base(param.viewName)
         {
-            this.ViewName = param.viewName;
+            this.manager = manager;
             this.param = param;
             this.uiStack = uiStack;
             this.cancellationTokenSource = new CancellationTokenSource();
-            this.IsCompleted = false;
         }
 
         internal async override void Execute()
         {
-            UIEntity entity;
-
             if (param.isAsync)
             {
-                entity = await UIEntity.CreateAsync(param.viewName, param.factory, param.viewBehaviorType, param.viewBehaviorType, cancellationTokenSource.Token);
+                result = await UIEntity.CreateAsync(param.viewName, param.factory, param.viewBehaviorType, param.viewBehaviorType, cancellationTokenSource.Token);
             }
             else
             {
-                entity = UIEntity.Create(param.viewName, param.factory, param.viewBehaviorType, param.viewBehaviorType);
+                result = UIEntity.Create(param.viewName, param.factory, param.viewBehaviorType, param.viewBehaviorType);
             }
 
-            if (entity == null)
+            if(result == null)
             {
-                IsCompleted = true;
                 UnityEngine.Debug.LogWarning($"open view:{param.viewName} failed");
-                return;
             }
-            Result = entity;
-            IsCompleted = true;
+
+            isComplated = true;
+            OnComplated?.Invoke();
+            UnityEngine.Debug.Log($"æ‰“å¼€ç•Œé¢ï¼š{param.viewName}");
         }
 
-        internal override void Complete()
+        internal override bool TryComplete()
         {
-            if (!IsCompleted)
+            if (!isComplated)
             {
-                return;
+                return false;
             }
 
-            if (Result == null)
+            if(result == null)
             {
-                return;
+                return true;
             }
 
-            var viewConfig = UIConfigResolver.Get(Result.ViewModel);
-            SetLayer(uiStack, Result, viewConfig);
-            Result.Enable(param.param);
-            OnComplete(uiStack, Result, viewConfig);
-            uiStack.Push(Result);
+            var viewConfig = UISettingsResolver.Get(result.ViewModel);
+            SetLayer(uiStack, result, viewConfig);
+            uiStack.Push(result, param.parent?.Name);
+            OnComplete(uiStack, result, viewConfig);
+            manager.Enable(result, param.param);
             cancellationTokenSource?.Dispose();
-
+            UnityEngine.Debug.Log($"æ‰“å¼€ç•Œé¢å®Œæˆï¼š{param.viewName}");
+            //UnityEngine.Debug.Log(uiStack);
+            return true;
         }
 
         internal override void Cancel()
         {
-            UnityEngine.Debug.Log($"È¡Ïû´ò¿ª½çÃæ£º{ViewName}");
-            if (!IsCompleted)
+            UnityEngine.Debug.Log($"å–æ¶ˆæ‰“å¼€ç•Œé¢ï¼š{viewName}");
+            if (!isComplated)
             {
                 cancellationTokenSource.Cancel();
                 return;
             }
 
-            Result?.Destroy();
+            result?.Destroy();
             cancellationTokenSource?.Dispose();
         }
 
         /// <summary>
-        /// ÉèÖÃ²ã¼¶
+        /// è®¾ç½®å±‚çº§
         /// </summary>
-        /// <param name="stack">µ±Ç°uiÕ»</param>
-        /// <param name="entity">µ±Ç°uiÊµÌå</param>
-        void SetLayer(UIStack stack, UIEntity entity, UIConfig viewConfig)
+        /// <param name="stack">å½“å‰uiæ ˆ</param>
+        /// <param name="entity">å½“å‰uiå®ä½“</param>
+        void SetLayer(UIStack stack, UIEntity entity, UISettings settings)
         {
-            entity.Layer = viewConfig.layer;
-            entity.Order = stack.Count == 0 ? 0 : stack.Peek().Order + 1;
+            entity.Layer = settings.layer;
+            entity.Order = stack.Count == 0 ? 0 : stack.Peek().Value.Entity.Order + 1;
         }
 
-        void OnComplete(UIStack stack, UIEntity entity, UIConfig viewConfig)
+        void OnComplete(UIStack stack, UIEntity entity, UISettings settings)
         {
-            //Èç¹ûÊÇÈ«ÆÁ½çÃæÔòÊ¹µÃ±³ºóµÄËùÓĞ½çÃæ¶¼²»¿É¼û
-            if (viewConfig.flag.HasFlag(Attributes.FullScreen))
+            //å¦‚æœæ˜¯å…¨å±ç•Œé¢åˆ™ä½¿å¾—èƒŒåçš„æ‰€æœ‰ç•Œé¢éƒ½ä¸å¯è§
+            if (settings.flag.HasFlag(Attributes.FullScreen))
             {
                 for (int i = stack.Count - 1; i >= 0; i--)
                 {
                     var view = stack[i];
-                    if (view.Layer <= entity.Layer)
+                    if(view.Entity == entity)
                     {
-                        view.Disable();
+                        continue;
+                    }
+
+                    if (view.Entity.Layer <= entity.Layer 
+                        && view.Entity.Order < entity.Order 
+                        && view.Entity.State.HasFlag(UIEntityState.Enabled))
+                    {
+                        manager.Disable(view.Entity);
                     }
                 }
             }
