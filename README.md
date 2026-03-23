@@ -179,4 +179,6 @@ Unity 官方参考：
 
 ## 许可
 
-当前仓库未声明统一许可证；`Editor/Menu/LICENSE.txt` 仅覆盖菜单代码来源相关许可。
+本仓库采用 **MIT License**，详见根目录 [LICENSE](./LICENSE) 文件。
+
+> `Editor/Menu/LICENSE.txt` 为菜单代码来源的第三方许可，与本项目主许可相互独立。
