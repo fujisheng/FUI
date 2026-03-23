@@ -43,7 +43,7 @@ UPM 包名：`com.fujisheng.fui`
 ```json
 {
   "dependencies": {
-    "com.fujisheng.fui": "https://<your-repo-url>.git"
+    "com.fujisheng.fui": "https://github.com/fujisheng/FUI.git"
   }
 }
 ```
