@@ -1,296 +1,182 @@
-&nbsp;
 # FUI
 
-FUI是一个适用于Unity的MVVM UI框架，通过Roslyn生成绑定代码并注入，从而实现了更高效的性能和简洁的使用方式。
-## 注意！！！ 目前此项目还处于开发阶段仅做参考，建议不要用于生产环境。
+Unity UGUI 场景下的 MVVM UI 框架，包含：
 
-# 特性
+> An MVVM UI framework for Unity UGUI.
 
-- 声明式绑定
-- 从ViewModel到View0GC
-- 可扩展的绑定转换从而支持一份数据对应多个表现
-- 支持多对多的绑定
-- 绑定方式可扩展，只需输出对应的配置文件即可
-- 支持将一个ViewModel作为另一个ViewModel的属性从而实现组件化UI开发
+- 运行时 UI 管理（打开/关闭/返回、层级、全屏、依赖、过渡）
+- 声明式数据绑定（属性绑定、命令绑定、值转换）
+- 编译期代码生成（Roslyn Source Generator）
+- Unity 编辑器工具链（Installer、IL 后处理、Inspector）
 
-# **最简例子**
+UPM 包名：`com.fujisheng.fui`
 
-```c#
-[Binding("TestCodeBindingView")]
-public class TestCodeBindingViewModel : ViewModel
+---
+
+## 特性
+
+- **UIManager 统一调度**：支持同步/异步打开、栈管理、层级管理与返回逻辑
+- **MVVM + Presenter 分层**：`ViewModel` 负责状态，`Presenter` 负责交互逻辑
+- **绑定代码自动生成**：减少手写胶水代码，降低运行时反射依赖
+- **UGUI 控件封装完善**：`ButtonElement`、`InputFieldElement`、`ListViewElement` 等
+- **编辑器可视化辅助**：可在 Inspector 查看绑定信息并快速定位
+
+---
+
+## 相较其他常见方案的优点
+
+| 对比场景 | 常见做法 | FUI 的优势 |
+| --- | --- | --- |
+| 手写 UI 事件/赋值胶水代码 | 每个页面重复写监听、同步与解绑逻辑 | 通过 `Binding` / `Command` + Source Generator 自动生成绑定上下文，减少重复样板代码 |
+| 运行时反射驱动绑定 | 运行时开销更高，出错点偏后置 | 以编译期生成 + 明确类型约束为主，绑定问题更早暴露、更易定位 |
+| 只提供基础页面管理 | 打开/关闭/返回、层级、全屏和依赖逻辑需要业务层自行拼装 | `UIManager` + `ViewTaskQueue` + `UISettings` 提供完整生命周期与栈管理能力 |
+| 只有运行时框架，缺少编辑器协同 | 配置与排障效率低 | 提供 `FUI/Installer`、IL 后处理、`ViewInspector`，从接入到排查链路更完整 |
+
+---
+
+## 快速开始
+
+### 1) 安装（UPM）
+
+在 `manifest.json` 中添加依赖：
+
+```json
 {
-    [Binding("txt_int", typeof(IntToStringConverter), typeof(TextElement))]
-    public int TestInt { get; set; }
-
-    [Binding("txt_string", elementType: typeof(TextElement))]
-    public string TestString { get; set; }
-
-    [Binding("txt_float", converterType: typeof(FloatToStringConverter))]
-    public float TestFloat { get; set; }
-
-    [Binding("txt_bool")]
-    public bool TestBool { get; set; }
+  "dependencies": {
+    "com.fujisheng.fui": "https://<your-repo-url>.git"
+  }
 }
+```
 
-public class TestCodeBindingViewBehavior : ViewBehavior<TestCodeBindingViewModel>
-{
-    protected override void OnOpen(object param)
-    {
-        UnityEngine.Debug.Log("OnOpen  TestCodeBindingView");
-        VM.TestInt = 1;
-        VM.TestString = "Hello, code binding";
-        VM.TestFloat = 3.14f;
-        VM.TestBool = true;
-    }
-}
+> 若 `package.json` 不在仓库根目录，请使用 `?path=/子目录名`（例如 `?path=/Packages/com.fujisheng.fui`）。
 
-public class TestCodeBinding : MonoBehaviour
+### 2) 初始化 UIManager
+
+```csharp
+using FUI.Manager;
+using FUI.UGUI;
+
+IAssetLoaderFactory assetLoaderFactory = /* your implementation */;
+var viewFactory = new ViewFactory(assetLoaderFactory);
+var uiManager = new UIManager(viewFactory);
+uiManager.Initialize();
+
+uiManager.Open("MainView");
+```
+
+### 3) 编写 ViewModel 绑定
+
+```csharp
+using FUI;
+using FUI.Manager;
+using FUI.UGUI.Control;
+
+[ViewBinding("MainView")]
+[Settings(Layer.Common)]
+public partial class MainViewModel : ViewModel
 {
-    void Start()
+    [Binding("StartButton", nameof(ButtonElement.TextValue))]
+    public string StartText { get; set; } = "Start";
+
+    [Command("StartButton", nameof(ButtonElement.OnClick))]
+    public void OnStartClicked()
     {
-        TestLauncher.Instance.UIManager.OpenAsync("TestCodeBindingView");
+        // business logic
     }
 }
 ```
 
-# 实现原理
+---
 
-将Unity对某个程序集的编译hook到FUICompiler，从而实现编译过程中解析绑定标签并生成胶水代码后输出DLL。
+## 典型工作流
 
-例如原本的ViewModel为
+1. 搭建 View（Prefab）并确定 Element 命名
+2. 编写 `ViewModel`（`[Binding]` / `[Command]`）
+3. 在 Unity 菜单执行 `FUI/Installer` 安装 Source Generator
+4. 编译后确认生成代码与绑定关系
+5. 通过 `UIManager` 驱动页面生命周期
+6. 用 `ViewInspector` 排查绑定问题
 
-```c#
-[Binding("TestCodeBindingView")]
-public class TestCodeBindingViewModel : ViewModel
-{
-    [Binding("txt_int", typeof(IntToStringConverter), typeof(TextElement))]
-    public int TestInt { get; set; }
+---
 
-    [Binding("txt_string", elementType: typeof(TextElement), bindingType:BindingType.OneWay)]
-    public string TestString { get; set; }
+## 核心概念
 
-    [Binding("txt_float", converterType: typeof(FloatToStringConverter))]
-    public float TestFloat { get; set; }
+- **UIManager**（`Runtime/Manager/UIManager.cs`）
+  - 入口 API：`Open` / `OpenAsync` / `Close` / `Back` / `CloseAll`
+- **UIEntity**（`Runtime/Core/UIEntity/`）
+  - 聚合 `IView + ViewModel + Presenter`，负责生命周期
+- **BindingContext**（`Runtime/Core/BindingContext/`）
+  - 管理 View 与 ViewModel 的绑定/解绑
+- **BindingContextTypeResolver**（`Runtime/Core/BindingContext/BindingContextTypeResolver.cs`）
+  - 解析 View、ViewModel、Context、Presenter 映射
+- **UGUI Elements**（`Runtime/UGUI/Contol/`）
+  - FUI 对 UGUI 组件的可绑定封装层
 
-    [Binding("txt_bool")]
-    public bool TestBool { get; set; }
-}
+---
+
+## 编辑器菜单
+
+- `FUI/Installer`：构建并安装 `FUI.SourceGenerator.dll`
+- `FUI/ILPostProcessos`：手动执行 IL 注入
+- `GameObject/FUI/*`：创建 FUI 控件模板
+
+相关文件：
+
+- `Editor/Installer/InstallerWindow.cs`
+- `Editor/ILPostProcesses/ILPostProcessesEditor.cs`
+- `Editor/Menu/MenuOptions.cs`
+
+---
+
+## 项目结构
+
+```text
+FUI/
+├─ package.json
+├─ Runtime/
+│  ├─ Core/
+│  ├─ Manager/
+│  ├─ UGUI/
+│  └─ Feature/
+├─ Editor/
+└─ FUI.SourceGenerator~/
 ```
 
-在编译的过程中会生成如下几个文件
+主要 asmdef：
 
-1、生成对应的绑定上下文
+- `FUI.Core`
+- `FUI.Manager`
+- `FUI.UGUI`
+- `FUI.Editor`
 
-```c#
-[FUI.ViewModelAttribute(typeof(TestCodeBindingViewModel))]
-[FUI.ViewAttribute("TestCodeBindingView")]
-public class __TestCodeBindingViewModel_TestCodeBindingView_Binding_Generated : FUI.BindingContext
-{
-    IntToStringConverter IntToStringConverter = new IntToStringConverter();
-    FloatToStringConverter FloatToStringConverter = new FloatToStringConverter();
-    public __TestCodeBindingViewModel_TestCodeBindingView_Binding_Generated(FUI.IView view, FUI.Bindable.ObservableObject viewModel) : base(view, viewModel)
-    {
-    }
+---
 
-    protected override void Binding()
-    {
-        if (this.ViewModel is TestCodeBindingViewModel TestCodeBindingViewModel)
-        {
-            TestCodeBindingViewModel._TestInt_Changed += TestCodeBindingViewModel_TestInt_PropertyChanged;
-            TestCodeBindingViewModel._TestString_Changed += TestCodeBindingViewModel_TestString_PropertyChanged;
-            TestCodeBindingViewModel._TestFloat_Changed += TestCodeBindingViewModel_TestFloat_PropertyChanged;
-            TestCodeBindingViewModel._TestBool_Changed += TestCodeBindingViewModel_TestBool_PropertyChanged;
-            return;
-        }
-    }
+## Source Generator 与 IL 后处理
 
-    protected override void Unbinding()
-    {
-        if (this.ViewModel is TestCodeBindingViewModel TestCodeBindingViewModel)
-        {
-            TestCodeBindingViewModel._TestInt_Changed -= TestCodeBindingViewModel_TestInt_PropertyChanged;
-            TestCodeBindingViewModel._TestString_Changed -= TestCodeBindingViewModel_TestString_PropertyChanged;
-            TestCodeBindingViewModel._TestFloat_Changed -= TestCodeBindingViewModel_TestFloat_PropertyChanged;
-            TestCodeBindingViewModel._TestBool_Changed -= TestCodeBindingViewModel_TestBool_PropertyChanged;
-            return;
-        }
-    }
+- Source Generator 工程：`FUI.SourceGenerator~/`
+  - 目标框架：`netstandard2.0`
+  - 依赖：`Microsoft.CodeAnalysis.CSharp 4.0.1`
+- Installer 会：
+  1. `dotnet build FUI.SourceGenerator.sln -c Release`
+  2. 复制 `FUI.SourceGenerator.dll` 到目标 asmdef 目录
+  3. 写入 `.meta`（`RoslynAnalyzer` + `sourceGenerator: 1`）
 
-    void TestCodeBindingViewModel_TestInt_PropertyChanged(object sender, int preValue, int @value)
-    {
-        var convertedValue = IntToStringConverter.Convert(@value);
-        var element = this.View.GetVisualElement<TextElement>("txt_int");
-        if (element == null)
-        {
-            throw new System.Exception($"{this.View.Name} GetVisualElement type:<TextElement> path:{@"txt_int"} failed");
-        }
+---
 
-        element.UpdateValue(convertedValue);
-    }
+## 兼容性
 
-    void TestCodeBindingViewModel_TestString_PropertyChanged(object sender, string preValue, string @value)
-    {
-        var convertedValue = @value;
-        var element = this.View.GetVisualElement<TextElement>("txt_string");
-        if (element == null)
-        {
-            throw new System.Exception($"{this.View.Name} GetVisualElement type:<TextElement> path:{@"txt_string"} failed");
-        }
+- `package.json` 声明 Unity：`2019.4`
+- Source Generator 工程：`netstandard2.0`
 
-        element.UpdateValue(convertedValue);
-    }
+Unity 官方参考：
 
-    void TestCodeBindingViewModel_TestFloat_PropertyChanged(object sender, float preValue, float @value)
-    {
-        var convertedValue = FloatToStringConverter.Convert(@value);
-        var element = this.View.GetVisualElement("txt_float");
-        if (element == null)
-        {
-            throw new System.Exception($"{this.View.Name} GetVisualElement type: path:{@"txt_float"} failed");
-        }
+- Roslyn analyzers / source generators
+  - https://docs.unity3d.com/2022.3/Documentation/Manual/roslyn-analyzers.html
+- UPM Git URL 安装
+  - https://docs.unity3d.com/Manual/upm-ui-giturl.html
 
-        element.UpdateValue(convertedValue);
-    }
+---
 
-    void TestCodeBindingViewModel_TestBool_PropertyChanged(object sender, bool preValue, bool @value)
-    {
-        var convertedValue = @value;
-        var element = this.View.GetVisualElement("txt_bool");
-        if (element == null)
-        {
-            throw new System.Exception($"{this.View.Name} GetVisualElement type: path:{@"txt_bool"} failed");
-        }
+## 许可
 
-        element.UpdateValue(convertedValue);
-    }
-}
-```
-
-2、修改对应可绑定属性的set方法，并生成对应字段和泛型委托，经过反编译后的TestCodeBindingViewModel已经被改成了如下
-
-```c#
-[Binding("TestCodeBindingView", null, null, BindingType.OneWay)]
-public class TestCodeBindingViewModel : ViewModel, ISynchronizeProperties
-{
-    private int _TestInt_BackingField;
-
-    public PropertyChangedHandler<int> _TestInt_Changed;
-
-    private string _TestString_BackingField;
-
-    public PropertyChangedHandler<string> _TestString_Changed;
-
-    private float _TestFloat_BackingField;
-
-    public PropertyChangedHandler<float> _TestFloat_Changed;
-
-    private bool _TestBool_BackingField;
-
-    public PropertyChangedHandler<bool> _TestBool_Changed;
-
-    [Binding("txt_int", typeof(IntToStringConverter), typeof(TextElement), BindingType.OneWay)]
-    public int TestInt
-    {
-        get
-        {
-            return _TestInt_BackingField;
-        }
-        set
-        {
-            _ = _TestInt_BackingField;
-            if (!_TestInt_BackingField.Equals(value))
-            {
-                int testInt_BackingField = _TestInt_BackingField;
-                _TestInt_BackingField = value;
-                _TestInt_Changed?.Invoke(this, testInt_BackingField, value);
-            }
-        }
-    }
-
-    [Binding("txt_string", typeof(TextElement), null, BindingType.OneWay)]
-    public string TestString
-    {
-        get
-        {
-            return _TestString_BackingField;
-        }
-        set
-        {
-            if (_TestString_BackingField == null || !_TestString_BackingField.Equals(value))
-            {
-                string testString_BackingField = _TestString_BackingField;
-                _TestString_BackingField = value;
-                _TestString_Changed?.Invoke(this, testString_BackingField, value);
-            }
-        }
-    }
-
-    [Binding("txt_float", null, typeof(FloatToStringConverter), BindingType.OneWay)]
-    public float TestFloat
-    {
-        get
-        {
-            return _TestFloat_BackingField;
-        }
-        set
-        {
-            _ = _TestFloat_BackingField;
-            if (!_TestFloat_BackingField.Equals(value))
-            {
-                float testFloat_BackingField = _TestFloat_BackingField;
-                _TestFloat_BackingField = value;
-                _TestFloat_Changed?.Invoke(this, testFloat_BackingField, value);
-            }
-        }
-    }
-
-    [Binding("txt_bool", null, null, BindingType.OneWay)]
-    public bool TestBool
-    {
-        get
-        {
-            return _TestBool_BackingField;
-        }
-        set
-        {
-            _ = _TestBool_BackingField;
-            if (!_TestBool_BackingField.Equals(value))
-            {
-                bool testBool_BackingField = _TestBool_BackingField;
-                _TestBool_BackingField = value;
-                _TestBool_Changed?.Invoke(this, testBool_BackingField, value);
-            }
-        }
-    }
-
-    void ISynchronizeProperties.Synchronize()
-    {
-        _TestInt_Changed?.Invoke(this, TestInt, TestInt);
-        _TestString_Changed?.Invoke(this, TestString, TestString);
-        _TestFloat_Changed?.Invoke(this, TestFloat, TestFloat);
-        _TestBool_Changed?.Invoke(this, TestBool, TestBool);
-    }
-}
-```
-
-如此便实现了ViewModel到View的变化通知，并且以上生成的代码是不可见的并不会影响使用者的代码习惯。
-
-和传统的绑定方式相比，因为为每个属性都生成了对应的泛型委托，所以不存在拆装箱。
-
-# 各个模块详解
-
-Model作为存储游戏运行过程中产生和需要的数据，可以来自于网络消息、配置表、游戏中间数据等。
-
-ViewModel用来存储某个界面的数据，可以来自于Model或View产生的数据。
-
-ViewBehavior用于操作ViewModel的变化，主要用于实现UI的控制逻辑。
-
-ValueConverer用于将ViewModel中的数据转换为View所需要的数据，从而实现同一数据的不同表现。
-
-View作为各个UI控件的容器，负责表现层的组装。
-
-VisualElement是一个界面的最小单位，实现每个控件的功能，例如Button、Text等。
-
-其中View和VisualElement可以根据不同UI框架进行扩展，例如实现UGUI、FGUI等不同UI框架的相关接口。
-
-&nbsp;
+当前仓库未声明统一许可证；`Editor/Menu/LICENSE.txt` 仅覆盖菜单代码来源相关许可。
