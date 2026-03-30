@@ -11,5 +11,7 @@
     "ugui"
   ],
   "description": "",
-  "dependencies": {}
+  "dependencies": {
+    "com.unity.nuget.mono-cecil": "1.11.5"
+  }
 }

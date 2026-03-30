@@ -1,17 +1,19 @@
 {
     "name": "FUI.Editor",
+    "rootNamespace": "",
     "references": [
         "GUID:fe318fd709c916649a3aac24f866ab0b",
-        "GUID:b8dfc198079bdaf4d9ff09de6b519c0f",
-        "GUID:4a489db1f91f9b443903b7412c838542"
+        "GUID:b8dfc198079bdaf4d9ff09de6b519c0f"
     ],
     "includePlatforms": [
         "Editor"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Mono.Cecil.dll"
+    ],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],

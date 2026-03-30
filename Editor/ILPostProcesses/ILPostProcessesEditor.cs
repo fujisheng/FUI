@@ -109,7 +109,7 @@ namespace FUI.Editor
 		/// <returns></returns>
 		static bool TryLoadSetting(out ILPostProcessesSetting setting)
 		{
-			setting = AssetDatabase.LoadAssetAtPath<ILPostProcessesSetting>("Assets/Editor Default Resources/FUI/Settings/CompilerSetting.asset");
+			setting = AssetDatabase.LoadAssetAtPath<ILPostProcessesSetting>("Assets/Editor Default Resources/FUI/Settings/ILPostProcessesSetting.asset");
 			return setting != null;
 		}
 
