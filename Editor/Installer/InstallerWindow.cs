@@ -21,7 +21,7 @@ namespace FUI.Editor
         [InitializeOnLoadMethod]
         static void Initialize()
         {
-            UIEntitites.Instance.GetEntity(null);
+            UIEntityRegistry.GetEntity(null);
             BindingContexts.Instance.GetContextInfo(null);
         }
 

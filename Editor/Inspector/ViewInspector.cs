@@ -24,7 +24,7 @@ namespace FUI.Editor
         void OnEnable()
         {
             view = target as IView;
-            entity = UIEntitites.Instance.GetEntity(view);
+            entity = UIEntityRegistry.GetEntity(view);
         }
 
         void OnDisable()
