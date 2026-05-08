@@ -12,13 +12,19 @@ namespace FUI.UGUI.Control
     public class StaticListViewElement : ListViewElement
     {
         [SerializeField]
-        GameObject itemPrefab;
+        protected GameObject itemPrefab;
 
         List<(UIEntity entity, GameObject gameObject)> items;
 
         protected override void OnInitialize()
         {
             base.OnInitialize();
+            itemPrefab = ResolveItemPrefab(itemPrefab);
+            if (itemPrefab == null)
+            {
+                throw new MissingReferenceException($"{name} 缺少可用的 itemPrefab。");
+            }
+
             itemPrefab.SetActive(false);
             items = new List<(UIEntity context, GameObject gameObject)>();
         }
@@ -116,6 +122,25 @@ namespace FUI.UGUI.Control
             {
                 item.transform.SetSiblingIndex(index);
             }
+        }
+
+        protected virtual GameObject ResolveItemPrefab(GameObject currentItemPrefab)
+        {
+            if (currentItemPrefab != null)
+            {
+                return currentItemPrefab;
+            }
+
+            for (var index = 0; index < transform.childCount; index++)
+            {
+                var child = transform.GetChild(index);
+                if (child != null)
+                {
+                    return child.gameObject;
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -16,6 +16,11 @@ namespace FUI.UGUI.Control
         public Command<BaseEventData> OnPointerDown { get; private set; }
         public Command<BaseEventData> OnPointerUp { get; private set; }
         public Command<BaseEventData> OnPointerClick { get; private set; }
+        public Command<BaseEventData> OnSelect { get; private set; }
+        public Command<BaseEventData> OnDeselect { get; private set; }
+        public Command<BaseEventData> OnMove { get; private set; }
+        public Command<BaseEventData> OnSubmit { get; private set; }
+        public Command<BaseEventData> OnCancel { get; private set; }
 
         public Command<BaseEventData> OnBeginDrag { get; private set; }
         public Command<BaseEventData> OnDrag { get; private set; }
@@ -33,6 +38,11 @@ namespace FUI.UGUI.Control
             OnPointerDown = new Command<BaseEventData>();
             OnPointerUp = new Command<BaseEventData>();
             OnPointerClick = new Command<BaseEventData>();
+            OnSelect = new Command<BaseEventData>();
+            OnDeselect = new Command<BaseEventData>();
+            OnMove = new Command<BaseEventData>();
+            OnSubmit = new Command<BaseEventData>();
+            OnCancel = new Command<BaseEventData>();
 
             OnBeginDrag = new Command<BaseEventData>();
             OnDrag = new Command<BaseEventData>();
@@ -46,6 +56,11 @@ namespace FUI.UGUI.Control
             AddEventTrigger(EventTriggerType.PointerDown, (data) => OnPointerDown.Invoke(data));
             AddEventTrigger(EventTriggerType.PointerUp, (data) => OnPointerUp.Invoke(data));
             AddEventTrigger(EventTriggerType.PointerClick, (data) => OnPointerClick.Invoke(data));
+            AddEventTrigger(EventTriggerType.Select, (data) => OnSelect.Invoke(data));
+            AddEventTrigger(EventTriggerType.Deselect, (data) => OnDeselect.Invoke(data));
+            AddEventTrigger(EventTriggerType.Move, (data) => OnMove.Invoke(data));
+            AddEventTrigger(EventTriggerType.Submit, (data) => OnSubmit.Invoke(data));
+            AddEventTrigger(EventTriggerType.Cancel, (data) => OnCancel.Invoke(data));
 
             AddEventTrigger(EventTriggerType.BeginDrag, (data) => OnBeginDrag.Invoke(data));
             AddEventTrigger(EventTriggerType.Drag, (data) => OnDrag.Invoke(data));
@@ -55,10 +70,10 @@ namespace FUI.UGUI.Control
             AddEventTrigger(EventTriggerType.Scroll, (data) => OnScroll.Invoke(data));
         }
 
-        void AddEventTrigger(EventTriggerType eventType, System.Action<PointerEventData> action)
+        void AddEventTrigger(EventTriggerType eventType, System.Action<BaseEventData> action)
         {
             EventTrigger.Entry entry = new EventTrigger.Entry { eventID = eventType };
-            entry.callback.AddListener((data) => action((PointerEventData)data));
+            entry.callback.AddListener((data) => action(data));
             Component.triggers.Add(entry);
         }
 
@@ -70,6 +85,11 @@ namespace FUI.UGUI.Control
             OnPointerDown.ClearListeners();
             OnPointerUp.ClearListeners();
             OnPointerClick.ClearListeners();
+            OnSelect.ClearListeners();
+            OnDeselect.ClearListeners();
+            OnMove.ClearListeners();
+            OnSubmit.ClearListeners();
+            OnCancel.ClearListeners();
 
             OnBeginDrag.ClearListeners();
             OnDrag.ClearListeners();

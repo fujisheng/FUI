@@ -12,10 +12,32 @@ namespace FUI.UGUI.Control
     /// </summary>
     public abstract class ListViewElement : UIElement, IContainerElement, IListView
     {
+        bool isUpdatingSelection;
+
         /// <summary>
         /// 数据
         /// </summary>
         public BindableProperty<IReadOnlyObservableList<ObservableObject>> List { get; private set; }
+
+        /// <summary>
+        /// 数据别名，供集合 binding 使用。
+        /// </summary>
+        public BindableProperty<IReadOnlyObservableList<ObservableObject>> Items => List;
+
+        /// <summary>
+        /// 当前选中索引。
+        /// </summary>
+        public BindableProperty<int> SelectedIndex { get; private set; }
+
+        /// <summary>
+        /// 当前选中项。
+        /// </summary>
+        public BindableProperty<ObservableObject> SelectedItem { get; private set; }
+
+        /// <summary>
+        /// item template 的业务数据路径。
+        /// </summary>
+        public BindableProperty<string> ItemTemplateDataPath { get; private set; }
 
         /// <summary>
         /// 所有子节点实体
@@ -26,13 +48,19 @@ namespace FUI.UGUI.Control
         {
             List = new BindableProperty<IReadOnlyObservableList<ObservableObject>>(null, (oldValue, newValue) =>
             {
-                if(newValue == null)
+                if (newValue == null)
                 {
+                    RefreshSelectionState();
                     return;
                 }
 
                 OnUpdate();
+                RefreshSelectionState();
             });
+
+            SelectedIndex = new BindableProperty<int>(-1, OnSelectedIndexChanged);
+            SelectedItem = new BindableProperty<ObservableObject>(null, OnSelectedItemChanged);
+            ItemTemplateDataPath = new BindableProperty<string>(string.Empty);
 
             ItemEntites = new List<UIEntity>();
         }
@@ -48,6 +76,8 @@ namespace FUI.UGUI.Control
             {
                 OnAdd(index.Value, item as ObservableObject);
             }
+
+            RefreshSelectionState();
         }
 
         void IListView.OnRemove(object sender, int? index, object item)
@@ -60,6 +90,8 @@ namespace FUI.UGUI.Control
             {
                 OnRemove(index.Value, item as ObservableObject);
             }
+
+            RefreshSelectionState();
         }
 
         void IListView.OnReplace(object sender, int? index, object oldItem, object newItem)
@@ -72,11 +104,35 @@ namespace FUI.UGUI.Control
             {
                 OnReplace(index.Value, oldItem as ObservableObject, newItem as ObservableObject);
             }
+
+            RefreshSelectionState();
         }
 
         void IListView.OnUpdate(object sender)
         {
             OnUpdate();
+            RefreshSelectionState();
+        }
+
+        /// <summary>
+        /// 获取当前绑定到指定索引的 item ViewModel。
+        /// </summary>
+        public virtual bool TryGetBoundItemViewModel(int index, out ObservableObject itemViewModel)
+        {
+            itemViewModel = null;
+            if (index < 0 || index >= ItemEntites.Count)
+            {
+                return false;
+            }
+
+            var entity = ItemEntites[index];
+            if (entity == null)
+            {
+                return false;
+            }
+
+            itemViewModel = entity.ViewModel;
+            return itemViewModel != null;
         }
 
         /// <summary>
@@ -125,12 +181,113 @@ namespace FUI.UGUI.Control
         protected override void OnRelease()
         {
             List.Dispose();
+            SelectedIndex.Dispose();
+            SelectedItem.Dispose();
+            ItemTemplateDataPath.Dispose();
 
-            foreach(var itemEntity in ItemEntites)
+            foreach (var itemEntity in ItemEntites)
             {
                 itemEntity.Destroy();
             }
             ItemEntites.Clear();
+        }
+
+        void OnSelectedIndexChanged(int oldValue, int newValue)
+        {
+            if (isUpdatingSelection)
+            {
+                return;
+            }
+
+            isUpdatingSelection = true;
+            try
+            {
+                SelectedItem.SetValue(ResolveItemByIndex(newValue));
+            }
+            finally
+            {
+                isUpdatingSelection = false;
+            }
+        }
+
+        void OnSelectedItemChanged(ObservableObject oldValue, ObservableObject newValue)
+        {
+            if (isUpdatingSelection)
+            {
+                return;
+            }
+
+            isUpdatingSelection = true;
+            try
+            {
+                SelectedIndex.SetValue(ResolveIndexByItem(newValue));
+            }
+            finally
+            {
+                isUpdatingSelection = false;
+            }
+        }
+
+        void RefreshSelectionState()
+        {
+            if (isUpdatingSelection)
+            {
+                return;
+            }
+
+            isUpdatingSelection = true;
+            try
+            {
+                var selectedIndex = SelectedIndex.Value;
+                var selectedItem = ResolveItemByIndex(selectedIndex);
+                if (selectedItem == null && SelectedItem.Value != null)
+                {
+                    selectedIndex = ResolveIndexByItem(SelectedItem.Value);
+                    SelectedIndex.SetValue(selectedIndex);
+                    selectedItem = ResolveItemByIndex(selectedIndex);
+                }
+
+                if (selectedItem == null && selectedIndex >= 0)
+                {
+                    SelectedIndex.SetValue(-1);
+                }
+
+                SelectedItem.SetValue(selectedItem);
+            }
+            finally
+            {
+                isUpdatingSelection = false;
+            }
+        }
+
+        ObservableObject ResolveItemByIndex(int index)
+        {
+            var list = List?.Value;
+            if (list == null || index < 0 || index >= list.Count)
+            {
+                return null;
+            }
+
+            return list[index];
+        }
+
+        int ResolveIndexByItem(ObservableObject item)
+        {
+            var list = List?.Value;
+            if (list == null || item == null)
+            {
+                return -1;
+            }
+
+            for (var index = 0; index < list.Count; index++)
+            {
+                if (ReferenceEquals(list[index], item))
+                {
+                    return index;
+                }
+            }
+
+            return -1;
         }
     }
 }
