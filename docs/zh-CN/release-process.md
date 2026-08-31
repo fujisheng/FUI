@@ -22,8 +22,6 @@ git push origin com.fujisheng.fui/1.0.0
 
 ## OpenUPM
 
-每个 Package 单独提交，`gitTagPrefix` 配置为 `<package-id>/`。等待版本可安装后，在干净 Unity 工程完成最终验证，再发布推广内容。
+每个 Package 单独提交，`gitTagPrefix` 配置为 `<package-id>/`。等待版本可安装后，在干净 Unity 工程完成最终验证。
 
 已发布标签不得移动或重建，错误版本通过新的 Patch 修复。
-
-只有以上门禁全部通过后才开始对外发布内容，八周节奏和各渠道写法见[推广执行手册](launch-kit.md)。

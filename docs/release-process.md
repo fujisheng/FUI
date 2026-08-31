@@ -24,8 +24,6 @@ Confirm the Gitea and GitHub tag object resolves to the release commit. GitHub A
 
 ## OpenUPM
 
-Submit each package independently and configure `gitTagPrefix` to `<package-id>/`. Wait for the tagged version to become installable, then validate it in a clean Unity project before announcing the release.
+Submit each package independently and configure `gitTagPrefix` to `<package-id>/`. Wait for the tagged version to become installable, then validate it in a clean Unity project.
 
 Never move or recreate a published tag. Fix a bad release with a new patch version.
-
-Start announcements only after every gate above passes. Use the [launch kit](launch-kit.md) for the eight-week editorial cadence and channel-specific copy.
