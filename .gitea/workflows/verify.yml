@@ -1,0 +1,19 @@
+name: Verify repository
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  structure-and-generator:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.400
+      - name: Verify repository structure
+        run: tools/verify-repository.sh --structure-only
+      - name: Verify source generator
+        run: Packages/com.fujisheng.fui/FUI.Generators~/verify.sh
