@@ -78,7 +78,7 @@ namespace FUI.Editor.Installation
         /// 创建或者加载一个编译器设置
         /// </summary>
         /// <returns></returns>
-        ILPostProcessingSettings LoadOrCreateSetting() 
+        ILPostProcessingSettings LoadOrCreateSetting()
         {
             var directory = Path.GetDirectoryName(settingPath);
             TryCreateDirectory(directory);

@@ -70,7 +70,7 @@ namespace FUI.Rendering.UGUI.Elements
                     items[index].SetActive(false);
                     continue;
                 }
-               
+
                 var data = Items.Value[index];
                 if(index < ItemInstances.Count)
                 {
