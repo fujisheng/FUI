@@ -25,7 +25,7 @@ External tools stay in their own repositories and are optional. FUI Core does no
 OpenUPM is the recommended release channel. Until the first registry build is available, install the package from the Git repository:
 
 ```text
-https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.1
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.2
 ```
 
 For local development, use the Gitea source repository and reference `Packages/com.fujisheng.fui` as an embedded or local package.

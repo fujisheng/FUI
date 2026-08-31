@@ -47,7 +47,7 @@ namespace FUI.Editor.Validation
             }
         }
 
-        [MenuItem("Tools/FUI/Validate Views")]
+        [MenuItem("FUI/Validate Views")]
         static void ValidateViews()
         {
             var issues = ViewValidator.ValidateAll();

@@ -2,6 +2,12 @@
 
 All notable public changes to `com.fujisheng.fui` are documented here. Versions follow Semantic Versioning.
 
+## [1.0.2] - 2026-08-31
+
+### Changed
+
+- Moved all FUI editor tools from `Tools/FUI/...` to the top-level `FUI/...` menu.
+
 ## [1.0.1] - 2026-08-31
 
 ### Fixed

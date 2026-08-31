@@ -2,7 +2,7 @@
 
 ## Setup
 
-`Tools/FUI/Setup` 为目标程序集安装 Source Generator，按需安装 Mixed 模式 Cecil，并显示可从 OpenUPM 安装的可选生态 Package。
+`FUI/Setup` 为目标程序集安装 Source Generator，按需安装 Mixed 模式 Cecil，并显示可从 OpenUPM 安装的可选生态 Package。
 
 ## Binding Inspector
 

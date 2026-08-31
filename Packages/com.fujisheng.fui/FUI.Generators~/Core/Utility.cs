@@ -139,7 +139,7 @@ namespace FUI.Generators
         public static string GenerateCodeWithHeader(string content)
         {
             var header = string.Format(FileHeader,
-                "1.0.1",
+                "1.0.2",
                 "<Generated Time>");
 
             return header + content;

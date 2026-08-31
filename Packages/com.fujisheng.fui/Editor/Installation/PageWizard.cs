@@ -25,7 +25,7 @@ namespace FUI.Editor.Installation
         string destination = "Assets";
         PagePreset preset;
 
-        [MenuItem("Tools/FUI/Page Wizard")]
+        [MenuItem("FUI/Page Wizard")]
         static void Open()
         {
             var window = GetWindow<PageWizard>(true, "FUI Page Wizard");

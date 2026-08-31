@@ -2,7 +2,7 @@
 
 FUI Core 在没有任何可选 Package 时保持完整功能。
 
-`Tools/FUI/Setup` 会显示以下外部工具。在固定兼容版本发布到 OpenUPM 前，安装按钮保持禁用：
+`FUI/Setup` 会显示以下外部工具。在固定兼容版本发布到 OpenUPM 前，安装按钮保持禁用：
 
 | Package | 仓库 | 用途 |
 |---|---|---|

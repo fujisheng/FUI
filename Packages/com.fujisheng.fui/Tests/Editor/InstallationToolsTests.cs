@@ -4,6 +4,8 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -37,6 +39,26 @@ namespace FUI.Tests
             {
                 Directory.Delete(fileSystemFolder, true);
             }
+        }
+
+        [Test]
+        public void EditorToolsUseTopLevelFuiMenu()
+        {
+            var menuPaths = typeof(PageWizard).Assembly
+                .GetTypes()
+                .SelectMany(type => type.GetMethods(
+                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
+                .SelectMany(method => method.GetCustomAttributesData())
+                .Where(attribute => attribute.AttributeType == typeof(MenuItem))
+                .Select(attribute => (string)attribute.ConstructorArguments[0].Value)
+                .ToArray();
+
+            Assert.That(menuPaths, Does.Contain("FUI/Setup"));
+            Assert.That(menuPaths, Does.Contain("FUI/Page Wizard"));
+            Assert.That(menuPaths, Does.Contain("FUI/Validate Views"));
+            Assert.That(
+                menuPaths.Where(path => path.StartsWith("Tools/FUI/", StringComparison.Ordinal)),
+                Is.Empty);
         }
 
         [Test]

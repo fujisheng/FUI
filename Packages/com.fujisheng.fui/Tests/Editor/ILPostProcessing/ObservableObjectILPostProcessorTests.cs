@@ -4,11 +4,33 @@ using Mono.Cecil.Cil;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using UnityEditor;
 
 namespace FUI.Tests.ILPostProcessing
 {
     public sealed class ObservableObjectILPostProcessorTests
     {
+        [Test]
+        public void EditorToolUsesTopLevelFuiMenu()
+        {
+            var menuPaths = typeof(ILPostProcessingCoordinator).Assembly
+                .GetTypes()
+                .SelectMany(type => type.GetMethods(
+                    System.Reflection.BindingFlags.Public
+                    | System.Reflection.BindingFlags.NonPublic
+                    | System.Reflection.BindingFlags.Static
+                    | System.Reflection.BindingFlags.Instance))
+                .SelectMany(method => method.GetCustomAttributesData())
+                .Where(attribute => attribute.AttributeType == typeof(MenuItem))
+                .Select(attribute => (string)attribute.ConstructorArguments[0].Value)
+                .ToArray();
+
+            Assert.That(menuPaths, Does.Contain("FUI/Run IL Post Processing"));
+            Assert.That(
+                menuPaths.Where(path => path.StartsWith("Tools/FUI/", StringComparison.Ordinal)),
+                Is.Empty);
+        }
+
         [Test]
         public void MixedModeInstrumentsBindableAutoPropertyExactlyOnce()
         {

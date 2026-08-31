@@ -20,7 +20,7 @@ FUI Core has no dependency on a resource backend, animation library, CLI, or age
 Use OpenUPM for stable releases. Git URL installation for this Monorepo uses the package path and package-prefixed tag:
 
 ```text
-https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.1
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.2
 ```
 
 ## Minimal model
@@ -81,7 +81,7 @@ Start with the [five-minute guide](Documentation~/quick-start.md) and import the
 
 ## Property modes
 
-Pure mode generates properties from fields and requires no Cecil dependency. Mixed mode also supports automatic properties and requires Unity's official Cecil package, installed from `Tools/FUI/Setup`.
+Pure mode generates properties from fields and requires no Cecil dependency. Mixed mode also supports automatic properties and requires Unity's official Cecil package, installed from `FUI/Setup`.
 
 ## License
 

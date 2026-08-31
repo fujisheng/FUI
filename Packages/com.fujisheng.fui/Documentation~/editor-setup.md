@@ -2,7 +2,7 @@
 
 ## Setup
 
-`Tools/FUI/Setup` installs the Source Generator into a target assembly and optionally installs Cecil for Mixed mode. It also exposes optional ecosystem packages when they are available from OpenUPM.
+`FUI/Setup` installs the Source Generator into a target assembly and optionally installs Cecil for Mixed mode. It also exposes optional ecosystem packages when they are available from OpenUPM.
 
 ## Binding Inspector
 

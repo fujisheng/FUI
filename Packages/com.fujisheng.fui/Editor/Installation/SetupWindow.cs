@@ -28,7 +28,7 @@ namespace FUI.Editor.Installation
             BindingCatalog.Instance.GetContextInfo(null);
         }
 
-        [MenuItem("Tools/FUI/Setup")]
+        [MenuItem("FUI/Setup")]
         public static void ShowWindow()
         {
             var window = GetWindowWithRect<SetupWindow>(new Rect(Vector2.zero, new Vector2(1080, 720)));

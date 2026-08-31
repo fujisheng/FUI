@@ -2,7 +2,7 @@
 
 FUI Core remains functional without any optional package.
 
-`Tools/FUI/Setup` lists the external tools below. The install action stays disabled until the fixed compatible version is published on OpenUPM:
+`FUI/Setup` lists the external tools below. The install action stays disabled until the fixed compatible version is published on OpenUPM:
 
 | Package | Repository | Role |
 |---|---|---|

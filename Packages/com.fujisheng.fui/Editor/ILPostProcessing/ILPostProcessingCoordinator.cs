@@ -134,7 +134,7 @@ namespace FUI.Editor.ILPostProcessing
 		/// <summary>
 		/// 手动注入目标 DLL
 		/// </summary>
-		[MenuItem("Tools/FUI/Run IL Post Processing")]
+		[MenuItem("FUI/Run IL Post Processing")]
 		public static void ManualInject()
 		{
 			if (!TryLoadSetting(out var setting) || !HasValidTarget(setting))

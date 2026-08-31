@@ -20,7 +20,7 @@ FUI Core 不依赖具体资源系统、动画库、CLI 或 AI Agent 工具。
 正式版本推荐使用 OpenUPM。Monorepo 的 Git URL 安装地址为：
 
 ```text
-https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.1
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.2
 ```
 
 ## 最小示例
@@ -81,7 +81,7 @@ navigator.Close(handle);
 
 ## 属性模式
 
-Pure 模式从字段生成属性，不需要 Cecil。Mixed 模式支持自动属性，需要从 `Tools/FUI/Setup` 安装 Unity 官方 Cecil Package。
+Pure 模式从字段生成属性，不需要 Cecil。Mixed 模式支持自动属性，需要从 `FUI/Setup` 安装 Unity 官方 Cecil Package。
 
 ## 授权
 
