@@ -1,0 +1,20 @@
+# FUI Core documentation
+
+1. [Installation](installation.md)
+2. [Five-minute quick start](quick-start.md)
+3. [ViewModel and generated binding](binding.md)
+4. [Typed routes and ViewHandle](navigation.md)
+5. [Navigator lifecycle](lifecycle.md)
+6. [Resource leases and providers](resources.md)
+7. [uGUI Elements](elements.md)
+8. [Custom Elements](custom-elements.md)
+9. [Presenter integration](presenter.md)
+10. [Editor setup](editor-setup.md)
+11. [Page Wizard and validation](validation.md)
+12. [Optional packages](optional-packages.md)
+13. [Troubleshooting](troubleshooting.md)
+14. [FAQ](faq.md)
+15. [Public API reference](api-reference.md)
+16. [Contributing](contributing.md)
+
+[中文文档](zh-CN/index.md)

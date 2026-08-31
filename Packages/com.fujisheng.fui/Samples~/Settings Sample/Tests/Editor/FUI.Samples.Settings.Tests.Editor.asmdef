@@ -1,0 +1,25 @@
+{
+  "name": "FUI.Samples.Settings.Tests.Editor",
+  "rootNamespace": "FUI.Samples.Settings.Tests",
+  "references": [
+    "FUI.Samples.Settings"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
