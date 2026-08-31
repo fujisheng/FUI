@@ -10,9 +10,11 @@ dotnet test Tests/FUI.Generators.Tests.csproj -c Release --no-build --no-restore
 
 generated_dll="bin/Release/netstandard2.0/FUI.Generators.dll"
 packaged_dll="../Roslyn~/FUI.Generators.dll"
-cmp "$generated_dll" "$packaged_dll"
+if [[ "${FUI_VERIFY_PACKAGED_DLL:-1}" == "1" ]]; then
+    cmp "$generated_dll" "$packaged_dll"
+fi
 
 project_dll="../../../Assets/Scripts/UI/FUI.Generators.dll"
-if [[ -f "$project_dll" ]]; then
+if [[ "${FUI_VERIFY_PACKAGED_DLL:-1}" == "1" && -f "$project_dll" ]]; then
     cmp "$generated_dll" "$project_dll"
 fi

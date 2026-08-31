@@ -20,7 +20,7 @@ FUI Core 不依赖具体资源系统、动画库、CLI 或 AI Agent 工具。
 正式版本推荐使用 OpenUPM。Monorepo 的 Git URL 安装地址为：
 
 ```text
-https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.0
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.1
 ```
 
 ## 最小示例

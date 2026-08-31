@@ -8,14 +8,14 @@
 
 ## OpenUPM
 
-为 `com.fujisheng` 配置 OpenUPM Scoped Registry，然后通过 Package Manager 安装 `com.fujisheng.fui@1.0.0`。
+为 `com.fujisheng` 配置 OpenUPM Scoped Registry，然后通过 Package Manager 安装 `com.fujisheng.fui@1.0.1`。
 
 ## Git URL
 
 通过 **Package Manager → Add package from git URL** 安装：
 
 ```text
-https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.0
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.1
 ```
 
 ## Generator

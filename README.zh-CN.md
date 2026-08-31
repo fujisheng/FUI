@@ -25,7 +25,7 @@ FUI 围绕 Source Generator 数据绑定、typed Route、确定性导航和显�
 正式版本推荐通过 OpenUPM 安装。在首个 Registry 构建可用前，可以使用 Git URL：
 
 ```text
-https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.0
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.1
 ```
 
 本地开发使用 Gitea 源仓库，将 `Packages/com.fujisheng.fui` 作为 Embedded 或 Local Package 引入。

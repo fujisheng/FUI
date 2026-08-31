@@ -8,14 +8,14 @@
 
 ## OpenUPM
 
-Add the OpenUPM scoped registry for `com.fujisheng`, then install `com.fujisheng.fui@1.0.0` from Package Manager.
+Add the OpenUPM scoped registry for `com.fujisheng`, then install `com.fujisheng.fui@1.0.1` from Package Manager.
 
 ## Git URL
 
 Use **Package Manager → Add package from git URL**:
 
 ```text
-https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.0
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.1
 ```
 
 ## Generator setup

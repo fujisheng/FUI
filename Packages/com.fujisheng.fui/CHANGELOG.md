@@ -2,7 +2,14 @@
 
 All notable public changes to `com.fujisheng.fui` are documented here. Versions follow Semantic Versioning.
 
-## [1.0.0] - Unreleased
+## [1.0.1] - 2026-08-31
+
+### Fixed
+
+- Rebuilt the packaged Generator after repository normalization so source, Package DLL, and Settings Sample DLL pass the strict identity gate.
+- Made repository verification portable when `rg` is unavailable and added an idempotent GitHub Release recovery path.
+
+## [1.0.0] - 2026-08-31
 
 First stable public release.
 

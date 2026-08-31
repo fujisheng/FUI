@@ -2,8 +2,16 @@ name: Publish GitHub release
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'com.fujisheng.fui*/*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing package-prefixed tag to publish
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -15,16 +23,40 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - name: Verify tag and package version
+      - name: Resolve release tag
+        id: release
         shell: bash
+        env:
+          REQUESTED_TAG: ${{ inputs.tag }}
         run: |
-          package_id="${GITHUB_REF_NAME%/*}"
-          tag_version="${GITHUB_REF_NAME##*/}"
-          package_version="$(jq -r '.version' "Packages/$package_id/package.json")"
+          if [[ -n "$REQUESTED_TAG" ]]; then
+            tag_name="$REQUESTED_TAG"
+          elif [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            tag_name="$GITHUB_REF_NAME"
+          else
+            package_id="com.fujisheng.fui"
+            package_version="$(jq -r '.version' "Packages/$package_id/package.json")"
+            tag_name="$package_id/$package_version"
+          fi
+
+          if ! git show-ref --verify --quiet "refs/tags/$tag_name"; then
+            echo "No release tag found for $tag_name; skipping."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          package_id="${tag_name%/*}"
+          tag_version="${tag_name##*/}"
           test -f "Packages/$package_id/package.json"
+          package_version="$(git show "${tag_name}:Packages/$package_id/package.json" | jq -r '.version')"
           test "$tag_version" = "$package_version"
+          git merge-base --is-ancestor "$tag_name^{commit}" HEAD
           tools/verify-repository.sh --structure-only
+          echo "publish=true" >> "$GITHUB_OUTPUT"
+          echo "tag_name=$tag_name" >> "$GITHUB_OUTPUT"
       - name: Create release
+        if: steps.release.outputs.publish == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" --generate-notes --verify-tag
+          TAG_NAME: ${{ steps.release.outputs.tag_name }}
+        run: gh release view "$TAG_NAME" >/dev/null 2>&1 || gh release create "$TAG_NAME" --generate-notes --verify-tag

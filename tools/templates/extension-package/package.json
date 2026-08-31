@@ -14,6 +14,6 @@
     "directory": "Packages/com.fujisheng.fui.extension"
   },
   "dependencies": {
-    "com.fujisheng.fui": "1.0.0"
+    "com.fujisheng.fui": "1.0.1"
   }
 }

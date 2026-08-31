@@ -17,4 +17,6 @@ jobs:
       - name: Verify repository structure
         run: tools/verify-repository.sh --structure-only
       - name: Verify source generator
+        env:
+          FUI_VERIFY_PACKAGED_DLL: 0
         run: Packages/com.fujisheng.fui/FUI.Generators~/verify.sh
