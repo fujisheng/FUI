@@ -24,6 +24,8 @@ Confirm the Gitea and GitHub tag object resolves to the release commit. GitHub A
 
 ## OpenUPM
 
-Submit each package independently and configure `gitTagPrefix` to `<package-id>/`. Wait for the tagged version to become installable, then validate it in a clean Unity project.
+Submit each package independently for its first OpenUPM import and configure `gitTagPrefix` to `<package-id>/`. After the package is registered, the GitHub release workflow sends each pushed package-prefixed tag to OpenUPM and waits for the version to become installable.
+
+The OpenUPM step runs only for a tag push or a workflow dispatch that explicitly names a tag. Ordinary `main` pushes create or recover GitHub Releases only; they do not trigger an OpenUPM scan. Inspect the GitHub Actions result, then validate the published version in a clean Unity project.
 
 Never move or recreate a published tag. Fix a bad release with a new patch version.

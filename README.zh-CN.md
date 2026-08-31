@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Unity 6000.0+](https://img.shields.io/badge/Unity-6000.0%2B-black.svg)](https://unity.com/)
-[![UPM package](https://img.shields.io/badge/UPM-com.fujisheng.fui-blue.svg)](Packages/com.fujisheng.fui/package.json)
+[![UPM package](https://img.shields.io/badge/UPM-com.fujisheng.fui-blue.svg)](https://openupm.com/packages/com.fujisheng.fui/)
 
 [English](README.md)
 
@@ -22,11 +22,29 @@ FUI 围绕 Source Generator 数据绑定、typed Route、确定性导航和显�
 
 ## 安装
 
-正式版本推荐通过 OpenUPM 安装。在首个 Registry 构建可用前，可以使用 Git URL：
+二选一安装；同一个项目不要同时通过 OpenUPM 和 Git 引入同一 Package。
+
+### OpenUPM（推荐）
+
+在 **Edit → Project Settings → Package Manager** 中添加 Scoped Registry：
+
+| 字段 | 值 |
+|---|---|
+| Name | `package.openupm.com` |
+| URL | `https://package.openupm.com` |
+| Scope | `com.fujisheng` |
+
+然后打开 **Window → Package Manager**，选择 **+ → Add package by name**，安装 `com.fujisheng.fui` 的最新已发布版本（当前为 `1.0.2`）。该 Scope 同时覆盖未来的官方 FUI 扩展和安装前置包。完整步骤见 [OpenUPM Package 页面](https://openupm.com/packages/com.fujisheng.fui/) 或 [安装文档](Packages/com.fujisheng.fui/Documentation~/zh-CN/installation.md)。
+
+### Git URL
+
+在 **Window → Package Manager** 中选择 **+ → Add package from git URL**，输入：
 
 ```text
 https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.2
 ```
+
+Package 前缀标签固定到不可变发布版本；仅在需要升级时替换为另一个已发布的 FUI 标签。
 
 本地开发使用 Gitea 源仓库，将 `Packages/com.fujisheng.fui` 作为 Embedded 或 Local Package 引入。
 

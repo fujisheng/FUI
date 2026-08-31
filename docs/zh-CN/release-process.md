@@ -22,6 +22,8 @@ git push origin com.fujisheng.fui/1.0.0
 
 ## OpenUPM
 
-每个 Package 单独提交，`gitTagPrefix` 配置为 `<package-id>/`。等待版本可安装后，在干净 Unity 工程完成最终验证。
+每个 Package 首次导入 OpenUPM 时单独提交，并配置 `gitTagPrefix: <package-id>/`。Package 被收录后，GitHub Release Workflow 会将每个推送到 GitHub 的 Package 前缀标签提交给 OpenUPM，并等待对应版本变为可安装状态。
+
+OpenUPM 步骤只会在标签推送，或手动触发 Workflow 且明确填写标签时执行。普通 `main` 推送仅创建或补建 GitHub Release，不触发 OpenUPM 扫描。检查 GitHub Actions 结果后，再在干净 Unity 工程验证已发布版本。
 
 已发布标签不得移动或重建，错误版本通过新的 Patch 修复。

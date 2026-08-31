@@ -4,7 +4,7 @@ Compile-time MVVM and typed navigation for Unity uGUI.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Unity 6000.0+](https://img.shields.io/badge/Unity-6000.0%2B-black.svg)](https://unity.com/)
-[![UPM package](https://img.shields.io/badge/UPM-com.fujisheng.fui-blue.svg)](Packages/com.fujisheng.fui/package.json)
+[![UPM package](https://img.shields.io/badge/UPM-com.fujisheng.fui-blue.svg)](https://openupm.com/packages/com.fujisheng.fui/)
 
 [中文](README.zh-CN.md)
 
@@ -22,11 +22,29 @@ External tools stay in their own repositories and are optional. FUI Core does no
 
 ## Install
 
-OpenUPM is the recommended release channel. Until the first registry build is available, install the package from the Git repository:
+Choose one installation method. Do not install the same package from both OpenUPM and Git in one project.
+
+### OpenUPM (recommended)
+
+In **Edit → Project Settings → Package Manager**, add this scoped registry:
+
+| Field | Value |
+|---|---|
+| Name | `package.openupm.com` |
+| URL | `https://package.openupm.com` |
+| Scope | `com.fujisheng` |
+
+Then open **Window → Package Manager**, choose **+ → Add package by name**, and install `com.fujisheng.fui` at the latest published version (currently `1.0.2`). The scope also covers official FUI extensions and installation prerequisites. See the [OpenUPM package page](https://openupm.com/packages/com.fujisheng.fui/) or the [full installation guide](Packages/com.fujisheng.fui/Documentation~/installation.md).
+
+### Git URL
+
+In **Window → Package Manager**, choose **+ → Add package from git URL** and enter:
 
 ```text
 https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.2
 ```
+
+The package-prefixed tag pins an immutable release. Replace the tag only with another published FUI release tag.
 
 For local development, use the Gitea source repository and reference `Packages/com.fujisheng.fui` as an embedded or local package.
 

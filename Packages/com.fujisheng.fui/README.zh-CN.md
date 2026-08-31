@@ -17,7 +17,15 @@ FUI Core 不依赖具体资源系统、动画库、CLI 或 AI Agent 工具。
 
 ## 安装
 
-正式版本推荐使用 OpenUPM。Monorepo 的 Git URL 安装地址为：
+二选一安装；不要同时通过 OpenUPM 和 Git 引入同一个 Package。
+
+### OpenUPM（推荐）
+
+添加 `package.openupm.com` Scoped Registry，并设置 Scope 为 `com.fujisheng`。随后从 Package Manager 安装 `com.fujisheng.fui` 的最新已发布版本（当前为 `1.0.2`）。完整 Registry 和 `manifest.json` 配置见[安装文档](Documentation~/zh-CN/installation.md)。
+
+### Git URL
+
+通过 **Package Manager → Add package from git URL** 安装。此 Monorepo URL 同时包含 Package 路径和不可变的 Package 前缀标签：
 
 ```text
 https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.2

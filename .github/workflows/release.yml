@@ -15,6 +15,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   release:
@@ -53,6 +54,7 @@ jobs:
           git merge-base --is-ancestor "$tag_name^{commit}" HEAD
           tools/verify-repository.sh --structure-only
           echo "publish=true" >> "$GITHUB_OUTPUT"
+          echo "package_id=$package_id" >> "$GITHUB_OUTPUT"
           echo "tag_name=$tag_name" >> "$GITHUB_OUTPUT"
       - name: Create release
         if: steps.release.outputs.publish == 'true'
@@ -60,3 +62,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG_NAME: ${{ steps.release.outputs.tag_name }}
         run: gh release view "$TAG_NAME" >/dev/null 2>&1 || gh release create "$TAG_NAME" --generate-notes --verify-tag
+      - name: Publish package to OpenUPM
+        if: steps.release.outputs.publish == 'true' && (github.ref_type == 'tag' || (github.event_name == 'workflow_dispatch' && inputs.tag != ''))
+        uses: openupm/openupm-action@v1
+        with:
+          package: ${{ steps.release.outputs.package_id }}
+          tag: ${{ steps.release.outputs.tag_name }}
+          timeout-minutes: 30
