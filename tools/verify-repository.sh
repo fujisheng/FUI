@@ -4,6 +4,25 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 mode="${1:-}"
 
+filter_pattern() {
+    local pattern="$1"
+    if command -v rg >/dev/null 2>&1; then
+        rg "$pattern"
+    else
+        grep -E "$pattern"
+    fi
+}
+
+search_with_lines() {
+    local pattern="$1"
+    local path="$2"
+    if command -v rg >/dev/null 2>&1; then
+        rg -n "$pattern" "$path"
+    else
+        grep -EnR "$pattern" "$path"
+    fi
+}
+
 if [[ -n "$mode" && "$mode" != "--structure-only" ]]; then
     echo "Usage: tools/verify-repository.sh [--structure-only]" >&2
     exit 2
@@ -16,7 +35,7 @@ fi
 
 forbidden="$(
     git -C "$repo_root" ls-files --cached --others --exclude-standard |
-        rg '(^|/)(\.DS_Store|Library|Temp|obj|bin)(/|$)' || true
+        filter_pattern '(^|/)(\.DS_Store|Library|Temp|obj|bin)(/|$)' || true
 )"
 if [[ -n "$forbidden" ]]; then
     echo "Forbidden generated artifacts are present:" >&2
@@ -49,7 +68,7 @@ if [[ -n "$duplicate_assemblies" ]]; then
     exit 1
 fi
 
-if rg -n 'InternalsVisibleTo\("FUI\.Extensions\.' "$repo_root/Packages/com.fujisheng.fui/Runtime"; then
+if search_with_lines 'InternalsVisibleTo\("FUI\.Extensions\.' "$repo_root/Packages/com.fujisheng.fui/Runtime"; then
     echo "Core internal APIs must not be exposed to FUI extensions." >&2
     exit 1
 fi

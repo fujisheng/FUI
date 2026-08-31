@@ -5,6 +5,26 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 package_id="${1:-}"
 mode="${2:-}"
 
+file_has_pattern() {
+    local pattern="$1"
+    local path="$2"
+    if command -v rg >/dev/null 2>&1; then
+        rg -q "$pattern" "$path"
+    else
+        grep -Eq "$pattern" "$path"
+    fi
+}
+
+file_search_with_lines() {
+    local pattern="$1"
+    local path="$2"
+    if command -v rg >/dev/null 2>&1; then
+        rg -n "$pattern" "$path"
+    else
+        grep -En "$pattern" "$path"
+    fi
+}
+
 if [[ -z "$package_id" ]]; then
     echo "Usage: tools/verify-package.sh <package-id> [--structure-only]" >&2
     exit 2
@@ -66,7 +86,7 @@ for required_path in "${required_paths[@]}"; do
     fi
 done
 
-if ! rg -q "\[$version\]|## +$version|## +\[$version\]" "$package_dir/CHANGELOG.md"; then
+if ! file_has_pattern "\[$version\]|## +$version|## +\[$version\]" "$package_dir/CHANGELOG.md"; then
     echo "CHANGELOG does not contain package version $version." >&2
     exit 1
 fi
@@ -124,7 +144,7 @@ run_tests() {
         echo "Unity did not create $platform test results." >&2
         exit 1
     fi
-    if rg -n "error CS[0-9]+|Compilation failed|Scripts have compiler errors|Unhandled Exception" "$log_file"; then
+    if file_search_with_lines "error CS[0-9]+|Compilation failed|Scripts have compiler errors|Unhandled Exception" "$log_file"; then
         echo "Unity reported compiler or unhandled errors during $platform tests." >&2
         exit 1
     fi
