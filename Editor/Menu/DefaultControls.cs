@@ -6,7 +6,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEditor;
-using FUI.UGUI.Control;
+using FUI.Rendering.UGUI.Elements;
+using TMPro;
 
 namespace FUI.Editor
 {
@@ -22,7 +23,7 @@ namespace FUI.Editor
     ///
     /// Note that the details of the setup of the UI controls created by the methods in this class may change with later revisions of the UI system.As such, they are not guaranteed to be 100% backwards compatible. It is recommended not to rely on the specific hierarchies of the GameObjects created by these methods, and limit your code to only interface with the root GameObject created by each method.
     /// </remarks>
-    public static class DefaultControls
+    internal static class DefaultControls
     {
         static IFactoryControls m_CurrentFactory = DefaultRuntimeFactory.Default;
         public static IFactoryControls factory
@@ -31,11 +32,17 @@ namespace FUI.Editor
             set { m_CurrentFactory = value; }
         }
 
+        /// <summary>
+        /// 抽象默认控件创建过程使用的 GameObject 工厂。
+        /// </summary>
         public interface IFactoryControls
         {
             GameObject CreateGameObject(string name, params Type[] components);
         }
 
+        /// <summary>
+        /// 使用 Unity 运行时 API 创建默认控件对象。
+        /// </summary>
         private class DefaultRuntimeFactory : IFactoryControls
         {
             public static IFactoryControls Default = new DefaultRuntimeFactory();
@@ -127,6 +134,20 @@ namespace FUI.Editor
                 //lbl.AssignDefaultFont();
         }
 
+        static TMP_DefaultControls.Resources ToTMPResources(Resources resources)
+        {
+            return new TMP_DefaultControls.Resources
+            {
+                standard = resources.standard,
+                background = resources.background,
+                inputField = resources.inputField,
+                knob = resources.knob,
+                checkmark = resources.checkmark,
+                dropdown = resources.dropdown,
+                mask = resources.mask,
+            };
+        }
+
         private static void SetDefaultColorTransitionValues(Selectable slider)
         {
             ColorBlock colors = slider.colors;
@@ -200,7 +221,7 @@ namespace FUI.Editor
         {
             GameObject buttonRoot = CreateUIElementRoot("Button (Legacy)", s_ThickElementSize, typeof(Image), typeof(Button), typeof(ImageElement), typeof(ButtonElement));
 
-            GameObject childText = CreateUIObject("Text (Legacy)", buttonRoot, typeof(Text), typeof(TextElement));
+            GameObject childText = CreateUIObject("Text (Legacy)", buttonRoot, typeof(Text), typeof(LegacyTextElement));
 
             Image image = buttonRoot.GetComponent<Image>();
             image.sprite = resources.standard;
@@ -235,13 +256,108 @@ namespace FUI.Editor
         /// <returns>The root GameObject of the created element.</returns>
         public static GameObject CreateText(Resources resources)
         {
-            GameObject go = CreateUIElementRoot("Text (Legacy)", s_ThickElementSize, typeof(Text), typeof(TextElement));
+            GameObject go = CreateUIElementRoot("Text (Legacy)", s_ThickElementSize, typeof(Text), typeof(LegacyTextElement));
 
             Text lbl = go.GetComponent<Text>();
             lbl.text = "New Text";
             SetDefaultTextValues(lbl);
 
             return go;
+        }
+
+        /// <summary>创建带有 TMPTextElement 的 TextMeshPro 文本。</summary>
+        public static GameObject CreateTMPText(Resources resources)
+        {
+            var root = TMP_DefaultControls.CreateText(ToTMPResources(resources));
+            root.name = "Text (TMP)";
+            root.AddComponent<TMPTextElement>();
+            return root;
+        }
+
+        /// <summary>创建使用 TextMeshPro 文本子节点的按钮。</summary>
+        public static GameObject CreateTMPButton(Resources resources)
+        {
+            var root = TMP_DefaultControls.CreateButton(ToTMPResources(resources));
+            root.name = "Button (TMP)";
+            root.AddComponent<ImageElement>();
+            root.AddComponent<ButtonElement>();
+            root.GetComponentInChildren<TextMeshProUGUI>(true).gameObject.AddComponent<TMPTextElement>();
+            return root;
+        }
+
+        /// <summary>创建使用 TextMeshPro 标签的 Toggle。</summary>
+        public static GameObject CreateTMPToggle(Resources resources)
+        {
+            var toggleRoot = CreateUIElementRoot("Toggle (TMP)", s_ThinElementSize, typeof(Toggle), typeof(ToggleElement));
+            var background = CreateUIObject("Background", toggleRoot, typeof(Image));
+            var checkmark = CreateUIObject("Checkmark", background, typeof(Image));
+            var childLabel = CreateUIObject("Label", toggleRoot, typeof(TextMeshProUGUI), typeof(TMPTextElement));
+
+            var toggle = toggleRoot.GetComponent<Toggle>();
+            toggle.isOn = true;
+
+            var backgroundImage = background.GetComponent<Image>();
+            backgroundImage.sprite = resources.standard;
+            backgroundImage.type = Image.Type.Sliced;
+            backgroundImage.color = s_DefaultSelectableColor;
+
+            var checkmarkImage = checkmark.GetComponent<Image>();
+            checkmarkImage.sprite = resources.checkmark;
+
+            var label = childLabel.GetComponent<TextMeshProUGUI>();
+            label.text = "Toggle";
+            label.color = s_TextColor;
+            label.fontSize = 14f;
+
+            toggle.graphic = checkmarkImage;
+            toggle.targetGraphic = backgroundImage;
+            SetDefaultColorTransitionValues(toggle);
+
+            var backgroundRect = background.GetComponent<RectTransform>();
+            backgroundRect.anchorMin = new Vector2(0f, 1f);
+            backgroundRect.anchorMax = new Vector2(0f, 1f);
+            backgroundRect.anchoredPosition = new Vector2(10f, -10f);
+            backgroundRect.sizeDelta = new Vector2(kThinHeight, kThinHeight);
+
+            var checkmarkRect = checkmark.GetComponent<RectTransform>();
+            checkmarkRect.anchorMin = new Vector2(0.5f, 0.5f);
+            checkmarkRect.anchorMax = new Vector2(0.5f, 0.5f);
+            checkmarkRect.anchoredPosition = Vector2.zero;
+            checkmarkRect.sizeDelta = new Vector2(20f, 20f);
+
+            var labelRect = childLabel.GetComponent<RectTransform>();
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = new Vector2(23f, 1f);
+            labelRect.offsetMax = new Vector2(-5f, -2f);
+            return toggleRoot;
+        }
+
+        /// <summary>创建带有 TMPInputFieldElement 的 TextMeshPro 输入框。</summary>
+        public static GameObject CreateTMPInputField(Resources resources)
+        {
+            var root = TMP_DefaultControls.CreateInputField(ToTMPResources(resources));
+            root.AddComponent<ImageElement>();
+            root.AddComponent<TMPInputFieldElement>();
+            foreach (var text in root.GetComponentsInChildren<TextMeshProUGUI>(true))
+            {
+                text.gameObject.AddComponent<TMPTextElement>();
+            }
+            return root;
+        }
+
+        /// <summary>创建带有 TMPDropdownElement 的 TextMeshPro Dropdown。</summary>
+        public static GameObject CreateTMPDropdown(Resources resources)
+        {
+            var root = TMP_DefaultControls.CreateDropdown(ToTMPResources(resources));
+            root.name = "Dropdown (TMP)";
+            root.AddComponent<ImageElement>();
+            root.AddComponent<TMPDropdownElement>();
+            foreach (var text in root.GetComponentsInChildren<TextMeshProUGUI>(true))
+            {
+                text.gameObject.AddComponent<TMPTextElement>();
+            }
+            return root;
         }
 
         /// <summary>
@@ -419,7 +535,7 @@ namespace FUI.Editor
 
             GameObject background = CreateUIObject("Background", toggleRoot, typeof(Image));
             GameObject checkmark = CreateUIObject("Checkmark", background, typeof(Image));
-            GameObject childLabel = CreateUIObject("Label", toggleRoot, typeof(Text));
+            GameObject childLabel = CreateUIObject("Label", toggleRoot, typeof(Text), typeof(LegacyTextElement));
 
             // Set up components
             Toggle toggle = toggleRoot.GetComponent<Toggle>();
@@ -476,10 +592,10 @@ namespace FUI.Editor
         /// <returns>The root GameObject of the created element.</returns>
         public static GameObject CreateInputField(Resources resources)
         {
-            GameObject root = CreateUIElementRoot("InputField (Legacy)", s_ThickElementSize, typeof(Image), typeof(InputField), typeof(ImageElement), typeof(InputFieldElement));
+            GameObject root = CreateUIElementRoot("InputField (Legacy)", s_ThickElementSize, typeof(Image), typeof(InputField), typeof(ImageElement), typeof(LegacyInputFieldElement));
 
-            GameObject childPlaceholder = CreateUIObject("Placeholder", root, typeof(Text));
-            GameObject childText = CreateUIObject("Text (Legacy)", root, typeof(Text));
+            GameObject childPlaceholder = CreateUIObject("Placeholder", root, typeof(Text), typeof(LegacyTextElement));
+            GameObject childText = CreateUIObject("Text (Legacy)", root, typeof(Text), typeof(LegacyTextElement));
 
             Image image = root.GetComponent<Image>();
             image.sprite = resources.inputField;
@@ -546,9 +662,9 @@ namespace FUI.Editor
         /// <returns>The root GameObject of the created element.</returns>
         public static GameObject CreateDropdown(Resources resources)
         {
-            GameObject root = CreateUIElementRoot("Dropdown (Legacy)", s_ThickElementSize, typeof(Image), typeof(Dropdown), typeof(ImageElement), typeof(DropdownElement));
+            GameObject root = CreateUIElementRoot("Dropdown (Legacy)", s_ThickElementSize, typeof(Image), typeof(Dropdown), typeof(ImageElement), typeof(LegacyDropdownElement));
 
-            GameObject label = CreateUIObject("Label", root, typeof(Text));
+            GameObject label = CreateUIObject("Label", root, typeof(Text), typeof(LegacyTextElement));
             GameObject arrow = CreateUIObject("Arrow", root, typeof(Image));
             GameObject template = CreateUIObject("Template", root, typeof(Image), typeof(ScrollRect));
             GameObject viewport = CreateUIObject("Viewport", template, typeof(Image), typeof(Mask));
@@ -556,7 +672,7 @@ namespace FUI.Editor
             GameObject item = CreateUIObject("Item", content, typeof(Toggle));
             GameObject itemBackground = CreateUIObject("Item Background", item, typeof(Image));
             GameObject itemCheckmark = CreateUIObject("Item Checkmark", item, typeof(Image));
-            GameObject itemLabel = CreateUIObject("Item Label", item, typeof(Text));
+            GameObject itemLabel = CreateUIObject("Item Label", item, typeof(Text), typeof(LegacyTextElement));
 
             // Sub controls.
 
@@ -721,7 +837,7 @@ namespace FUI.Editor
         /// <returns>The root GameObject of the created element.</returns>
         public static GameObject CreateScrollView(Resources resources)
         {
-            GameObject root = CreateUIElementRoot("Scroll View", new Vector2(200, 200), typeof(Image), typeof(ScrollRect), typeof(ScrollRectElement));
+            GameObject root = CreateUIElementRoot("Scroll View", new Vector2(200, 200), typeof(Image), typeof(ScrollRect), typeof(ScrollViewElement));
 
             GameObject viewport = CreateUIObject("Viewport", root, typeof(Image), typeof(Mask));
             GameObject content = CreateUIObject("Content", viewport, typeof(RectTransform));

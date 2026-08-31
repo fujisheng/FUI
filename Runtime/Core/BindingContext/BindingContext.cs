@@ -1,12 +1,18 @@
-﻿using FUI.Bindable;
+﻿using FUI.Binding;
+using FUI.Diagnostics;
+using FUI.Presentation;
+using FUI.Rendering;
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace FUI
+namespace FUI.Infrastructure.Binding
 {
     /// <summary>
     /// 绑定上下文
     /// </summary>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public abstract class BindingContext<TObservableObject> : IBindingContext where TObservableObject : ObservableObject
     {
         /// <summary>
@@ -43,14 +49,74 @@ namespace FUI
         protected virtual void OnBinding() { }
 
         /// <summary>
+        /// 初始化当前 View 使用的属性。生成的 BindingContext 会覆盖此方法并执行局部同步。
+        /// </summary>
+        protected virtual void OnSynchronize()
+        {
+            // 手写 BindingContext 保留旧行为；生成代码会覆盖该方法，避免共享数据向其他 View 广播。
+            if (ViewModel is ISynchronizeProperties synchronizeProperties)
+            {
+                synchronizeProperties.Synchronize();
+            }
+        }
+
+        /// <summary>
         /// 当解绑的时候
         /// </summary>
         protected virtual void OnUnbinding() { }
 
         /// <summary>
-        /// 是否已经绑定 防止重复绑定
+        /// Binding 与 Unbinding 的事务状态，防止重入并保证失败时可以完整回滚。
         /// </summary>
-        bool binded;
+        enum BindingState
+        {
+            Unbound,
+            Binding,
+            Bound,
+            Unbinding,
+        }
+
+        BindingState state;
+        CancellationTokenSource commandCancellation;
+
+        protected void RunAsyncCommand(Func<CancellationToken, ValueTask> command)
+        {
+            if (command == null || state != BindingState.Bound)
+            {
+                return;
+            }
+
+            // Command 生命周期从属于本次 Binding；页面解绑时统一取消仍在运行的异步命令。
+            var token = commandCancellation?.Token ?? CancellationToken.None;
+            ValueTask operation;
+            try
+            {
+                operation = command(token);
+            }
+            catch (Exception exception)
+            {
+                Log.Instance.LogException(exception);
+                return;
+            }
+
+            _ = ObserveCommandAsync(operation, token);
+        }
+
+        static async Task ObserveCommandAsync(ValueTask operation, CancellationToken token)
+        {
+            try
+            {
+                await operation;
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
+            {
+                return;
+            }
+            catch (Exception exception)
+            {
+                Log.Instance.LogException(exception);
+            }
+        }
 
         #region internal
 
@@ -68,6 +134,8 @@ namespace FUI
         /// 这个绑定上下文的视图模型类型
         /// </summary>
         Type IBindingContext.ViewModelType => typeof(TObservableObject);
+
+        bool IBindingContext.IsBound => state == BindingState.Bound;
 
         /// <summary>
         /// 更新视图
@@ -104,16 +172,42 @@ namespace FUI
                 return false;
             }
 
-            if(!(viewModel is TObservableObject))
+            if (!(viewModel is TObservableObject))
             {
                 return false;
             }
 
             var context = this as IBindingContext;
+            var previous = ViewModel;
+            var wasBound = state == BindingState.Bound;
             context.Unbinding();
-            ViewModel = viewModel as TObservableObject;
-            context.Binding();
-            return true;
+            ViewModel = (TObservableObject)viewModel;
+            try
+            {
+                if (wasBound)
+                {
+                    context.Binding();
+                }
+                return true;
+            }
+            catch (Exception bindingException)
+            {
+                // 换绑失败时恢复旧数据和旧监听，不能让共享投影停留在半绑定状态。
+                ViewModel = previous;
+                try
+                {
+                    if (wasBound)
+                    {
+                        context.Binding();
+                    }
+                }
+                catch (Exception rollbackException)
+                {
+                    throw new AggregateException("Failed to update the ViewModel and restore the previous bindings.", bindingException, rollbackException);
+                }
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -121,27 +215,7 @@ namespace FUI
         /// </summary>
         void IBindingContext.Binding()
         {
-            if (binded)
-            {
-                return;
-            }
-
-            if(this.ViewModel == null || this.View == null)
-            {
-                return;
-            }
-
-            ViewModel.PropertyChanged += OnPropertyChanged;
-            OnBinding();
-            binded = true;
-        }
-
-        /// <summary>
-        /// 解绑视图和视图模型
-        /// </summary>
-        void IBindingContext.Unbinding()
-        {
-            if(!binded)
+            if (state == BindingState.Bound || state == BindingState.Binding)
             {
                 return;
             }
@@ -151,9 +225,74 @@ namespace FUI
                 return;
             }
 
-            ViewModel.PropertyChanged -= OnPropertyChanged;
-            OnUnbinding();
-            binded = false;
+            // 只有 OnBinding 全部成功后才进入 Bound；中途异常必须撤销已经建立的监听。
+            state = BindingState.Binding;
+            commandCancellation?.Dispose();
+            commandCancellation = new CancellationTokenSource();
+            ViewModel.PropertyChanged += OnPropertyChanged;
+            try
+            {
+                OnBinding();
+                state = BindingState.Bound;
+            }
+            catch
+            {
+                try
+                {
+                    OnUnbinding();
+                }
+                finally
+                {
+                    ViewModel.PropertyChanged -= OnPropertyChanged;
+                    commandCancellation.Cancel();
+                    commandCancellation.Dispose();
+                    commandCancellation = null;
+                    state = BindingState.Unbound;
+                }
+
+                throw;
+            }
+        }
+
+        void IBindingContext.Synchronize()
+        {
+            if (state != BindingState.Bound)
+            {
+                return;
+            }
+
+            OnSynchronize();
+        }
+
+        /// <summary>
+        /// 解绑视图和视图模型
+        /// </summary>
+        void IBindingContext.Unbinding()
+        {
+            if (state == BindingState.Unbound || state == BindingState.Unbinding)
+            {
+                return;
+            }
+
+            if (this.ViewModel == null || this.View == null)
+            {
+                return;
+            }
+
+            // finally 保证业务解绑异常不会阻止框架监听和 Command Token 被释放。
+            state = BindingState.Unbinding;
+            try
+            {
+                OnUnbinding();
+            }
+            finally
+            {
+                ViewModel.PropertyChanged -= OnPropertyChanged;
+                commandCancellation?.Cancel();
+                commandCancellation?.Dispose();
+                commandCancellation = null;
+                state = BindingState.Unbound;
+            }
         }
         #endregion
     }

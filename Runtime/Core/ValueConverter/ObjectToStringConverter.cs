@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FUI
+namespace FUI.Binding
 {
     /// <summary>
     /// 将一个类型转换成string的模板类

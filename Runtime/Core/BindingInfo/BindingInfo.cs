@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using FUI.Binding;
 
-namespace FUI
+namespace FUI.Infrastructure.Binding
 {
     /// <summary>
     /// 要绑定的属性信息
     /// </summary>
-    public class PropertyInfo
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public class SourcePropertyDescriptor
     {
         /// <summary>
         /// 属性名
@@ -25,13 +27,14 @@ namespace FUI
         /// <summary>
         /// 位置信息
         /// </summary>
-        public LocationInfo location;
+        public SourceLocation location;
     }
 
     /// <summary>
     /// 位置信息
     /// </summary>
-    public class LocationInfo
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public class SourceLocation
     {
         /// <summary>
         /// 文件路径
@@ -52,7 +55,8 @@ namespace FUI
     /// <summary>
     /// 要绑定的转换器信息
     /// </summary>
-    public class ConverterInfo
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public class ConverterDescriptor
     {
         /// <summary>
         /// 转换器类型
@@ -72,13 +76,14 @@ namespace FUI
         /// <summary>
         /// 位置信息
         /// </summary>
-        public LocationInfo location;
+        public SourceLocation location;
     }
 
     /// <summary>
     /// 要绑定的目标信息
     /// </summary>
-    public class TargetInfo
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public class ElementTargetDescriptor
     {
         /// <summary>
         /// 目标路径
@@ -106,7 +111,11 @@ namespace FUI
         public string propertyValueType;
     }
 
-    public class CommandInfo
+    /// <summary>
+    /// 描述生成代码识别到的命令名称、参数和源码位置。
+    /// </summary>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public class CommandDescriptor
     {
         /// <summary>
         /// 名字
@@ -126,10 +135,14 @@ namespace FUI
         /// <summary>
         /// 在源文件中的位置信息
         /// </summary>
-        public LocationInfo location;
+        public SourceLocation location;
     }
 
-    public class CommandTargetInfo
+    /// <summary>
+    /// 描述命令绑定的目标 Element、成员和参数签名。
+    /// </summary>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public class CommandTargetDescriptor
     {
         /// <summary>
         /// 目标路径
@@ -155,11 +168,12 @@ namespace FUI
     /// <summary>
     /// 属性绑定信息
     /// </summary>
-    public class PropertyBindingInfo
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public class PropertyBindingDescriptor
     {
-        public PropertyInfo propertyInfo;
-        public ConverterInfo converterInfo;
-        public TargetInfo targetInfo;
+        public SourcePropertyDescriptor propertyInfo;
+        public ConverterDescriptor converterInfo;
+        public ElementTargetDescriptor targetInfo;
 
         public BindingMode bindingMode;
     }
@@ -167,20 +181,22 @@ namespace FUI
     /// <summary>
     /// 命令绑定信息
     /// </summary>
-    public class CommandBindingInfo
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public class CommandBindingDescriptor
     {
-        public CommandInfo commandInfo;
-        public CommandTargetInfo targetInfo;
+        public CommandDescriptor commandInfo;
+        public CommandTargetDescriptor targetInfo;
     }
 
     /// <summary>
     /// 上下文绑定信息
     /// </summary>
-    public class ContextBindingInfo
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public class BindingManifest
     {
         public string viewName = string.Empty;
         public string viewModelType;
-        public List<PropertyBindingInfo> properties = new List<PropertyBindingInfo>();
-        public List<CommandBindingInfo> commands = new List<CommandBindingInfo>();
+        public List<PropertyBindingDescriptor> properties = new List<PropertyBindingDescriptor>();
+        public List<CommandBindingDescriptor> commands = new List<CommandBindingDescriptor>();
     }
 }

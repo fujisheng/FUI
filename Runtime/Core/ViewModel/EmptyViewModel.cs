@@ -1,4 +1,4 @@
-namespace FUI
+namespace FUI.Presentation
 {
     /// <summary>
     /// 空的视图模型

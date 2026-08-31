@@ -1,15 +1,20 @@
-using FUI.Bindable;
+using FUI.Binding;
+using FUI.Rendering;
 
-namespace FUI
+namespace FUI.Infrastructure.Binding
 {
+    /// <summary>
+    /// 为生成代码提供可观察集合与列表 Element 之间的订阅和解绑操作。
+    /// </summary>
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public static class BindingContextUtility
     {
         /// <summary>
-        /// ��һ���ɹ۲��б���Element
+        /// 绑定一个可观察列表到Element
         /// </summary>
-        /// <param name="element">�Ӿ�Ԫ��</param>
-        /// <param name="preSource">�޸�ǰ�Ŀɹ۲��б�</param>
-        /// <param name="source">�޸ĺ�Ŀɹ۲��б�</param>
+        /// <param name="element">视觉元素</param>
+        /// <param name="preSource">修改前的可观察列表</param>
+        /// <param name="source">修改后的可观察列表</param>
         public static void BindingList<TElement>(TElement element, INotifyCollectionChanged preSource, INotifyCollectionChanged source) where TElement : class, IListView
         {
             if (preSource != null)
@@ -27,11 +32,11 @@ namespace FUI
         }
 
         /// <summary>
-        /// ���ɹ۲��б�
+        /// 解绑可观察列表
         /// </summary>
-        /// <typeparam name="TElement">Ŀ��Element����</typeparam>
-        /// <param name="element">Ŀ��Element</param>
-        /// <param name="listSource">����Դ</param>
+        /// <typeparam name="TElement">目标Element类型</typeparam>
+        /// <param name="element">目标Element</param>
+        /// <param name="listSource">数据源</param>
         public static void UnbindingList<TElement>(TElement element, INotifyCollectionChanged listSource) where TElement : class, IListView
         {
             if (listSource == null)

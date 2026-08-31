@@ -1,5 +1,8 @@
-﻿namespace FUI
+﻿namespace FUI.Rendering
 {
+    /// <summary>
+    /// 定义可由绑定系统寻址的渲染节点名称与父级关系。
+    /// </summary>
     public interface IElement
     {
         /// <summary>

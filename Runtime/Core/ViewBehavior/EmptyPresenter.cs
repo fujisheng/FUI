@@ -1,6 +1,6 @@
-using FUI.Bindable;
+using FUI.Binding;
 
-namespace FUI
+namespace FUI.Presentation
 {
     /// <summary>
     /// 空的展示器 用于不需要行为的View

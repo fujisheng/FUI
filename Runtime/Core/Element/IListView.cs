@@ -1,44 +1,44 @@
-using FUI.Bindable;
+using FUI.Binding;
 
-namespace FUI
+namespace FUI.Rendering
 {
     /// <summary>
-    /// ÊÊÓÃÓÚÁĞ±íµÄÊÓÍ¼ÔªËØ
+    /// é€‚ç”¨äºåˆ—è¡¨çš„è§†å›¾å…ƒç´ 
     /// </summary>
     public interface IListView : IElement
     {
         /// <summary>
-        /// Êı¾İ
+        /// æ•°æ®
         /// </summary>
-        BindableProperty<IReadOnlyObservableList<ObservableObject>> List { get; }
+        BindableProperty<IReadOnlyObservableList<ObservableObject>> Items { get; }
 
         /// <summary>
-        /// µ±ÓĞÔªËØ±»Ìí¼ÓÊ±
+        /// å½“æœ‰å…ƒç´ è¢«æ·»åŠ æ—¶
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="index">±»Ìí¼ÓµÄÔªËØµÄindex</param>
-        /// <param name="itemData">±»Ìí¼ÓµÄÔªËØ</param>
+        /// <param name="index">è¢«æ·»åŠ çš„å…ƒç´ çš„index</param>
+        /// <param name="itemData">è¢«æ·»åŠ çš„å…ƒç´ </param>
         void OnAdd(object sender, int? index, object itemData);
 
         /// <summary>
-        /// µ±ÓĞÔªËØ±»ÒÆ³ıÊ±
+        /// å½“æœ‰å…ƒç´ è¢«ç§»é™¤æ—¶
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="index">±»ÒÆ³ıµÄÔªËØindex</param>
-        /// <param name="item">±»ÒÆ³ıµÄÔªËØ</param>
+        /// <param name="index">è¢«ç§»é™¤çš„å…ƒç´ index</param>
+        /// <param name="item">è¢«ç§»é™¤çš„å…ƒç´ </param>
         void OnRemove(object sender, int? index, object item);
 
         /// <summary>
-        /// µ±ÓĞÔªËØ±»Ìæ»»Ê±
+        /// å½“æœ‰å…ƒç´ è¢«æ›¿æ¢æ—¶
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="index">±»Ìæ»»µÄÔªËØindex</param>
-        /// <param name="oldItem">±»Ìæ»»µÄÔªËØ</param>
-        /// <param name="newItem">Ìæ»»ºóµÄÔªËØ</param>
+        /// <param name="index">è¢«æ›¿æ¢çš„å…ƒç´ index</param>
+        /// <param name="oldItem">è¢«æ›¿æ¢çš„å…ƒç´ </param>
+        /// <param name="newItem">æ›¿æ¢åçš„å…ƒç´ </param>
         void OnReplace(object sender, int? index, object oldItem, object newItem);
 
         /// <summary>
-        /// µ±Õû¸öÁĞ±í±»¸üĞÂÊ±
+        /// å½“æ•´ä¸ªåˆ—è¡¨è¢«æ›´æ–°æ—¶
         /// </summary>
         void OnUpdate(object sender);
     }

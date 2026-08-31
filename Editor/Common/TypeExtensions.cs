@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 namespace FUI.Editor
 {
-    public static class TypeExtensions
+    /// <summary>
+    /// 提供编辑器域内按完整名称解析并缓存类型的扩展方法。
+    /// </summary>
+    internal static class TypeExtensions
     {
         static Dictionary<string, Type> typeCache = new Dictionary<string, Type>();
 

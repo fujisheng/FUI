@@ -1,184 +1,104 @@
-# FUI
+# FUI 3.0
 
-Unity UGUI 场景下的 MVVM UI 框架，包含：
+FUI 是独立的 Unity MVVM、导航与 UGUI 渲染包。运行时不依赖第三方库；资源系统、动画和输入控制均通过接口接入。
 
-> An MVVM UI framework for Unity UGUI.
+## 程序集
 
-- 运行时 UI 管理（打开/关闭/返回、层级、全屏、依赖、过渡）
-- 声明式数据绑定（属性绑定、命令绑定、值转换）
-- 编译期代码生成（Roslyn Source Generator）
-- Unity 编辑器工具链（Installer、IL 后处理、Inspector）
+| 程序集 | 命名空间 | 职责 |
+|---|---|---|
+| `FUI.Core` | `FUI.Binding`、`FUI.Presentation`、`FUI.Rendering` | 纯 C# 绑定、ViewModel、Presenter 与渲染抽象 |
+| `FUI.Navigation` | `FUI.Navigation`、`FUI.Resources`、`FUI.Transitions` | Route、Navigator、资源所有权与动画协议 |
+| `FUI.Rendering.UGUI` | `FUI.Rendering.UGUI`、`.Elements` | UGUI View 和 Element 实现 |
+| `FUI.Editor` | `FUI.Editor.Validation`、`.Inspection`、`.Installation` | 校验、绑定检查与安装工具 |
+| `FUI.Editor.ILPostProcessing` | `FUI.Editor.ILPostProcessing` | Mixed 模式的可选自动属性注入 |
+| `FUI.Generators` | `FUI.Generators` | Source Generator 与 Analyzer |
 
-UPM 包名：`com.fujisheng.fui`
+## 应用入口
 
----
+为包含 ViewModel 的程序集指定生成命名空间：
 
-## 特性
+```csharp
+[assembly: FUI.Binding.ViewModule("Sample.UI",
+    PropertyMode = FUI.Binding.PropertyGenerationMode.Pure)]
+```
 
-- **UIManager 统一调度**：支持同步/异步打开、栈管理、层级管理与返回逻辑
-- **MVVM + Presenter 分层**：`ViewModel` 负责状态，`Presenter` 负责交互逻辑
-- **绑定代码自动生成**：减少手写胶水代码，降低运行时反射依赖
-- **UGUI 控件封装完善**：`ButtonElement`、`InputFieldElement`、`ListViewElement` 等
-- **编辑器可视化辅助**：可在 Inspector 查看绑定信息并快速定位
+声明页面：
 
----
+```csharp
+using FUI.Binding;
+using FUI.Navigation;
+using FUI.Presentation;
+using FUI.Rendering.UGUI.Elements;
 
-## 相较其他常见方案的优点
-
-| 对比场景 | 常见做法 | FUI 的优势 |
-| --- | --- | --- |
-| 手写 UI 事件/赋值胶水代码 | 每个页面重复写监听、同步与解绑逻辑 | 通过 `Binding` / `Command` + Source Generator 自动生成绑定上下文，减少重复样板代码 |
-| 运行时反射驱动绑定 | 运行时开销更高，出错点偏后置 | 以编译期生成 + 明确类型约束为主，绑定问题更早暴露、更易定位 |
-| 只提供基础页面管理 | 打开/关闭/返回、层级、全屏和依赖逻辑需要业务层自行拼装 | `UIManager` + `ViewTaskQueue` + `UISettings` 提供完整生命周期与栈管理能力 |
-| 只有运行时框架，缺少编辑器协同 | 配置与排障效率低 | 提供 `FUI/Installer`、IL 后处理、`ViewInspector`，从接入到排查链路更完整 |
-
----
-
-## 快速开始
-
-### 1) 安装（UPM）
-
-在 `manifest.json` 中添加依赖：
-
-```json
+[ViewContract("SettingsView")]
+[RoutePolicy(Layer.Popup, CoverageMode = CoverageMode.KeepVisible)]
+public partial class SettingsViewModel : ViewModel
 {
-  "dependencies": {
-    "com.fujisheng.fui": "https://github.com/fujisheng/FUI.git"
-  }
+    [ObservableProperty]
+    [Bind("Title", nameof(TextElement.Content))]
+    string title;
+}
+
+public sealed class SettingsPresenter : Presenter<SettingsViewModel>
+{
 }
 ```
 
-> 若 `package.json` 不在仓库根目录，请使用 `?path=/子目录名`（例如 `?path=/Packages/com.fujisheng.fui`）。
-
-### 2) 初始化 UIManager
+生成器输出 `${ModuleNamespace}.Routes` 和同命名空间的 internal `BindingRegistry`：
 
 ```csharp
-using FUI.Manager;
-using FUI.UGUI;
+Sample.UI.Routes.Initialize();
 
-IAssetLoaderFactory assetLoaderFactory = /* your implementation */;
-var viewFactory = new ViewFactory(assetLoaderFactory);
-var uiManager = new UIManager(viewFactory);
-uiManager.Initialize();
-
-uiManager.Open("MainView");
+var navigator = new Navigator(viewProvider);
+navigator.Initialize();
+ViewHandle handle = navigator.Open(Sample.UI.Routes.SettingsView);
+navigator.Close(handle);
 ```
 
-### 3) 编写 ViewModel 绑定
+业务层只需要操作 `ViewModel`、`Presenter<T>`、`Navigator`、`Route<T>` 和 `ViewHandle`。`View`、`Element`、`ComponentElement<T>` 属于渲染扩展 API；`ViewInstance` 和 `BindingContext<T>` 属于隐藏基础设施。
+
+## 属性模式
+
+Pure 模式不需要 Cecil，只支持字段生成属性：
 
 ```csharp
-using FUI;
-using FUI.Manager;
-using FUI.UGUI.Control;
-
-[ViewBinding("MainView")]
-[Settings(Layer.Common)]
-public partial class MainViewModel : ViewModel
-{
-    [Binding("StartButton", nameof(ButtonElement.TextValue))]
-    public string StartText { get; set; } = "Start";
-
-    [Command("StartButton", nameof(ButtonElement.OnClick))]
-    public void OnStartClicked()
-    {
-        // business logic
-    }
-}
+[ObservableProperty]
+[Bind("Title", nameof(TextElement.Content))]
+string title;
 ```
 
----
+Mixed 模式同时支持自动属性：
 
-## 典型工作流
-
-1. 搭建 View（Prefab）并确定 Element 命名
-2. 编写 `ViewModel`（`[Binding]` / `[Command]`）
-3. 在 Unity 菜单执行 `FUI/Installer` 安装 Source Generator
-4. 编译后确认生成代码与绑定关系
-5. 通过 `UIManager` 驱动页面生命周期
-6. 用 `ViewInspector` 排查绑定问题
-
----
-
-## 核心概念
-
-- **UIManager**（`Runtime/Manager/UIManager.cs`）
-  - 入口 API：`Open` / `OpenAsync` / `Close` / `Back` / `CloseAll`
-- **UIEntity**（`Runtime/Core/UIEntity/`）
-  - 聚合 `IView + ViewModel + Presenter`，负责生命周期
-- **BindingContext**（`Runtime/Core/BindingContext/`）
-  - 管理 View 与 ViewModel 的绑定/解绑
-- **BindingContextTypeResolver**（`Runtime/Core/BindingContext/BindingContextTypeResolver.cs`）
-  - 解析 View、ViewModel、Context、Presenter 映射
-- **UGUI Elements**（`Runtime/UGUI/Contol/`）
-  - FUI 对 UGUI 组件的可绑定封装层
-
----
-
-## 编辑器菜单
-
-- `FUI/Installer`：构建并安装 `FUI.SourceGenerator.dll`
-- `FUI/ILPostProcessos`：手动执行 IL 注入
-- `GameObject/FUI/*`：创建 FUI 控件模板
-
-相关文件：
-
-- `Editor/Installer/InstallerWindow.cs`
-- `Editor/ILPostProcesses/ILPostProcessesEditor.cs`
-- `Editor/Menu/MenuOptions.cs`
-
----
-
-## 项目结构
-
-```text
-FUI/
-├─ package.json
-├─ Runtime/
-│  ├─ Core/
-│  ├─ Manager/
-│  ├─ UGUI/
-│  └─ Feature/
-├─ Editor/
-└─ FUI.SourceGenerator~/
+```csharp
+[Bind("Title", nameof(TextElement.Content))]
+public string Title { get; set; }
 ```
 
-主要 asmdef：
+Mixed 模式通过 `Tools/FUI/Setup` 安装 Unity 官方 Cecil 包并启用可选 `FUI.Editor.ILPostProcessing`。主包不直接依赖 Cecil。
 
-- `FUI.Core`
-- `FUI.Manager`
-- `FUI.UGUI`
-- `FUI.Editor`
+## Editor 工具
 
----
+- `Tools/FUI/Setup`：安装 Analyzer，并按需安装 Mixed 模式使用的 Cecil；属性模式只由 `ViewModule.PropertyMode` 决定。
+- `Tools/FUI/Page Wizard`：创建 View Prefab，并提供 FullScreen、Popup、Tips Policy 预设。
+- `Tools/FUI/Validate Views`：检查 Element 缺失、类型错误、重名、嵌套边界和页面结构。
+- `BindingInspector`：在 Edit Mode 查看绑定关系、定位对象并跳转源码。
+- Prefab 保存后自动增量验证；构建前通过 `IPreprocessBuildWithReport` 执行同一套门禁。
 
-## Source Generator 与 IL 后处理
+## 扩展点
 
-- Source Generator 工程：`FUI.SourceGenerator~/`
-  - 目标框架：`netstandard2.0`
-  - 依赖：`Microsoft.CodeAnalysis.CSharp 4.0.1`
-- Installer 会：
-  1. `dotnet build FUI.SourceGenerator.sln -c Release`
-  2. 复制 `FUI.SourceGenerator.dll` 到目标 asmdef 目录
-  3. 写入 `.meta`（`RoslynAnalyzer` + `sourceGenerator: 1`）
+- `IViewProvider`：连接资源后端并返回 `IViewLease`。
+- `IAssetScope`：管理页面级资源所有权。
+- `ITransitionProvider`：为 View 提供进入和退出动画。
+- `IInputGate`：在异步打开、关闭或预热期间持有输入阻塞 Lease。
+- `Element`、`ComponentElement<T>`：实现自定义 UGUI Element。
 
----
+Element 扩展规则见 [ELEMENTS.md](Documentation~/ELEMENTS.md)，Provider 约定见 [PROVIDER.md](Documentation~/PROVIDER.md)，升级说明见 [MIGRATION_3.0.md](Documentation~/MIGRATION_3.0.md)。
 
-## 兼容性
+## 验证 Generator
 
-- `package.json` 声明 Unity：`2019.4`
-- Source Generator 工程：`netstandard2.0`
+```bash
+cd Packages/com.fujisheng.fui/FUI.Generators~
+./verify.sh
+```
 
-Unity 官方参考：
-
-- Roslyn analyzers / source generators
-  - https://docs.unity3d.com/2022.3/Documentation/Manual/roslyn-analyzers.html
-- UPM Git URL 安装
-  - https://docs.unity3d.com/Manual/upm-ui-giturl.html
-
----
-
-## 许可
-
-本仓库采用 **MIT License**，详见根目录 [LICENSE](./LICENSE) 文件。
-
-> `Editor/Menu/LICENSE.txt` 为菜单代码来源的第三方许可，与本项目主许可相互独立。
+脚本以锁定依赖构建 `FUI.Generators.dll`、运行测试，并校验包内预编译 DLL 与构建产物一致。

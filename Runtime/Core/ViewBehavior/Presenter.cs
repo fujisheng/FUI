@@ -1,8 +1,10 @@
-﻿using FUI.Bindable;
+﻿using FUI.Binding;
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace FUI
+namespace FUI.Presentation
 {
     /// <summary>
     /// 展示器基类
@@ -33,6 +35,11 @@ namespace FUI
         protected virtual void OnOpen(object param) { }
 
         /// <summary>
+        /// 异步打开生命周期。覆盖后该 Route 只能通过 OpenAsync 打开。
+        /// </summary>
+        protected virtual ValueTask OnOpenAsync(object param, CancellationToken cancellationToken) => default;
+
+        /// <summary>
         /// 当这个界面是当前聚焦的View的时候
         /// </summary>
         protected virtual void OnFocus() { }
@@ -43,9 +50,24 @@ namespace FUI
         protected virtual void OnUnfocus() { }
 
         /// <summary>
+        /// 页面被覆盖但仍保持打开、绑定和业务事件注册。
+        /// </summary>
+        protected virtual void OnCovered() { }
+
+        /// <summary>
+        /// 页面从 Covered 状态恢复，不重复执行 OnOpen。
+        /// </summary>
+        protected virtual void OnRevealed() { }
+
+        /// <summary>
         /// 当关闭这个View的时候
         /// </summary>
         protected virtual void OnClose() { }
+
+        /// <summary>
+        /// 异步关闭生命周期。无论动画或该阶段是否失败，Manager 都会继续完成关闭。
+        /// </summary>
+        protected virtual ValueTask OnCloseAsync(CancellationToken cancellationToken) => default;
 
         /// <summary>
         /// 当销毁这个View的时候
@@ -79,10 +101,14 @@ namespace FUI
             OnCreate();
         }
 
-        void IPresenter.OnEnable(object param) => OnOpen(param);
+        void IPresenter.OnOpen(object param) => OnOpen(param);
+        ValueTask IPresenter.OnOpenAsync(object param, CancellationToken cancellationToken) => OnOpenAsync(param, cancellationToken);
         void IPresenter.OnFocus() => OnFocus();
         void IPresenter.OnUnfocus() => OnUnfocus();
-        void IPresenter.OnDisable() => OnClose();
+        void IPresenter.OnCovered() => OnCovered();
+        void IPresenter.OnRevealed() => OnRevealed();
+        void IPresenter.OnClose() => OnClose();
+        ValueTask IPresenter.OnCloseAsync(CancellationToken cancellationToken) => OnCloseAsync(cancellationToken);
         void IPresenter.OnDestroy() => OnDestroy();
         #endregion
     }

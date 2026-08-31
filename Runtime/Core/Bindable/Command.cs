@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace FUI.Bindable
+namespace FUI.Binding
 {
     /// <summary>
-    /// ����ģ��
+    /// 命令模板
     /// </summary>
-    /// <typeparam name="T">����ǩ������</typeparam>
-    public abstract class CommandTemplate<T> where T : Delegate
+    /// <typeparam name="T">命令签名类型</typeparam>
+    public abstract class CommandTemplate<T> : IDisposable where T : Delegate
     {
         protected readonly List<T> invocationList;
 
@@ -17,9 +17,9 @@ namespace FUI.Bindable
         }
 
         /// <summary>
-        /// ����һ���ص�
+        /// 添加一个回调
         /// </summary>
-        /// <param name="invocation">�ص�</param>
+        /// <param name="invocation">回调</param>
         public void AddListener(T invocation)
         {
             if (invocationList.Contains(invocation))
@@ -31,9 +31,9 @@ namespace FUI.Bindable
         }
 
         /// <summary>
-        /// �Ƴ�һ���ص�
+        /// 移除一个回调
         /// </summary>
-        /// <param name="invocation">�Ƴ��ص�</param>
+        /// <param name="invocation">移除回调</param>
         public void RemoveListener(T invocation)
         {
             if (!invocationList.Contains(invocation))
@@ -45,7 +45,7 @@ namespace FUI.Bindable
         }
 
         /// <summary>
-        /// ���ִ���б�
+        /// 清空执行列表
         /// </summary>
         public void ClearListeners()
         {
@@ -53,9 +53,17 @@ namespace FUI.Bindable
         }
 
         /// <summary>
-        /// ��ȫִ��  ��Ϊ�п�����ί��ִ�й������޸ļ���
+        /// 释放命令持有的全部监听器。
         /// </summary>
-        /// <param name="action">Ҫִ�е�����</param>
+        public void Dispose()
+        {
+            ClearListeners();
+        }
+
+        /// <summary>
+        /// 安全执行  因为有可能在委托执行过程中修改集合
+        /// </summary>
+        /// <param name="action">要执行的内容</param>
         protected void SafeInvoke(Action<T> action)
         {
             if (invocationList.Count == 0)
@@ -75,41 +83,49 @@ namespace FUI.Bindable
         }
     }
 
+    /// <summary>表示不接收参数的可绑定命令。</summary>
     public class Command : CommandTemplate<Action>
     {
         public void Invoke() => SafeInvoke((item) => item.Invoke());
     }
 
+    /// <summary>表示接收一个参数的可绑定命令。</summary>
     public class Command<TArgs> : CommandTemplate<Action<TArgs>>
     {
         public void Invoke(TArgs args) => SafeInvoke((item) => item.Invoke(args));
     }
 
+    /// <summary>表示接收两个参数的可绑定命令。</summary>
     public class Command<TArgs1, TArgs2> : CommandTemplate<Action<TArgs1, TArgs2>>
     {
         public void Invoke(TArgs1 args1, TArgs2 args2) => SafeInvoke((item) => item.Invoke(args1, args2));
     }
 
+    /// <summary>表示接收三个参数的可绑定命令。</summary>
     public class Command<TArgs1, TArgs2, TArgs3> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3>>
     {
         public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3) => SafeInvoke((item) => item.Invoke(args1, args2, args3));
     }
 
+    /// <summary>表示接收四个参数的可绑定命令。</summary>
     public class Command<TArgs1, TArgs2, TArgs3, TArgs4> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3, TArgs4>>
     {
         public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4)=> SafeInvoke((item) => item.Invoke(args1, args2, args3, args4));
     }
 
+    /// <summary>表示接收五个参数的可绑定命令。</summary>
     public class Command<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5>>
     {
         public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4, TArgs5 args5)=> SafeInvoke((item) => item.Invoke(args1, args2, args3, args4, args5));
     }
 
+    /// <summary>表示接收六个参数的可绑定命令。</summary>
     public class Command<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5, TArgs6> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5, TArgs6>>
     {
         public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4, TArgs5 args5, TArgs6 args6)=> SafeInvoke((item) => item.Invoke(args1, args2, args3, args4, args5, args6));
     }
 
+    /// <summary>表示接收七个参数的可绑定命令。</summary>
     public class Command<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5, TArgs6, TArgs7> : CommandTemplate<Action<TArgs1, TArgs2, TArgs3, TArgs4, TArgs5, TArgs6, TArgs7>>
     {
         public void Invoke(TArgs1 args1, TArgs2 args2, TArgs3 args3, TArgs4 args4, TArgs5 args5, TArgs6 args6, TArgs7 args7)=> SafeInvoke((item) => item.Invoke(args1, args2, args3, args4, args5, args6, args7));

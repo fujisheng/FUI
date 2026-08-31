@@ -4,41 +4,41 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
-namespace FUI.Editor
+namespace FUI.Editor.Inspection
 {
 	/// <summary>
-	/// ÔÚ Hierarchy ÖĞ¸ßÁÁº¬ IElement µÄ¶ÔÏó²¢×·¼Ó±êÊ¶Í¼±ê¡£
+	/// åœ¨ Hierarchy ä¸­é«˜äº®å« IElement çš„å¯¹è±¡å¹¶è¿½åŠ æ ‡è¯†å›¾æ ‡ã€‚
 	/// </summary>
 	[InitializeOnLoad]
-	public class HighlightElementEditor
+	internal class HighlightElementEditor
 	{
 		/// <summary>
-		/// ¸ßÁÁ±³¾°ÑÕÉ«£¨Î´Ñ¡ÖĞÊ±£©¡£
+		/// é«˜äº®èƒŒæ™¯é¢œè‰²ï¼ˆæœªé€‰ä¸­æ—¶ï¼‰ã€‚
 		/// </summary>
 		static readonly Color HighlightColor = new Color(0.25f, 0.55f, 0.85f, 0.20f);
 
 		/// <summary>
-		/// ×Ô¶¨ÒåÍ¼±ê´óĞ¡¡£
+		/// è‡ªå®šä¹‰å›¾æ ‡å¤§å°ã€‚
 		/// </summary>
 		const int IconSize = 16;
 
 		/// <summary>
-		/// Ãû×ÖÓëÍ¼±êÖ®¼äµÄ¼ä¾à¡£
+		/// åå­—ä¸å›¾æ ‡ä¹‹é—´çš„é—´è·ã€‚
 		/// </summary>
 		const int TextPadding = 2;
 
 		/// <summary>
-		/// Unity Ä¬ÈÏÕÛµş¼ıÍ·ÓëÔ­ÄÚÖÃÍ¼±êÇøÓò¿í¶È£¬ÓÃÓÚÈÃ¸ßÁÁ¸²¸ÇËüÃÇµ«±ÜÃâ×Ô»æ¸ÉÈÅ¡£
+		/// Unity é»˜è®¤æŠ˜å ç®­å¤´ä¸åŸå†…ç½®å›¾æ ‡åŒºåŸŸå®½åº¦ï¼Œç”¨äºè®©é«˜äº®è¦†ç›–å®ƒä»¬ä½†é¿å…è‡ªç»˜å¹²æ‰°ã€‚
 		/// </summary>
 		const int PrefixReserveWidth = 32;
 
 		/// <summary>
-		/// ÊÇ·ñÆôÓÃ¸ßÁÁ¹¦ÄÜ¡£
+		/// æ˜¯å¦å¯ç”¨é«˜äº®åŠŸèƒ½ã€‚
 		/// </summary>
 		static bool enabled = true;
 
 		/// <summary>
-		/// ×Ô¶¨Òå×·¼ÓÍ¼±êÎÆÀí¡£
+		/// è‡ªå®šä¹‰è¿½åŠ å›¾æ ‡çº¹ç†ã€‚
 		/// </summary>
 		static Texture2D iconTexture;
 
@@ -52,7 +52,7 @@ namespace FUI.Editor
 		}
 
 		/// <summary>
-		/// ¼ÓÔØÊ¹ÓÃµÄÄÚÖÃÍ¼±ê£¬Ê§°ÜÊ±Éú³É¶µµ×´¿É«ÎÆÀí¡£
+		/// åŠ è½½ä½¿ç”¨çš„å†…ç½®å›¾æ ‡ï¼Œå¤±è´¥æ—¶ç”Ÿæˆå…œåº•çº¯è‰²çº¹ç†ã€‚
 		/// </summary>
 		static void LoadIcon()
 		{
@@ -71,7 +71,7 @@ namespace FUI.Editor
 		}
 
 		/// <summary>
-		/// ÔÚ Hierarchy ĞĞÄÚ»æÖÆ¸ßÁÁÓëºóÖÃÍ¼±ê¡£
+		/// åœ¨ Hierarchy è¡Œå†…ç»˜åˆ¶é«˜äº®ä¸åç½®å›¾æ ‡ã€‚
 		/// </summary>
 		static void OnHierarchyGUI(int instanceID, Rect selectionRect)
 		{
@@ -105,7 +105,7 @@ namespace FUI.Editor
 		}
 
 		/// <summary>
-		/// ÅĞ¶ÏÊÇ·ñ°üº¬ IElement ×é¼ş¡£
+		/// åˆ¤æ–­æ˜¯å¦åŒ…å« IElement ç»„ä»¶ã€‚
 		/// </summary>
 		static bool HasElementComponent(GameObject gameObject)
 		{
@@ -113,7 +113,7 @@ namespace FUI.Editor
 			for (var i = 0; i < behaviours.Length; i++)
 			{
 				var b = behaviours[i];
-				if (b is FUI.IElement)
+				if (b is FUI.Rendering.IElement)
 				{
 					return true;
 				}
@@ -122,7 +122,7 @@ namespace FUI.Editor
 		}
 
 		/// <summary>
-		/// ÉèÖÃ¸ßÁÁÆôÓÃ×´Ì¬¡£
+		/// è®¾ç½®é«˜äº®å¯ç”¨çŠ¶æ€ã€‚
 		/// </summary>
 		public static void SetEnabled(bool active)
 		{
@@ -131,7 +131,7 @@ namespace FUI.Editor
 		}
 
 		/// <summary>
-		/// Õ¹¿ªµ±Ç°Ñ¡ÖĞ¶ÔÏóÏÂËùÓĞº¬ IElement µÄ½ÚµãÂ·¾¶¡£
+		/// å±•å¼€å½“å‰é€‰ä¸­å¯¹è±¡ä¸‹æ‰€æœ‰å« IElement çš„èŠ‚ç‚¹è·¯å¾„ã€‚
 		/// </summary>
 		[MenuItem("GameObject/FUI/ExpandElements", false, 0)]
 		static void ExpandHighlightedChildrenMenu()
@@ -202,7 +202,7 @@ namespace FUI.Editor
 		}
 
 		/// <summary>
-		/// µİ¹éÊÕ¼¯ËùÓĞº¬ IElement µÄ×Ó½Úµã¡£
+		/// é€’å½’æ”¶é›†æ‰€æœ‰å« IElement çš„å­èŠ‚ç‚¹ã€‚
 		/// </summary>
 		static void CollectHighlighted(Transform current, System.Collections.Generic.List<Transform> list)
 		{
@@ -233,7 +233,7 @@ namespace FUI.Editor
 		}
 
 		/// <summary>
-		/// »º´æÓÃÓÚÕ¹¿ªµÄ·´Éä·½·¨¡£
+		/// ç¼“å­˜ç”¨äºå±•å¼€çš„åå°„æ–¹æ³•ã€‚
 		/// </summary>
 		static void CacheHierarchyMethods(EditorWindow window)
 		{

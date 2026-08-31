@@ -1,6 +1,6 @@
-﻿using FUI.Bindable;
+﻿using FUI.Binding;
 
-namespace FUI
+namespace FUI.Presentation
 {
     /// <summary>
     /// 视图模型

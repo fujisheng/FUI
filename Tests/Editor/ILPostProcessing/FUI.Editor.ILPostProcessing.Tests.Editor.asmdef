@@ -1,0 +1,33 @@
+{
+    "name": "FUI.Editor.ILPostProcessing.Tests.Editor",
+    "references": [
+        "FUI.Core",
+        "FUI.Editor.ILPostProcessing"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Mono.Cecil.dll",
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS",
+        "FUI_CECIL"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.nuget.mono-cecil",
+            "expression": "1.11.0",
+            "define": "FUI_CECIL"
+        }
+    ],
+    "noEngineReferences": false,
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ]
+}

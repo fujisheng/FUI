@@ -1,50 +1,61 @@
-using FUI.Bindable;
+using FUI.Binding;
+using FUI.Rendering;
 
 using System;
 
-namespace FUI
+namespace FUI.Infrastructure.Binding
 {
     /// <summary>
-    /// °ó¶¨ÉÏÏÂÎÄ
+    /// ç»‘å®šä¸Šä¸‹æ–‡
     /// </summary>
     internal interface IBindingContext
     {
         /// <summary>
-        /// Õâ¸ö°ó¶¨ÉÏÏÂÎÄËù¶ÔÓ¦µÄÊÓÍ¼
+        /// è¿™ä¸ªç»‘å®šä¸Šä¸‹æ–‡æ‰€å¯¹åº”çš„è§†å›¾
         /// </summary>
         internal IView View { get; }
 
         /// <summary>
-        /// Õâ¸ö°ó¶¨ÉÏÏÂÎÄËù¶ÔÓ¦µÄÊÓÍ¼Ä£ĞÍÀàĞÍ
+        /// è¿™ä¸ªç»‘å®šä¸Šä¸‹æ–‡æ‰€å¯¹åº”çš„è§†å›¾æ¨¡å‹ç±»å‹
         /// </summary>
         internal Type ViewModelType { get; }
 
         /// <summary>
-        /// Õâ¸ö°ó¶¨ÉÏÏÂÎÄËù¶ÔÓ¦µÄÊÓÍ¼Ä£ĞÍ
+        /// è¿™ä¸ªç»‘å®šä¸Šä¸‹æ–‡æ‰€å¯¹åº”çš„è§†å›¾æ¨¡å‹
         /// </summary>
         internal ObservableObject ViewModel { get; }
 
         /// <summary>
-        /// ¸üĞÂView
+        /// å½“å‰æ˜¯å¦å·²å®Œæ•´ç»‘å®šã€‚
         /// </summary>
-        /// <param name="view">¸üĞÂºóµÄview</param>
+        internal bool IsBound { get; }
+
+        /// <summary>
+        /// æ›´æ–°View
+        /// </summary>
+        /// <param name="view">æ›´æ–°åçš„view</param>
         /// <returns></returns>
         internal bool UpdateView(IView view);
 
         /// <summary>
-        /// ¸üĞÂViewModel ¿ÉÒÔ¸üĞÂÎªÔ­Ê¼ViewModelµÄ×ÓÀà
+        /// æ›´æ–°ViewModel å¯ä»¥æ›´æ–°ä¸ºåŸå§‹ViewModelçš„å­ç±»
         /// </summary>
-        /// <param name="viewModel">¸üĞÂºóµÄViewModel</param>
+        /// <param name="viewModel">æ›´æ–°åçš„ViewModel</param>
         /// <returns></returns>
         internal bool UpdateViewModel(ObservableObject viewModel);
 
         /// <summary>
-        /// °ó¶¨
+        /// ç»‘å®š
         /// </summary>
         internal void Binding();
 
         /// <summary>
-        /// ½â°ó
+        /// åªæŠŠå½“å‰ BindingContext ä½¿ç”¨çš„å±æ€§åŒæ­¥åˆ°å½“å‰ Viewï¼Œä¸å¹¿æ’­åˆ°å…¶ä»–æŠ•å½±ã€‚
+        /// </summary>
+        internal void Synchronize();
+
+        /// <summary>
+        /// è§£ç»‘
         /// </summary>
         internal void Unbinding();
     }

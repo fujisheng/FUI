@@ -137,21 +137,28 @@ namespace FUI.Editor
 
         // Graphic elements
 
-        [MenuItem("GameObject/FUI/Text", false, 2000)]
-        static public void AddText(MenuCommand menuCommand)
+        [MenuItem("GameObject/FUI/Text/Legacy", false, 2000)]
+        static public void AddLegacyText(MenuCommand menuCommand)
         {
             GameObject go = DefaultControls.CreateText(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/FUI/Image", false, 2001)]
+        [MenuItem("GameObject/FUI/Text/TextMeshPro", false, 2001)]
+        static public void AddTMPText(MenuCommand menuCommand)
+        {
+            GameObject go = DefaultControls.CreateTMPText(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/FUI/Image", false, 2002)]
         static public void AddImage(MenuCommand menuCommand)
         {
             GameObject go = DefaultControls.CreateImage(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/FUI/Raw Image", false, 2002)]
+        [MenuItem("GameObject/FUI/Raw Image", false, 2003)]
         static public void AddRawImage(MenuCommand menuCommand)
         {
             GameObject go = DefaultControls.CreateRawImage(GetStandardResources());
@@ -162,30 +169,44 @@ namespace FUI.Editor
 
         // Button and toggle are controls you just click on.
 
-        [MenuItem("GameObject/FUI/Button", false, 2030)]
-        static public void AddButton(MenuCommand menuCommand)
+        [MenuItem("GameObject/FUI/Button/Legacy", false, 2030)]
+        static public void AddLegacyButton(MenuCommand menuCommand)
         {
             GameObject go = DefaultControls.CreateButton(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/FUI/Toggle", false, 2031)]
-        static public void AddToggle(MenuCommand menuCommand)
+        [MenuItem("GameObject/FUI/Button/TextMeshPro", false, 2031)]
+        static public void AddTMPButton(MenuCommand menuCommand)
+        {
+            GameObject go = DefaultControls.CreateTMPButton(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/FUI/Toggle/Legacy", false, 2032)]
+        static public void AddLegacyToggle(MenuCommand menuCommand)
         {
             GameObject go = DefaultControls.CreateToggle(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
         }
 
+        [MenuItem("GameObject/FUI/Toggle/TextMeshPro", false, 2033)]
+        static public void AddTMPToggle(MenuCommand menuCommand)
+        {
+            GameObject go = DefaultControls.CreateTMPToggle(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
         // Slider and Scrollbar modify a number
 
-        [MenuItem("GameObject/FUI/Slider", false, 2033)]
+        [MenuItem("GameObject/FUI/Slider", false, 2034)]
         static public void AddSlider(MenuCommand menuCommand)
         {
             GameObject go = DefaultControls.CreateSlider(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/FUI/Scrollbar", false, 2034)]
+        [MenuItem("GameObject/FUI/Scrollbar", false, 2035)]
         static public void AddScrollbar(MenuCommand menuCommand)
         {
             GameObject go = DefaultControls.CreateScrollbar(GetStandardResources());
@@ -194,17 +215,31 @@ namespace FUI.Editor
 
         // More advanced controls below
 
-        [MenuItem("GameObject/FUI/Dropdown", false, 2035)]
-        static public void AddDropdown(MenuCommand menuCommand)
+        [MenuItem("GameObject/FUI/Dropdown/Legacy", false, 2036)]
+        static public void AddLegacyDropdown(MenuCommand menuCommand)
         {
             GameObject go = DefaultControls.CreateDropdown(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
         }
 
-        [MenuItem("GameObject/FUI/Input Field", false, 2036)]
-        public static void AddInputField(MenuCommand menuCommand)
+        [MenuItem("GameObject/FUI/Dropdown/TextMeshPro", false, 2037)]
+        static public void AddTMPDropdown(MenuCommand menuCommand)
+        {
+            GameObject go = DefaultControls.CreateTMPDropdown(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/FUI/Input Field/Legacy", false, 2038)]
+        public static void AddLegacyInputField(MenuCommand menuCommand)
         {
             GameObject go = DefaultControls.CreateInputField(GetStandardResources());
+            PlaceUIElementRoot(go, menuCommand);
+        }
+
+        [MenuItem("GameObject/FUI/Input Field/TextMeshPro", false, 2039)]
+        public static void AddTMPInputField(MenuCommand menuCommand)
+        {
+            GameObject go = DefaultControls.CreateTMPInputField(GetStandardResources());
             PlaceUIElementRoot(go, menuCommand);
         }
 

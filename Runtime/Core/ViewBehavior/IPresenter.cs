@@ -1,8 +1,10 @@
-using FUI.Bindable;
+using FUI.Binding;
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace FUI
+namespace FUI.Presentation
 {
     /// <summary>
     /// 展示器标记接口
@@ -36,7 +38,12 @@ namespace FUI
         /// 当激活这个View的时候
         /// </summary>
         /// <param name="param">打开时的参数</param>
-        internal void OnEnable(object param);
+        internal void OnOpen(object param);
+
+        /// <summary>
+        /// 同步 OnOpen 完成后执行的异步打开阶段。
+        /// </summary>
+        internal ValueTask OnOpenAsync(object param, CancellationToken cancellationToken);
 
         /// <summary>
         /// 当这个界面是当前聚焦的View的时候
@@ -49,9 +56,24 @@ namespace FUI
         internal void OnUnfocus();
 
         /// <summary>
+        /// 被新页面覆盖；不会触发 OnClose，也不会解除绑定。
+        /// </summary>
+        internal void OnCovered();
+
+        /// <summary>
+        /// 从 Covered 恢复；不会重新触发 OnOpen。
+        /// </summary>
+        internal void OnRevealed();
+
+        /// <summary>
         /// 当反激活这个View的时候
         /// </summary>
-        internal void OnDisable();
+        internal void OnClose();
+
+        /// <summary>
+        /// 同步 OnClose 之前执行的异步关闭阶段。
+        /// </summary>
+        internal ValueTask OnCloseAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// 当这个界面销毁的时候

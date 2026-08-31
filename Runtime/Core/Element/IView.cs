@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FUI
+namespace FUI.Rendering
 {
     /// <summary>
     /// 视图接口
@@ -63,5 +63,25 @@ namespace FUI
         /// 销毁
         /// </summary>
         void Destroy();
+    }
+
+    /// <summary>
+    /// 无法通过事件通知变化、需要在渲染前主动同步的外部值源。
+    /// </summary>
+    public interface IExternalValueSource
+    {
+        void SynchronizeExternalValues();
+    }
+
+    /// <summary>
+    /// 以 View 为粒度汇总外部值同步，避免每个 Element 分别注册 Canvas 回调。
+    /// </summary>
+    public interface IExternalValueSynchronizationHost
+    {
+        bool ExternalValueSynchronizationEnabled { get; set; }
+
+        void SetExternalValueSources(IReadOnlyList<IExternalValueSource> sources);
+
+        void ClearExternalValueSources();
     }
 }

@@ -1,0 +1,29 @@
+{
+    "name": "FUI.Editor.ILPostProcessing",
+    "rootNamespace": "FUI.Editor.ILPostProcessing",
+    "references": [
+        "GUID:5ddde23d727f558419f4585ec8c49c86",
+        "GUID:fe318fd709c916649a3aac24f866ab0b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Mono.Cecil.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "FUI_CECIL"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.unity.nuget.mono-cecil",
+            "expression": "1.11.0",
+            "define": "FUI_CECIL"
+        }
+    ],
+    "noEngineReferences": false
+}

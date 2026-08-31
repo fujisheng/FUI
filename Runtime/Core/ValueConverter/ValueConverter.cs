@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FUI
+namespace FUI.Binding
 {
     /// <summary>
     /// 值转换器

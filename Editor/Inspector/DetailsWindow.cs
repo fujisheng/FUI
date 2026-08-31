@@ -2,12 +2,12 @@ using UnityEditor;
 
 using UnityEngine;
 
-namespace FUI.Editor
+namespace FUI.Editor.Inspection
 {
     /// <summary>
-    /// Ò»¸öÍ¨ÓÃµÄÏêÇé´°¿Ú
+    /// ä¸€ä¸ªé€šç”¨çš„è¯¦æƒ…çª—å£
     /// </summary>
-    public class DetailsWindow : EditorWindow
+    internal class DetailsWindow : EditorWindow
     {
         object[] contents;
 

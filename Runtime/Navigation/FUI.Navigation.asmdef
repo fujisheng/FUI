@@ -1,0 +1,16 @@
+{
+    "name": "FUI.Navigation",
+    "rootNamespace": "FUI.Navigation",
+    "references": [
+        "GUID:fe318fd709c916649a3aac24f866ab0b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

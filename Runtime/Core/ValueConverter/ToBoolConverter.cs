@@ -1,5 +1,6 @@
-namespace FUI
+namespace FUI.Binding
 {
+    /// <summary>将整数的非零状态与布尔值双向转换。</summary>
     public class IntToBoolConverter : ValueConverter<int, bool>
     {
         public override bool Convert(int value)
@@ -13,6 +14,7 @@ namespace FUI
         }
     }
 
+    /// <summary>将单精度浮点数的非零状态与布尔值双向转换。</summary>
     public class FloatToBoolConverter : ValueConverter<float, bool>
     {
         public override bool Convert(float value)
@@ -25,6 +27,7 @@ namespace FUI
         }
     }
 
+    /// <summary>将双精度浮点数的非零状态与布尔值双向转换。</summary>
     public class DoubleToBoolConverter : ValueConverter<double, bool>
     {
         public override bool Convert(double value)
@@ -37,6 +40,7 @@ namespace FUI
         }
     }
 
+    /// <summary>将字符串的非空状态与布尔值双向转换。</summary>
     public class StringToBoolConverter : ValueConverter<string, bool>
     {
         public override bool Convert(string value)

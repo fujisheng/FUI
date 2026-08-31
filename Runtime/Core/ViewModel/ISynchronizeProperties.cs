@@ -1,4 +1,4 @@
-﻿namespace FUI
+﻿namespace FUI.Presentation
 {
     /// <summary>
     /// 同步所有属性

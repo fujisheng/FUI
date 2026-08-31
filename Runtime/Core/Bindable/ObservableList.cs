@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace FUI.Bindable
+namespace FUI.Binding
 {
+    /// <summary>公开只读列表访问和集合变更通知的组合契约。</summary>
     public interface IReadOnlyObservableList<out T> : IReadOnlyList<T>, INotifyCollectionChanged { }
 
     /// <summary>
-    /// 可观察列表
+    /// 提供 List 风格访问能力，并在内容增删、替换或重排时发布集合变更通知。
     /// </summary>
     /// <typeparam name="T">item类型</typeparam>
     public class ObservableList<T> : IReadOnlyObservableList<T>, IList<T>, IList where T : ObservableObject
@@ -38,7 +39,12 @@ namespace FUI.Bindable
         public T this[int index]
         {
             get { return items[index]; }
-            set { items[index] = value; }
+            set
+            {
+                var previous = items[index];
+                items[index] = value;
+                CollectionReplace?.Invoke(this, index, previous, value);
+            }
         }
         public int Count { get { return items.Count; } }
         public int Capacity { get { return items.Capacity; } set { items.Capacity = value; } }
@@ -55,15 +61,13 @@ namespace FUI.Bindable
         }
         public void Clear()
         {
-            CollectionUpdate?.Invoke(this);
             items.Clear();
+            CollectionUpdate?.Invoke(this);
         }
         public bool Contains(T item) => items.Contains(item);
         public List<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
         {
-            var result = items.ConvertAll<TOutput>(converter);
-            CollectionReplace?.Invoke(this, null, null, null);
-            return result;
+            return items.ConvertAll<TOutput>(converter);
         }
         public void CopyTo(T[] array, int arrayIndex) => items.CopyTo(array, arrayIndex);
         public void CopyTo(int index, T[] array, int arrayIndex, int count) => items.CopyTo(index, array, arrayIndex, count);
@@ -186,7 +190,8 @@ namespace FUI.Bindable
 
         public int Add(object value)
         {
-            return ((IList)items).Add(value);
+            Add((T)value);
+            return items.Count - 1;
         }
 
         public bool Contains(object value)
@@ -201,12 +206,15 @@ namespace FUI.Bindable
 
         public void Insert(int index, object value)
         {
-            ((IList)items).Insert(index, value);
+            Insert(index, (T)value);
         }
 
         public void Remove(object value)
         {
-            ((IList)items).Remove(value);
+            if (value is T item)
+            {
+                Remove(item);
+            }
         }
 
         bool ICollection<T>.IsReadOnly => false;
@@ -219,6 +227,6 @@ namespace FUI.Bindable
 
         public bool IsFixedSize => ((IList)items).IsFixedSize;
 
-        object IList.this[int index] { get => ((IList)items)[index]; set => ((IList)items)[index] = value; }
+        object IList.this[int index] { get => items[index]; set => this[index] = (T)value; }
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FUI.Bindable
+namespace FUI.Binding
 {
     /// <summary>
     /// 值改变委托
