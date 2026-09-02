@@ -34,14 +34,14 @@ FUI 围绕 Source Generator 数据绑定、typed Route、确定性导航和显�
 | URL | `https://package.openupm.com` |
 | Scope | `com.fujisheng` |
 
-然后打开 **Window → Package Manager**，选择 **+ → Add package by name**，安装 `com.fujisheng.fui` 的最新已发布版本（当前为 `1.0.2`）。该 Scope 同时覆盖未来的官方 FUI 扩展和安装前置包。完整步骤见 [OpenUPM Package 页面](https://openupm.com/packages/com.fujisheng.fui/) 或 [安装文档](Packages/com.fujisheng.fui/Documentation~/zh-CN/installation.md)。
+然后打开 **Window → Package Manager**，选择 **+ → Add package by name**，安装 `com.fujisheng.fui` 的最新已发布版本（当前为 `1.0.3`）。该 Scope 同时覆盖未来的官方 FUI 扩展和安装前置包。完整步骤见 [OpenUPM Package 页面](https://openupm.com/packages/com.fujisheng.fui/) 或 [安装文档](Packages/com.fujisheng.fui/Documentation~/zh-CN/installation.md)。
 
 ### Git URL
 
 在 **Window → Package Manager** 中选择 **+ → Add package from git URL**，输入：
 
 ```text
-https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.2
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.3
 ```
 
 Package 前缀标签固定到不可变发布版本；仅在需要升级时替换为另一个已发布的 FUI 标签。

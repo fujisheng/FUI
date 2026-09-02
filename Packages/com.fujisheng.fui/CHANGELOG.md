@@ -2,6 +2,12 @@
 
 All notable public changes to `com.fujisheng.fui` are documented here. Versions follow Semantic Versioning.
 
+## [1.0.3] - 2026-09-02
+
+### Fixed
+
+- Rebuilt and verified the packaged Source Generator so `Roslyn~/FUI.Generators.dll` is byte-identical to the checked-in generator source.
+
 ## [1.0.2] - 2026-08-31
 
 ### Changed

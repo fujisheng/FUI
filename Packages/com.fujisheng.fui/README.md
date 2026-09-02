@@ -21,14 +21,14 @@ Choose one installation method. Do not add the same package through both OpenUPM
 
 ### OpenUPM (recommended)
 
-Add the `package.openupm.com` scoped registry with the `com.fujisheng` scope, then add `com.fujisheng.fui` from Package Manager at the latest published version (currently `1.0.2`). See [Installation](Documentation~/installation.md) for the exact registry and manifest settings.
+Add the `package.openupm.com` scoped registry with the `com.fujisheng` scope, then add `com.fujisheng.fui` from Package Manager at the latest published version (currently `1.0.3`). See [Installation](Documentation~/installation.md) for the exact registry and manifest settings.
 
 ### Git URL
 
 Use **Package Manager → Add package from git URL**. This Monorepo URL includes both the package path and an immutable package-prefixed tag:
 
 ```text
-https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.2
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.3
 ```
 
 ## Minimal model

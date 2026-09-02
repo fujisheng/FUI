@@ -34,14 +34,14 @@ In **Edit → Project Settings → Package Manager**, add this scoped registry:
 | URL | `https://package.openupm.com` |
 | Scope | `com.fujisheng` |
 
-Then open **Window → Package Manager**, choose **+ → Add package by name**, and install `com.fujisheng.fui` at the latest published version (currently `1.0.2`). The scope also covers official FUI extensions and installation prerequisites. See the [OpenUPM package page](https://openupm.com/packages/com.fujisheng.fui/) or the [full installation guide](Packages/com.fujisheng.fui/Documentation~/installation.md).
+Then open **Window → Package Manager**, choose **+ → Add package by name**, and install `com.fujisheng.fui` at the latest published version (currently `1.0.3`). The scope also covers official FUI extensions and installation prerequisites. See the [OpenUPM package page](https://openupm.com/packages/com.fujisheng.fui/) or the [full installation guide](Packages/com.fujisheng.fui/Documentation~/installation.md).
 
 ### Git URL
 
 In **Window → Package Manager**, choose **+ → Add package from git URL** and enter:
 
 ```text
-https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.2
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.3
 ```
 
 The package-prefixed tag pins an immutable release. Replace the tag only with another published FUI release tag.

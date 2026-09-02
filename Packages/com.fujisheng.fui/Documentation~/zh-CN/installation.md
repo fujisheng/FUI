@@ -18,7 +18,7 @@
 
 FUI/Setup 不会自动修改 Scoped Registry；安装可选 FUI 工具或扩展前，请自行完成这一次配置。
 
-打开 **Window → Package Manager**，选择 **+ → Add package by name**，安装 `com.fujisheng.fui`。选择最新已发布版本（当前为 `1.0.2`）；可用版本见 [FUI OpenUPM 页面](https://openupm.com/packages/com.fujisheng.fui/)。
+打开 **Window → Package Manager**，选择 **+ → Add package by name**，安装 `com.fujisheng.fui`。选择最新已发布版本（当前为 `1.0.3`）；可用版本见 [FUI OpenUPM 页面](https://openupm.com/packages/com.fujisheng.fui/)。
 
 如果直接维护 `Packages/manifest.json`，请将以下字段合并到现有文件，不要替换已有 Registry 或依赖：
 
@@ -34,7 +34,7 @@ FUI/Setup 不会自动修改 Scoped Registry；安装可选 FUI 工具或扩展�
     }
   ],
   "dependencies": {
-    "com.fujisheng.fui": "1.0.2"
+    "com.fujisheng.fui": "1.0.3"
   }
 }
 ```
@@ -44,7 +44,7 @@ FUI/Setup 不会自动修改 Scoped Registry；安装可选 FUI 工具或扩展�
 通过 **Package Manager → Add package from git URL** 安装；系统必须已安装 Git，且 Unity 可以调用它：
 
 ```text
-https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.2
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.3
 ```
 
 `path` 用于从 Monorepo 选择目标 Package，标签固定到已发布的不可变版本。升级时只替换为对应的 Package 前缀标签。不要同时通过 Git 和 OpenUPM 引入同一 Package。
