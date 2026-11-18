@@ -10,12 +10,10 @@ The source generator is built against Microsoft.CodeAnalysis packages. Those pac
 
 Generator and Unity tests use NUnit and the .NET test SDK. They are development-time dependencies only.
 
-## Unity UI source-derived editor controls
-
-`Editor/Menu` contains editor-side control creation code governed by the license preserved in `Editor/Menu/LICENSE.txt`.
-
 ## Unity packages
 
-FUI declares `com.unity.ugui` as a package dependency. Optional Mixed mode uses Unity's `com.unity.nuget.mono-cecil` package when explicitly installed by the user.
+Optional Mixed mode uses Unity's `com.unity.nuget.mono-cecil` package when explicitly installed by the user.
+
+The uGUI rendering backend, including its Unity-derived editor controls and Unity package dependencies, is distributed separately as `com.fujisheng.fui.ugui`; see that package's Third Party Notices.
 
 Refer to each dependency's distribution for its complete license terms.

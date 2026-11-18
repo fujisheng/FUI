@@ -33,6 +33,51 @@ namespace FUI.Tests
             manager.Initialize();
         }
 
+        static RoutePolicy NonFocusingPolicy()
+        {
+            var method = typeof(RoutePolicy).GetMethod("WithFocus");
+            Assert.IsNotNull(method, "路由应支持不获取导航焦点的提示覆盖层。");
+            return (RoutePolicy)method.Invoke(new RoutePolicy(historyMode: HistoryMode.Transient), new object[] { false });
+        }
+
+        [Test]
+        public void NonFocusingOverlayLeavesPageInteractiveOnFirstAndRepeatedOpen()
+        {
+            var pageHarness = new RouteHarness();
+            var overlayHarness = new RouteHarness();
+            var page = pageHarness.Create("Page");
+            var overlay = overlayHarness.Create("Overlay", NonFocusingPolicy());
+            var pageHandle = manager.Open(page);
+            var overlayHandle = manager.Open(overlay);
+            Assert.That(manager.Open(overlay), Is.EqualTo(overlayHandle));
+            Assert.That(manager.BringToFront(overlayHandle), Is.True);
+            Assert.That(provider.Leases.Single(item => item.View.Name == "Page").View.Interactable, Is.True);
+            Assert.That(pageHarness.Presenters.Single().CoveredCount, Is.Zero);
+            Assert.That(overlayHarness.Presenters.Single().FocusCount, Is.Zero);
+            Assert.That(manager.GetState(pageHandle), Is.EqualTo(ViewState.Open));
+            Assert.That(manager.Back(), Is.True);
+            Assert.That(manager.IsAlive(pageHandle), Is.False);
+            Assert.That(manager.IsAlive(overlayHandle), Is.True);
+            Assert.That(manager.Back(), Is.False);
+        }
+
+        [Test]
+        public void ClosingFocusedPageSkipsNonFocusingOverlayWhenRestoringFocus()
+        {
+            var firstHarness = new RouteHarness();
+            var secondHarness = new RouteHarness();
+            var overlayHarness = new RouteHarness();
+            var first = firstHarness.Create("First");
+            var second = secondHarness.Create("Second");
+            var overlay = overlayHarness.Create("Overlay", NonFocusingPolicy());
+            manager.Open(first);
+            manager.Open(overlay);
+            var secondHandle = manager.Open(second);
+            manager.Close(secondHandle);
+            Assert.That(provider.Leases.Single(item => item.View.Name == "First").View.Interactable, Is.True);
+            Assert.That(overlayHarness.Presenters.Single().FocusCount, Is.Zero);
+        }
+
         [Test]
         public void SameViewModelCanBindIndependentViewsAndDetachSeparately()
         {

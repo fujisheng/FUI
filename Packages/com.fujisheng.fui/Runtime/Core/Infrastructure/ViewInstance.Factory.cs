@@ -62,7 +62,7 @@ namespace FUI.Infrastructure
 
             if (viewModel == null)
             {
-                view.Initialize();
+                PrepareView(view);
                 var emptyViewModel = new EmptyViewModel();
                 return new ViewInstance(new EmptyBindingContext(view, emptyViewModel), new EmptyPresenter());
             }
@@ -73,6 +73,12 @@ namespace FUI.Infrastructure
                     $"No ViewModel binding factory is registered: ViewModel={viewModel.GetType().FullName}, View={view.Name}. Ensure that the generated Routes.Initialize() method has been called.");
             }
             return factory(view, viewModel);
+        }
+
+        internal static void PrepareView(IView view)
+        {
+            if (view is IViewPreparation preparation) preparation.PrepareForBinding();
+            else view.Initialize();
         }
 
         static bool TryResolveGeneratedFactory(

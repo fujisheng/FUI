@@ -224,6 +224,29 @@ public sealed class BetaPresenter { }
         }
 
         [Test]
+        public void RoutePolicyEmitsNonFocusingOverlayWithoutChangingDefaultRoutes()
+        {
+            const string source = Source + @"
+namespace FUI.Navigation
+{
+    public enum Layer { Panel = 0 }
+    public sealed class RoutePolicyAttribute : Attribute
+    {
+        public bool TakeFocus { get; set; } = true;
+        public RoutePolicyAttribute(Layer layer = Layer.Panel) { }
+    }
+}
+[FUI.Binding.ViewContract(""ToastView"")]
+[FUI.Navigation.RoutePolicy(TakeFocus = false)]
+public partial class ToastViewModel : FUI.Binding.INotifyPropertyChanged { }
+";
+            var result = RunGenerator(source);
+            var registry = result.GeneratedTrees.Single(tree => tree.FilePath.Contains("Routes.g.cs")).ToString();
+            Assert.That(registry, Does.Contain(".WithFocus(false)"));
+            Assert.That(registry.Split(new[] { ".WithFocus(false)" }, StringSplitOptions.None).Length - 1, Is.EqualTo(1));
+        }
+
+        [Test]
         public void RoutePolicyDependenciesSupportViewModelTypes()
         {
             const string source = Source + @"

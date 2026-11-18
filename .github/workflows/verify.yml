@@ -14,8 +14,12 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.400
+      - name: Verify core has no UGUI/TMP references
+        run: tools/verify-no-ugui.sh all
       - name: Verify repository structure
         run: tools/verify-repository.sh --structure-only
+      - name: Verify FUI.UGUI package structure
+        run: tools/verify-package.sh com.fujisheng.fui.ugui --structure-only
       - name: Verify source generator
         env:
           FUI_VERIFY_PACKAGED_DLL: 0

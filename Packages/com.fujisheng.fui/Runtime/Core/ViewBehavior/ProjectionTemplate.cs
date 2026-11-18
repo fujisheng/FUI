@@ -11,6 +11,8 @@ namespace FUI.Presentation
     {
         readonly Func<ObservableObject, ProjectionCreation> factory;
         readonly ProjectionPositionConverter positionConverter;
+        readonly ProjectionLayout initialLayout;
+        readonly Func<ProjectionLayout> layoutProvider;
 
         internal ProjectionTemplate(
             Func<ObservableObject, ProjectionCreation> factory,
@@ -18,12 +20,23 @@ namespace FUI.Presentation
             ProjectionPositionConverter positionConverter)
         {
             this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
-            Layout = layout;
+            initialLayout = layout;
             this.positionConverter = positionConverter;
         }
 
-        /// <summary>模板自身及父级容器的只读布局信息。</summary>
-        public ProjectionLayout Layout { get; }
+        /// <summary>为异步布局后端提供当前布局读取器，保留原静态布局构造契约。</summary>
+        internal ProjectionTemplate(
+            Func<ObservableObject, ProjectionCreation> factory,
+            Func<ProjectionLayout> layoutProvider,
+            ProjectionPositionConverter positionConverter)
+        {
+            this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            this.layoutProvider = layoutProvider ?? throw new ArgumentNullException(nameof(layoutProvider));
+            this.positionConverter = positionConverter;
+        }
+
+        /// <summary>模板自身及父级容器的只读布局信息；动态后端返回当前完成的布局。</summary>
+        public ProjectionLayout Layout => layoutProvider != null ? layoutProvider() : initialLayout;
 
         /// <summary>
         /// 使用指定 ViewModel 创建一个新的投影句柄。

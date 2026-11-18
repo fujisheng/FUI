@@ -1,0 +1,50 @@
+{
+  "generator": "Codex built-in imagegen",
+  "records": [
+    {
+      "name": "MechShowcase",
+      "page": "HeroView",
+      "source": "exec-bd87b76c-8664-497d-a31d-2cd4c7fb3e08.png",
+      "width": 768,
+      "height": 1024,
+      "prompt": "Use case: stylized-concept. Asset for original open-source RTS sample. A single original utilitarian gray scout ground mech, full body standing three quarter view, blue optical sensor, balanced mechanical limbs, plain dark navy hangar background. Portrait composition 3:4. Only unit artwork, no frame, no labels, no UI. Match the central mech in the reference. Reference is approved page design STYLE ONLY, extract an independently rendered asset, NOT the whole page. Navy #06111D cyan #45C9D8 amber #D89A32. No existing franchises, insignia, watermarks, numbers or pseudo text. High readability at game UI scale.",
+      "transparent": false
+    },
+    {
+      "name": "ScoutMechIcon",
+      "page": "HeroView",
+      "source": "exec-1b3876d9-31c4-46c3-b8ac-dbaae7af3d42.png",
+      "width": 512,
+      "height": 512,
+      "prompt": "Use case: stylized-concept. Asset for original open-source RTS sample. A single original scout ground mech bust portrait, gray hard-surface armor, cyan optics, facing three quarter left, clean dark navy background, square portrait. No UI frame or text. Reference is approved page design STYLE ONLY, extract an independently rendered asset, NOT the whole page. Navy #06111D cyan #45C9D8 amber #D89A32. No existing franchises, insignia, watermarks, numbers or pseudo text. High readability at game UI scale.",
+      "transparent": false
+    },
+    {
+      "name": "HeavyMechIcon",
+      "page": "HeroView",
+      "source": "exec-f4768772-c5ab-4a10-8210-1b2482d2f902.png",
+      "width": 512,
+      "height": 512,
+      "prompt": "Use case: stylized-concept. Asset for original open-source RTS sample. A single original heavy ground mech bust portrait, broad gray armored shoulders and orange sensor, distinctive silhouette, clean dark navy background, square portrait. No UI frame or text. Reference is approved page design STYLE ONLY, extract an independently rendered asset, NOT the whole page. Navy #06111D cyan #45C9D8 amber #D89A32. No existing franchises, insignia, watermarks, numbers or pseudo text. High readability at game UI scale.",
+      "transparent": false
+    },
+    {
+      "name": "EngineerMechIcon",
+      "page": "HeroView",
+      "source": "exec-bf71311b-3044-411d-ad8b-faec636a7316.png",
+      "width": 512,
+      "height": 512,
+      "prompt": "Use case: stylized-concept. Asset for original open-source RTS sample. A single original engineering ground mech bust portrait, compact teal gray armor, utility manipulators and cyan sensor, distinctive silhouette, clean dark navy background, square portrait. No UI frame or text. Reference is approved page design STYLE ONLY, extract an independently rendered asset, NOT the whole page. Navy #06111D cyan #45C9D8 amber #D89A32. No existing franchises, insignia, watermarks, numbers or pseudo text. High readability at game UI scale.",
+      "transparent": false
+    },
+    {
+      "name": "TacticalNavIcon",
+      "page": "GameHomeView",
+      "source": "exec-6485ecf2-e0bc-496a-9d99-0095f1ccd48a.png",
+      "width": 512,
+      "height": 512,
+      "prompt": "Use case: stylized-concept. Asset for original open-source RTS sample. One simple cyan holographic cubic simulation lattice icon, sharp geometric outline with small amber focal point, true transparent background. Square composition, no frame or text, no cast shadow. Reference is approved page design STYLE ONLY, extract an independently rendered asset, NOT the whole page. Navy #06111D cyan #45C9D8 amber #D89A32. No existing franchises, insignia, watermarks, numbers or pseudo text. High readability at game UI scale.",
+      "transparent": true
+    }
+  ]
+}

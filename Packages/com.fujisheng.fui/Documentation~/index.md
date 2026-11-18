@@ -1,5 +1,7 @@
 # FUI Core documentation
 
+> The uGUI-specific parts of chapters 7, 8, 10, and 11 require the separately installed [`com.fujisheng.fui.ugui`](../../com.fujisheng.fui.ugui/README.md) package.
+
 1. [Installation](installation.md)
 2. [Five-minute quick start](quick-start.md)
 3. [ViewModel and generated binding](binding.md)

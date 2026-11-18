@@ -1,6 +1,6 @@
-# FUI Core 1.0
+# FUI Core 2.0
 
-Compile-time MVVM, typed navigation, and resource-safe uGUI rendering for Unity 6000.0 or newer.
+Renderer-neutral compile-time MVVM, typed navigation, and explicit resource ownership for Unity 6000.0 or newer.
 
 [中文](README.zh-CN.md) · [Documentation](Documentation~/index.md) · [Changelog](CHANGELOG.md)
 
@@ -8,12 +8,12 @@ Compile-time MVVM, typed navigation, and resource-safe uGUI rendering for Unity 
 
 - Source-generated property bindings, commands, routes, and diagnostics.
 - Typed `Route<TViewModel>` and generation-safe `ViewHandle` navigation.
-- Synchronous and asynchronous lifecycle operations with rollback.
+- Synchronous loading or parallel asynchronous loading with ordered presentation and rollback.
 - Explicit ownership through view, asset, preload, and input-gate leases.
 - Extensible providers, transitions, Elements, converters, and logging.
-- Editor validation, Binding Inspector, Page Wizard, and build gates.
+- Editor setup, validation, and build gates; the uGUI Binding Inspector, Page Wizard, and View Validator ship with the UGUI backend.
 
-FUI Core has no dependency on a resource backend, animation library, CLI, or agent tool.
+FUI Core has no dependency on a UI toolkit, resource backend, animation library, CLI, or agent tool.
 
 ## Install
 
@@ -21,14 +21,20 @@ Choose one installation method. Do not add the same package through both OpenUPM
 
 ### OpenUPM (recommended)
 
-Add the `package.openupm.com` scoped registry with the `com.fujisheng` scope, then add `com.fujisheng.fui` from Package Manager at the latest published version (currently `1.0.3`). See [Installation](Documentation~/installation.md) for the exact registry and manifest settings.
+Add the `package.openupm.com` scoped registry with the `com.fujisheng` scope, then add `com.fujisheng.fui` from Package Manager (currently `2.0.0`). For uGUI projects, also add the backend package `com.fujisheng.fui.ugui` (currently `1.0.0`). See [Installation](Documentation~/installation.md) for the exact registry and manifest settings.
 
 ### Git URL
 
-Use **Package Manager → Add package from git URL**. This Monorepo URL includes both the package path and an immutable package-prefixed tag:
+Use **Package Manager → Add package from git URL**. This Monorepo URL includes both the core package path and an immutable package-prefixed tag:
 
 ```text
-https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#com.fujisheng.fui/1.0.3
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui#main
+```
+
+For uGUI rendering, add the backend package with its own URL:
+
+```text
+https://github.com/fujisheng/FUI.git?path=/Packages/com.fujisheng.fui.ugui#main
 ```
 
 ## Minimal model
@@ -39,6 +45,8 @@ Declare the generator module once in the assembly that owns the ViewModels:
 [assembly: FUI.Binding.ViewModule("Sample.UI",
     PropertyMode = FUI.Binding.PropertyGenerationMode.Pure)]
 ```
+
+The page example below uses the uGUI backend package (`com.fujisheng.fui.ugui`):
 
 Declare a page:
 
@@ -74,7 +82,7 @@ var handle = navigator.Open(Sample.UI.Routes.SettingsView);
 navigator.Close(handle);
 ```
 
-Start with the [five-minute guide](Documentation~/quick-start.md) and import the Settings Sample from Package Manager.
+Start with the [five-minute guide](Documentation~/quick-start.md) and import the Settings Sample from the UGUI package in Package Manager.
 
 ## Assemblies
 
@@ -82,10 +90,11 @@ Start with the [five-minute guide](Documentation~/quick-start.md) and import the
 |---|---|
 | `FUI.Core` | Binding primitives, ViewModels, Presenters, and rendering contracts |
 | `FUI.Navigation` | Routes, Navigator, resource ownership, and transitions |
-| `FUI.Rendering.UGUI` | uGUI View and Element implementations |
-| `FUI.Editor` | Setup, Page Wizard, inspection, and validation |
+| `FUI.Editor` | Setup, validation contracts, and build gates |
 | `FUI.Editor.ILPostProcessing` | Optional Mixed-mode property injection |
 | `FUI.Generators` | Source Generator and analyzers |
+
+The `FUI.Rendering.UGUI` and `FUI.Rendering.UGUI.Editor` assemblies ship in the independently versioned [`com.fujisheng.fui.ugui`](../com.fujisheng.fui.ugui/README.md) package.
 
 ## Property modes
 
@@ -93,4 +102,4 @@ Pure mode generates properties from fields and requires no Cecil dependency. Mix
 
 ## License
 
-MIT. See [Third Party Notices](Third%20Party%20Notices.md) for development and editor-side dependencies.
+MIT. See [Third Party Notices](Third%20Party%20Notices.md) for development dependencies. The UGUI backend's notices, including its Unity-derived editor controls, are in the [`com.fujisheng.fui.ugui` Third Party Notices](../com.fujisheng.fui.ugui/Third%20Party%20Notices.md).

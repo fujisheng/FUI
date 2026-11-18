@@ -1,0 +1,8 @@
+body { margin:0; }
+#image { position:absolute; left:20px; top:20px; width:100px; height:100px; }
+#image.sliced { --urui-image-slice-top:1px; --urui-image-slice-right:1px; --urui-image-slice-bottom:1px; --urui-image-slice-left:1px; }
+#image.horizontal { --urui-image-fill-mode:horizontal; }
+#image.vertical { --urui-image-fill-mode:vertical; }
+#image.radial { --urui-image-fill-mode:radial360; }
+#image.authored-values { object-fit:cover; --urui-image-fill-mode:horizontal; --urui-image-fill-amount:0.3; }
+#image.radial180 { --urui-image-fill-mode:radial180; }

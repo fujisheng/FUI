@@ -4,6 +4,7 @@ using FUI.Presentation;
 using FUI.Rendering;
 
 using System;
+using System.Runtime.ExceptionServices;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,6 +61,8 @@ namespace FUI.Infrastructure
         /// 展示器
         /// </summary>
         IPresenter presenter;
+        // OnOpen 已成功、Enabled 尚未发布时，也已取得必须配对 OnClose 的所有权。
+        bool pendingOpenClose;
 
         /// <summary>
         /// 实例的名字
@@ -294,39 +297,60 @@ namespace FUI.Infrastructure
                 try
                 {
                     // Binding、属性同步和 OnOpen 共同构成一次启用事务，全部成功后才对外标记 Enabled。
-                    this.bindingContext.Binding();
-                    SynchronizeProperties();
-                    this.presenter.OnOpen(param);
-                    this.view.Visible = true;
+                    using ((view as IViewUpdate)?.BeginUpdate())
+                    {
+                        this.bindingContext.Binding();
+                        SynchronizeProperties();
+                        this.presenter.OnOpen(param);
+                        if (!State.HasFlag(ViewInstanceState.Alive))
+                        {
+                            throw new OperationCanceledException("The View was destroyed during OnOpen; activation was cancelled.");
+                        }
+                        pendingOpenClose = true;
+                        this.view.Visible = true;
+                    }
+                    if (!State.HasFlag(ViewInstanceState.Alive))
+                    {
+                        throw new OperationCanceledException("The View was destroyed during OnOpen; activation was cancelled.");
+                    }
                     SetExternalValueSynchronization(true);
 
                     State |= ViewInstanceState.Enabled;
+                    pendingOpenClose = false;
                     Enabled?.Invoke(this);
                 }
-                catch
+                catch (Exception openingFailure)
                 {
                     // 打开失败必须恢复不可见、未绑定状态，再把异常交给 Navigator 统一回滚。
-                    SetExternalValueSynchronization(false);
-                    this.view.Visible = false;
-                    this.bindingContext.Unbinding();
-                    State &= ~ViewInstanceState.Enabled;
+                    Exception cleanupFailure = null;
+                    if (State.HasFlag(ViewInstanceState.Alive))
+                    {
+                        var closeOpened = pendingOpenClose || State.HasFlag(ViewInstanceState.Enabled);
+                        pendingOpenClose = false;
+                        State &= ~ViewInstanceState.Enabled;
+                        try { SetExternalValueSynchronization(false); }
+                        catch (Exception exception) { cleanupFailure = exception; }
+                        // OnOpen 成功后，最终几何提交仍可能失败；必须归还本次打开取得的资源。
+                        if (closeOpened && State.HasFlag(ViewInstanceState.Alive))
+                        {
+                            try { presenter.OnClose(); }
+                            catch (Exception exception) { cleanupFailure ??= exception; }
+                        }
+                        if (State.HasFlag(ViewInstanceState.Alive))
+                        {
+                            try { view.Visible = false; }
+                            catch (Exception exception) { cleanupFailure ??= exception; }
+                        }
+                        if (State.HasFlag(ViewInstanceState.Alive))
+                        {
+                            try { bindingContext.Unbinding(); }
+                            catch (Exception exception) { cleanupFailure ??= exception; }
+                        }
+                    }
+                    if (cleanupFailure != null) throw new AggregateException(openingFailure, cleanupFailure);
                     throw;
                 }
             });
-        }
-
-        internal async ValueTask EnableAsync(object param, CancellationToken cancellationToken)
-        {
-            Enable(param);
-            try
-            {
-                await presenter.OnOpenAsync(param, cancellationToken);
-            }
-            catch
-            {
-                Disable();
-                throw;
-            }
         }
 
         /// <summary>
@@ -370,7 +394,7 @@ namespace FUI.Infrastructure
 
                 if (failure != null)
                 {
-                    throw failure;
+                    ExceptionDispatchInfo.Capture(failure).Throw();
                 }
             });
         }
@@ -398,7 +422,7 @@ namespace FUI.Infrastructure
 
             if (failure != null)
             {
-                throw failure;
+                ExceptionDispatchInfo.Capture(failure).Throw();
             }
         }
 
@@ -428,6 +452,7 @@ namespace FUI.Infrastructure
                 }
 
                 presenter.OnRevealed();
+                (view as IViewInputFocus)?.FocusInput();
                 presenter.OnFocus();
                 SetExternalValueSynchronization(true);
             });
@@ -440,6 +465,7 @@ namespace FUI.Infrastructure
         {
             SafeExecute(() =>
             {
+                (view as IViewInputFocus)?.FocusInput();
                 this.presenter.OnFocus();
                 Focused?.Invoke(this);
             });
@@ -494,6 +520,12 @@ namespace FUI.Infrastructure
                     failure = exception;
                 }
             }
+            else if (pendingOpenClose)
+            {
+                pendingOpenClose = false;
+                try { presenter.OnClose(); }
+                catch (Exception exception) { failure = exception; }
+            }
 
             try
             {
@@ -533,7 +565,7 @@ namespace FUI.Infrastructure
 
             if (failure != null)
             {
-                throw failure;
+                ExceptionDispatchInfo.Capture(failure).Throw();
             }
         }
 

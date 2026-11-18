@@ -1,0 +1,31 @@
+using System;using System.Collections.Generic;using FUI.Binding;using FUI.Rendering;using FUI.Testing;
+[assembly:ViewModule("Batch3.Generated",PropertyMode=PropertyGenerationMode.Pure)]namespace Batch3{
+[ViewContract("Row")]public partial class Row:FUI.Presentation.ViewModel{[ObservableProperty][Bind("Label",nameof(ITextElement.Text))]string label="row";}
+[ViewContract("Display")]public partial class Vm:FUI.Presentation.ViewModel{
+[ObservableProperty][Bind("Image",nameof(IImageElement.SpriteSource))]string sprite="a";
+[ObservableProperty][Bind("Image",nameof(IImageElement.FillAmount))]float fill=.4f;
+[ObservableProperty][Bind("Image",nameof(IImageElement.PreserveAspect))]bool aspect=true;
+[ObservableProperty][Bind("Image",nameof(IImageElement.FillCenter))]bool center=false;
+[ObservableProperty][Bind("Image",nameof(IImageElement.FillOrigin))]int origin=2;
+[ObservableProperty][Bind("Image",nameof(IImageElement.FillClockwise))]bool clockwise=true;
+[ObservableProperty][Bind("Image",nameof(IImageElement.Tint))]Rgba tint=new Rgba(1,0,0,1);
+[ObservableProperty][Bind("Raw",nameof(IRawImageElement.TextureSource))]string texture="texture-a";
+[ObservableProperty][Bind("Raw",nameof(IRawImageElement.Visible))]bool rawVisible=true;
+[ObservableProperty][Bind("Scroll",nameof(IScrollViewElement.NormalizedScroll),bindingMode:BindingMode.TwoWay)][Bind("Rows",nameof(IScrollPositionElement.NormalizedScroll))]ScrollPoint position=new ScrollPoint(0,1);
+[ObservableProperty][Bind("Scroll",nameof(IScrollViewElement.Horizontal))]bool horizontal=false;
+[ObservableProperty][Bind("Scroll",nameof(IScrollViewElement.Vertical))]bool vertical=true;
+[ObservableProperty][Bind("Rows",nameof(IListView.Items))]ObservableList<Row> items=new ObservableList<Row>();
+public int Events;[Command("Scroll",nameof(IScrollViewElement.ScrollChanged))]void Scroll(ScrollPoint point){Events++;}
+}
+public static class Scenario{public static string[]Run(int n){Generated.Routes.Initialize();var image=new HeadlessGraphicElement("Image");var raw=new HeadlessRawImageElement("Raw");var scroll=new HeadlessScrollViewElement("Scroll");var list=new HeadlessListElement("Rows",item=>new HeadlessView("Row",new HeadlessTextElement("Label")));var vm=new Vm();vm.Items.Add(new Row());var view=new HeadlessView("Display",image,raw,scroll,list);using(var p=Projection.Create(view,vm)){p.Activate();
+if(n==0){IImageElement i=image;IRawImageElement r=raw;return new[]{ReferenceEquals(i.SpriteSource,((IImageSourceElement)image).SpriteSource).ToString(),ReferenceEquals(i.FillAmount,((IFillElement)image).FillAmount).ToString(),ReferenceEquals(i.Tint,((IGraphicElement)image).Tint).ToString(),ReferenceEquals(r.Visible,((IGraphicElement)raw).Visible).ToString()};}
+if(n==1){vm.Sprite="b";vm.Texture="texture-b";vm.Fill=.8f;return new[]{image.SpriteSource.Value,raw.TextureSource.Value,image.FillAmount.Value.ToString(),vm.Events.ToString()};}
+if(n==2){return new[]{image.PreserveAspect.Value.ToString(),image.FillCenter.Value.ToString(),image.FillOrigin.Value.ToString(),image.FillClockwise.Value.ToString(),(image.Tint.Value.r==1).ToString(),scroll.Horizontal.Value.ToString(),scroll.Vertical.Value.ToString()};}
+if(n==3){vm.Position=new ScrollPoint(.2f,.3f);return new[]{scroll.NormalizedScroll.Value.x.ToString(),scroll.NormalizedScroll.Value.y.ToString(),list.NormalizedScroll.Value.y.ToString(),vm.Events.ToString()};}
+if(n==4){var first=list.Rows[0];scroll.InputScroll(new ScrollPoint(.4f,.6f));scroll.InputScroll(new ScrollPoint(.4f,.6f));return new[]{vm.Position.x.ToString(),list.NormalizedScroll.Value.y.ToString(),vm.Events.ToString(),ReferenceEquals(first,list.Rows[0]).ToString()};}
+if(n==5){view.Interactable=false;scroll.InputScroll(new ScrollPoint(.5f,.5f));view.Interactable=true;scroll.Visible.Value=false;scroll.InputScroll(new ScrollPoint(.5f,.5f));return new[]{vm.Events.ToString(),vm.Position.y.ToString()};}
+if(n==6){p.Deactivate();vm.Sprite="closed";vm.Texture="closed";scroll.InputScroll(new ScrollPoint(.5f,.5f));return new[]{image.SpriteSource.Value,raw.TextureSource.Value,vm.Events.ToString()};}
+if(n==7){var c=0;raw.TextureSource.OnValueChanged+=(a,b)=>c++;scroll.ScrollChanged.AddListener(v=>c++);view.Destroy();raw.TextureSource.Value="late";scroll.InputScroll(new ScrollPoint(.5f,.5f));return new[]{c.ToString(),raw.IsDisposed.ToString(),scroll.IsDisposed.ToString()};}
+if(n==8){var i2=new HeadlessGraphicElement("Image");var r2=new HeadlessRawImageElement("Raw");var s2=new HeadlessScrollViewElement("Scroll");var l2=new HeadlessListElement("Rows",item=>new HeadlessView("Row",new HeadlessTextElement("Label")));using(var p2=Projection.Create(new HeadlessView("Display",i2,r2,s2,l2),vm)){p2.Activate();p.Deactivate();vm.Sprite="b";vm.Texture="texture-b";scroll.InputScroll(new ScrollPoint(.5f,.5f));s2.InputScroll(new ScrollPoint(.5f,.8f));return new[]{image.SpriteSource.Value,i2.SpriteSource.Value,raw.TextureSource.Value,r2.TextureSource.Value,scroll.NormalizedScroll.Value.y.ToString(),s2.NormalizedScroll.Value.y.ToString(),vm.Events.ToString()};}}
+if(n==9){var wrong=new HeadlessView("Display",new HeadlessGraphicElement("Image"),new HeadlessGraphicElement("Raw"),new HeadlessScrollViewElement("Scroll"),new HeadlessListElement("Rows",item=>new HeadlessView("Row",new HeadlessTextElement("Label"))));using(var bad=Projection.Create(wrong,new Vm())){try{bad.Activate();return new[]{"accepted"};}catch(InvalidOperationException){return new[]{"rejected"};}}}
+throw new ArgumentOutOfRangeException();}}}}

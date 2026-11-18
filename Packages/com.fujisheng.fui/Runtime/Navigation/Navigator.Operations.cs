@@ -25,8 +25,10 @@ namespace FUI.Navigation
             OpenOptions options,
             OpenOrigin origin,
             ViewHandle owner,
-            HashSet<Route> routePath)
+            HashSet<Route> routePath,
+            OpenRequest request = null)
         {
+            EnsureOpenRequestCurrent(request);
             if (!TryEnterRoute(route, routePath))
             {
                 throw new InvalidOperationException($"A dynamic route dependency cycle was detected at {route}.");
@@ -35,10 +37,21 @@ namespace FUI.Navigation
             var existing = FindReusableActive(route);
             if (existing != null)
             {
-                RebindExistingViewModel(existing, viewModel, options);
-                CommitExistingOpen(existing, origin, owner);
-                routePath.Remove(route);
-                return existing.Handle;
+                var snapshot = CaptureNavigationSnapshot();
+                try
+                {
+                    RebindExistingViewModel(existing, viewModel, options);
+                    CommitExistingOpen(existing, origin, owner);
+                    EnsureOpenRequestCurrent(request);
+                    routePath.Remove(route);
+                    return existing.Handle;
+                }
+                catch (Exception exception)
+                {
+                    RestoreNavigationSnapshot(snapshot, exception);
+                    routePath.Remove(route);
+                    throw;
+                }
             }
 
             // RequiredBefore、页面本体和 AttachedAfter 共用同一回滚列表，任一步失败都按所有权逆序释放。
@@ -51,23 +64,30 @@ namespace FUI.Navigation
                 instance = TakeCachedInstance(route, origin, owner) ?? NewInstance(route, origin, owner);
                 RebindCachedViewModel(instance, viewModel);
                 AcquireOperationGate(instance, OperationPhase.Open);
-                OpenDependenciesSync(route, DependencyTiming.RequiredBefore, instance.Handle, routePath, dependencies);
+                OpenDependenciesSync(route, DependencyTiming.RequiredBefore, instance.Handle, routePath, dependencies, request);
                 instance.State = ViewState.Loading;
                 if (instance.Instance == null)
                 {
-                    pendingPreload = TakePreload(route);
-                    viewLease = viewProvider.Create(route.Descriptor, pendingPreload)
+                    pendingPreload = request == null ? TakePreload(route) : TakePreparedResource(request, route);
+                    viewLease = (request?.Provider ?? viewProvider).Create(route.Descriptor, pendingPreload)
                         ?? throw new InvalidOperationException($"The provider could not create View '{route.AssetKey}'.");
                     pendingPreload = null;
                     instance.ViewLease = viewLease;
                     viewLease = null;
-                    instance.Instance = route.Descriptor.CreateInstance(instance.ViewLease.View, viewModel);
                 }
-                instance.State = ViewState.Opening;
-                instance.Instance.Enable(param);
+                // 结构准备、首次绑定与 OnOpen 属于同一次后端更新；几何读取仍可在批次内建立屏障。
+                var openingView = instance.Instance?.View ?? instance.ViewLease.View;
+                using ((openingView as IViewUpdate)?.BeginUpdate())
+                {
+                    if (instance.Instance == null)
+                        instance.Instance = route.Descriptor.CreateInstance(openingView, viewModel);
+                    instance.State = ViewState.Opening;
+                    instance.Instance.Enable(param);
+                }
+                EnsureOpenRequestCurrent(request);
                 var replaced = CommitOpen(instance, options, origin);
 
-                OpenDependenciesSync(route, DependencyTiming.AttachedAfter, instance.Handle, routePath, dependencies);
+                OpenDependenciesSync(route, DependencyTiming.AttachedAfter, instance.Handle, routePath, dependencies, request);
                 foreach (var dependency in dependencies)
                 {
                     instance.Dependencies.Add(dependency);
@@ -78,106 +98,22 @@ namespace FUI.Navigation
                     Close(replaced.Handle);
                 }
 
+                EnsureOpenRequestCurrent(request);
                 StartEnterTransition(instance);
+                EnsureOpenRequestCurrent(request);
                 routePath.Remove(route);
                 return instance.Handle;
             }
             catch (Exception exception)
             {
-                RestorePreload(route, pendingPreload);
-                viewLease?.Dispose();
-                RollbackOpen(instance, dependencies, exception);
-                routePath.Remove(route);
-                throw;
-            }
-        }
-
-        async ValueTask<ViewHandle> OpenAsyncCore(
-            Route route,
-            ObservableObject viewModel,
-            object param,
-            OpenOptions options,
-            OpenOrigin origin,
-            ViewHandle owner,
-            HashSet<Route> routePath,
-            CancellationToken cancellationToken)
-        {
-            if (!TryEnterRoute(route, routePath))
-            {
-                throw new InvalidOperationException($"A dynamic route dependency cycle was detected at {route}.");
-            }
-
-            var existing = FindReusableActive(route);
-            if (existing != null)
-            {
-                RebindExistingViewModel(existing, viewModel, options);
-                CommitExistingOpen(existing, origin, owner);
-                routePath.Remove(route);
-                return existing.Handle;
-            }
-
-            // 异步路径与同步路径保持相同提交顺序，只在 I/O 和异步生命周期处让出执行权。
-            var dependencies = new List<ViewHandle>();
-            NavigationEntry instance = null;
-            IViewLease viewLease = null;
-            IPreloadLease pendingPreload = null;
-            try
-            {
-                instance = TakeCachedInstance(route, origin, owner) ?? NewInstance(route, origin, owner);
-                RebindCachedViewModel(instance, viewModel);
-                AcquireOperationGate(instance, OperationPhase.Open);
-                await OpenDependenciesAsync(route, DependencyTiming.RequiredBefore, instance.Handle, routePath, dependencies, cancellationToken);
-                instance.State = ViewState.Loading;
-                var version = instance.OperationVersion;
-                if (instance.Instance == null)
+                if (request == null)
                 {
-                    pendingPreload = TakePreload(route);
-                    viewLease = await viewProvider.CreateAsync(route.Descriptor, pendingPreload, cancellationToken);
-                    if (viewLease == null)
-                    {
-                        throw new InvalidOperationException($"The provider could not create View '{route.AssetKey}'.");
-                    }
-                    pendingPreload = null;
-                    await executionContext.SwitchToMainThreadAsync(cancellationToken);
-                    EnsureCurrent(instance, version, "CreateAsync");
-                    instance.ViewLease = viewLease;
-                    viewLease = null;
-                    instance.Instance = route.Descriptor.CreateInstance(instance.ViewLease.View, viewModel);
+                    RestorePreload(route, pendingPreload);
                 }
-                instance.State = ViewState.Opening;
-                await instance.Instance.EnableAsync(param, cancellationToken);
-                await executionContext.SwitchToMainThreadAsync(cancellationToken);
-                EnsureCurrent(instance, version, "OnOpenAsync");
-                var replaced = CommitOpen(instance, options, origin);
-
-                await OpenDependenciesAsync(route, DependencyTiming.AttachedAfter, instance.Handle, routePath, dependencies, cancellationToken);
-                foreach (var dependency in dependencies)
+                else
                 {
-                    instance.Dependencies.Add(dependency);
+                    DisposePreparedResource(pendingPreload);
                 }
-
-                if (replaced != null && replaced != instance)
-                {
-                    Close(replaced.Handle);
-                }
-
-                var transition = route.Descriptor.Settings.EnterTransitionProvider?.Get(instance.Instance.View);
-                if (transition != null)
-                {
-                    await PlayTransitionSafelyAsync(instance, version, "OpenTransition", transition, cancellationToken);
-                    await executionContext.SwitchToMainThreadAsync(cancellationToken);
-                    EnsureCurrent(instance, version, "OpenTransition");
-                }
-
-                instance.State = ViewState.Open;
-                instance.Instance.Interactable = true;
-                ReleaseOperationGate(instance, version);
-                routePath.Remove(route);
-                return instance.Handle;
-            }
-            catch (Exception exception)
-            {
-                RestorePreload(route, pendingPreload);
                 viewLease?.Dispose();
                 RollbackOpen(instance, dependencies, exception);
                 routePath.Remove(route);
@@ -239,7 +175,7 @@ namespace FUI.Navigation
             instance.Instance.Interactable = false;
             ReorderLayer(instance.Route.Descriptor.Settings.Layer);
 
-            if (origin != OpenOrigin.Explicit)
+            if (origin != OpenOrigin.Explicit || !instance.Route.Descriptor.Settings.TakeFocus)
             {
                 return null;
             }
@@ -248,6 +184,7 @@ namespace FUI.Navigation
             if (focusedHandle.IsValid && entries.TryGetValue(focusedHandle, out var previous) && previous != instance)
             {
                 var hide = instance.Route.Descriptor.Settings.CoverageMode == CoverageMode.Hide;
+                previous.Instance.Interactable = false;
                 previous.HiddenByCoverage = hide;
                 previous.State = ViewState.Covered;
                 previous.Instance.Covered(hide);
@@ -270,12 +207,14 @@ namespace FUI.Navigation
             var transition = instance.Route.Descriptor.Settings.EnterTransitionProvider?.Get(instance.Instance.View);
             if (transition == null)
             {
+                instance.EnterTransitionPending = false;
                 instance.State = ViewState.Open;
                 instance.Instance.Interactable = true;
                 ReleaseOperationGate(instance, version);
                 return;
             }
 
+            instance.EnterTransitionPending = true;
             _ = CompleteOpenTransitionAsync(instance, version, transition);
         }
 
@@ -283,14 +222,23 @@ namespace FUI.Navigation
         {
             await PlayTransitionSafelyAsync(instance, version, "OpenTransition", transition, CancellationToken.None);
             await executionContext.SwitchToMainThreadAsync();
-            if (!IsCurrent(instance, version) || instance.State != ViewState.Opening)
+            if (!IsCurrent(instance, version))
             {
                 ReleaseOperationGate(instance, version);
                 return;
             }
 
-            instance.State = ViewState.Open;
-            instance.Instance.Interactable = true;
+            instance.EnterTransitionPending = false;
+            if (instance.State == ViewState.Opening)
+            {
+                instance.State = ViewState.Open;
+                instance.Instance.Interactable = true;
+            }
+            else if (instance.State == ViewState.Open && focusedHandle == instance.Handle)
+            {
+                // 页面在动画期间被覆盖后又恢复，直到旧动画结束才重新允许交互。
+                instance.Instance.Interactable = true;
+            }
             ReleaseOperationGate(instance, version);
         }
 

@@ -12,8 +12,7 @@
 
 - `ViewModel`, `Presenter<TViewModel>`
 - `IView`, `IElement`, `IListView`
-- `View`, `Element`, `ComponentElement<TComponent>`
-- Built-in types in `FUI.Rendering.UGUI.Elements`
+- uGUI implementations in `com.fujisheng.fui.ugui`: `View`, `Element`, `ComponentElement<TComponent>`, and the built-in Element types in `FUI.Rendering.UGUI.Elements`
 
 ## Navigation
 

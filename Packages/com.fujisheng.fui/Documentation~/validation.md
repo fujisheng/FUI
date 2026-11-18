@@ -1,5 +1,7 @@
 # Page Wizard and validation
 
+> `FUI/Page Wizard` and `FUI/Validate Views` ship in the separately installed [`com.fujisheng.fui.ugui`](../../com.fujisheng.fui.ugui/README.md) package (`FUI.Rendering.UGUI.Editor` assembly).
+
 `FUI/Page Wizard` creates a View prefab using FullScreen, Popup, or Tips policy presets. The generated structure is a starting point; the View contract remains the source of binding requirements.
 
 `FUI/Validate Views` checks missing Elements, incompatible types, duplicate names, nested boundaries, and page structure. The same validation runs incrementally after prefab saves and before builds.

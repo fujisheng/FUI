@@ -1,0 +1,4915 @@
+[
+  {
+    "tool": "scene",
+    "args": {
+      "action": "get_active"
+    },
+    "ok": true,
+    "requestId": "75bad2f3d4bc4a87854690cb25a808f7",
+    "data": {
+      "action": "get_active",
+      "scene": {
+        "name": "RedDotQuickStart",
+        "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Scenes/RedDotQuickStart.unity",
+        "isDirty": false,
+        "buildIndex": 0,
+        "isLoaded": true,
+        "rootCount": 4
+      }
+    }
+  },
+  {
+    "tool": "console",
+    "args": {
+      "action": "get",
+      "types": [
+        "error"
+      ],
+      "count": 50
+    },
+    "ok": true,
+    "requestId": "6a84f6db4a7a4c34aad1948b28861c54",
+    "data": {
+      "action": "get",
+      "totalCount": 8,
+      "requestedCount": 50,
+      "returnedCount": 0,
+      "entries": []
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "84c090676f5242f1b6cbaf6d44d18ef1",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "HomeBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "c83fd56dc9db4628bc70e9fd9b37f45e",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "HomeBadgeVisual",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "DisconnectButton"
+      }
+    },
+    "ok": true,
+    "requestId": "90a160d61104447ba05dc92a3e87aa47",
+    "data": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "DisconnectButton"
+      },
+      "targetElement": "DisconnectButton",
+      "targetPath": "GameHomeView/DisconnectButton",
+      "targetInstanceId": -204616,
+      "screenPosition": {
+        "x": 1525,
+        "y": 380
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "95a36aa8593d42e987ca667ed706ec4e",
+    "data": {
+      "views": [
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "2d16ddb323494ecf85c086cc81504a2c",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "HomeBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "3a46cf72d1b54899b275a61571151f9d",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "HomeBadgeVisual",
+          "activeInHierarchy": "False",
+          "activeSelf": "False",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "ConnectButton"
+      }
+    },
+    "ok": true,
+    "requestId": "09b855d838f14597b6001c2fb88c1016",
+    "data": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "ConnectButton"
+      },
+      "targetElement": "ConnectButton",
+      "targetPath": "GameHomeView/ConnectButton",
+      "targetInstanceId": -204592,
+      "screenPosition": {
+        "x": 1307,
+        "y": 380
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "6498a396c3a645b7946e7b1595c5a566",
+    "data": {
+      "views": [
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "BagButton"
+      }
+    },
+    "ok": true,
+    "requestId": "97471d3a74bc4af0b554f77847dbea75",
+    "data": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "BagButton"
+      },
+      "targetElement": "BagButton",
+      "targetPath": "GameHomeView/BagButton",
+      "targetInstanceId": -204664,
+      "screenPosition": {
+        "x": 180,
+        "y": 197
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "ef48d100fc0342d8bdc13709d5310cd1",
+    "data": {
+      "views": [
+        {
+          "name": "BagView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "BagViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "76884789423447fc89c1400bc2a000cb",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "BagView",
+        "element": "BagItemBadgeCount"
+      }
+    },
+    "ok": true,
+    "requestId": "83c30b15f45a492e8d681bb9c89b2c8d",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "BagItemBadgeCount",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "5",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleCenter",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "12",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "25",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "30",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "BagItemBadgeCount",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "BagView",
+        "element": "TrackButton"
+      }
+    },
+    "ok": true,
+    "requestId": "a05610f798344fd3bdeca7dc8fe635c2",
+    "data": {
+      "selector": {
+        "view": "BagView",
+        "element": "TrackButton"
+      },
+      "targetElement": "TrackButton",
+      "targetPath": "BagView/TrackButton",
+      "targetInstanceId": -205860,
+      "screenPosition": {
+        "x": 1710,
+        "y": 70
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "49f2a489bcc64f0a83038ac94f7b9203",
+    "data": {
+      "views": [
+        {
+          "name": "TrackedStatusView",
+          "state": "Alive, Enabled",
+          "layer": 24000,
+          "order": 0,
+          "viewModelType": "TrackedStatusViewModel"
+        },
+        {
+          "name": "BagView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "BagViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 3
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "BagView",
+        "element": "WithdrawButton"
+      }
+    },
+    "ok": true,
+    "requestId": "e71e656875784711b47498a4b2c14ac6",
+    "data": {
+      "selector": {
+        "view": "BagView",
+        "element": "WithdrawButton"
+      },
+      "targetElement": "WithdrawButton",
+      "targetPath": "BagView/WithdrawButton",
+      "targetInstanceId": -205690,
+      "screenPosition": {
+        "x": 808,
+        "y": 153
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "b14360db603c44a58f79e9c04941417a",
+    "data": {
+      "views": [
+        {
+          "name": "TrackedStatusView",
+          "state": "Alive, Enabled",
+          "layer": 24000,
+          "order": 0,
+          "viewModelType": "TrackedStatusViewModel"
+        },
+        {
+          "name": "BagView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "BagViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 3
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "5d635f0c6dd34ebbbd777dd2b9eac44d",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "TrackedStatusView",
+        "element": "TrackedBadgeCount"
+      }
+    },
+    "ok": true,
+    "requestId": "461bd5a3f2234ed5a6d9dbef8bf9d691",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "TrackedBadgeCount",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "3",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleCenter",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "12",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "25",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "7",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "TrackedBadgeCount",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "BagView",
+        "element": "BackButton"
+      }
+    },
+    "ok": true,
+    "requestId": "a5a95a60b8af41b4b49f450b64df9151",
+    "data": {
+      "selector": {
+        "view": "BagView",
+        "element": "BackButton"
+      },
+      "targetElement": "BackButton",
+      "targetPath": "BagView/TopBar/BackButton",
+      "targetInstanceId": -205190,
+      "screenPosition": {
+        "x": 118,
+        "y": 1007
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "1d8981eaf70e42339e50c07f84c5d5ab",
+    "data": {
+      "views": [
+        {
+          "name": "TrackedStatusView",
+          "state": "Alive, Enabled",
+          "layer": 24000,
+          "order": 0,
+          "viewModelType": "TrackedStatusViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TrackedStatusView",
+        "element": "BackButton"
+      }
+    },
+    "ok": true,
+    "requestId": "f7034de4ea924a5f8587b1a32b63b7ae",
+    "data": {
+      "selector": {
+        "view": "TrackedStatusView",
+        "element": "BackButton"
+      },
+      "targetElement": "BackButton",
+      "targetPath": "TrackedStatusView/TerminalPanel/BackButton",
+      "targetInstanceId": -205928,
+      "screenPosition": {
+        "x": 1779,
+        "y": 885
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "38bcb7842ba24a20a34af2a7b7ac5e80",
+    "data": {
+      "views": [
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "QuestButton"
+      }
+    },
+    "ok": true,
+    "requestId": "0a35e1c3168e4072b0496efbbfce318a",
+    "data": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "QuestButton"
+      },
+      "targetElement": "QuestButton",
+      "targetPath": "GameHomeView/QuestButton",
+      "targetInstanceId": -204722,
+      "screenPosition": {
+        "x": 494,
+        "y": 197
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "1554d90419544d30b7c08f198a22ba77",
+    "data": {
+      "views": [
+        {
+          "name": "QuestView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "QuestViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "96a0777fa95044ddbb3353a02a11227b",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "QuestView",
+        "element": "ReadinessBadgeCount"
+      }
+    },
+    "ok": true,
+    "requestId": "93f68eb6d3a244698b4aaa94d3b10fb8",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "ReadinessBadgeCount",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "2",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleCenter",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "12",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "25",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "27",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "ReadinessBadgeCount",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "QuestView",
+        "element": "ClaimButton"
+      }
+    },
+    "ok": true,
+    "requestId": "d7fab91a93fe474f9428172b005136eb",
+    "data": {
+      "selector": {
+        "view": "QuestView",
+        "element": "ClaimButton"
+      },
+      "targetElement": "ClaimButton",
+      "targetPath": "QuestView/ClaimButton",
+      "targetInstanceId": -206460,
+      "screenPosition": {
+        "x": 583,
+        "y": 143
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "5a9795ff2b3f4d2dbe26d629b027f869",
+    "data": {
+      "views": [
+        {
+          "name": "QuestView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "QuestViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "QuestView",
+        "element": "SharedBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "25cea0d08ec8410b98447377009203a7",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "SharedBadgeVisual",
+          "activeInHierarchy": "False",
+          "activeSelf": "False",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "QuestView",
+        "element": "DetailsButton"
+      }
+    },
+    "ok": true,
+    "requestId": "f118abbd25f54e6a91444bf95dda348d",
+    "data": {
+      "selector": {
+        "view": "QuestView",
+        "element": "DetailsButton"
+      },
+      "targetElement": "DetailsButton",
+      "targetPath": "QuestView/DetailsButton",
+      "targetInstanceId": -206580,
+      "screenPosition": {
+        "x": 152,
+        "y": 70
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "ca1a99be1a0440a0b0a282653f88df15",
+    "data": {
+      "views": [
+        {
+          "name": "QuestView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "QuestViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "581b5cb71a034815b02ed3310fc45e77",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "QuestView",
+        "element": "DetailsText"
+      }
+    },
+    "ok": true,
+    "requestId": "8a0dd06411dc440096cbf66c17c2cbfd",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "DetailsText",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "主任务 0 / 支线 0\n支线追踪：True\n两入口共享一份奖励，按边统计不是奖励翻倍。\n操作：Claim\n预期：两个Rule各1，停止支线只剩1。DirectOnly不计Hint；共享奖励1经两个入口计2，领取一次清除两处。\nKey: Home/Readiness/Operations/Quests\nDirectOnlyAggregator / Count 0 / Batch 3\nDirty False / Rules 2 / Subscribers 1 / Dynamic False\n父 Home/Readiness/Operations\n子 Home/Readiness/Operations/Quests/Hint\n直接贡献 FactRule: 0\n直接贡献 FactRule: 0\n运输链路 CargoSource / 制造链路 CargoSource；主任务 FactRule / 支线任务 FactRule\n",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "UpperLeft",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "1048",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "375",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "45",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "DetailsText",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "QuestView",
+        "element": "DetailsButton"
+      }
+    },
+    "ok": true,
+    "requestId": "6dff3a05b7844904bdc229539c5c3c82",
+    "data": {
+      "selector": {
+        "view": "QuestView",
+        "element": "DetailsButton"
+      },
+      "targetElement": "DetailsButton",
+      "targetPath": "QuestView/DetailsButton",
+      "targetInstanceId": -206580,
+      "screenPosition": {
+        "x": 152,
+        "y": 70
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "efcaa362f2874614a69239a3d2ea5e71",
+    "data": {
+      "views": [
+        {
+          "name": "QuestView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "QuestViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "QuestView",
+        "element": "BackButton"
+      }
+    },
+    "ok": true,
+    "requestId": "c53ba26c42ba41e9a2b15bfcd1d28130",
+    "data": {
+      "selector": {
+        "view": "QuestView",
+        "element": "BackButton"
+      },
+      "targetElement": "BackButton",
+      "targetPath": "QuestView/TopBar/BackButton",
+      "targetInstanceId": -206096,
+      "screenPosition": {
+        "x": 118,
+        "y": 1007
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "db9355aa9c2447d8b84ff810217cbebe",
+    "data": {
+      "views": [
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "HeroButton"
+      }
+    },
+    "ok": true,
+    "requestId": "49aa1594f8104229afce43128088ee17",
+    "data": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "HeroButton"
+      },
+      "targetElement": "HeroButton",
+      "targetPath": "GameHomeView/HeroButton",
+      "targetInstanceId": -204780,
+      "screenPosition": {
+        "x": 808,
+        "y": 197
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "229d94ebe6c448c5b650c001028c337e",
+    "data": {
+      "views": [
+        {
+          "name": "HeroView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "HeroViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "HeroView",
+        "element": "Unit2Button"
+      }
+    },
+    "ok": true,
+    "requestId": "c15dcace5b3144138600e077ebf296c5",
+    "data": {
+      "selector": {
+        "view": "HeroView",
+        "element": "Unit2Button"
+      },
+      "targetElement": "Unit2Button",
+      "targetPath": "HeroView/Unit2Button",
+      "targetInstanceId": -206800,
+      "screenPosition": {
+        "x": 214,
+        "y": 546
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "4ff168636a224b02ae2f500bcf49d273",
+    "data": {
+      "views": [
+        {
+          "name": "HeroView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "HeroViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "HeroView",
+        "element": "TrainButton"
+      }
+    },
+    "ok": true,
+    "requestId": "27b10236045e4b5aa3d4bcd6df66944d",
+    "data": {
+      "selector": {
+        "view": "HeroView",
+        "element": "TrainButton"
+      },
+      "targetElement": "TrainButton",
+      "targetPath": "HeroView/TrainButton",
+      "targetInstanceId": -206962,
+      "screenPosition": {
+        "x": 207,
+        "y": 145
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "9e9519cf0e194d0fab0407054bf89ffe",
+    "data": {
+      "views": [
+        {
+          "name": "HeroView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "HeroViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "HeroView",
+        "element": "HeroUpgradeBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "9bd85ea8c94d42fd96eed3c9a6d4ee23",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "HeroUpgradeBadgeVisual",
+          "activeInHierarchy": "False",
+          "activeSelf": "False",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "HeroView",
+        "element": "SupplyButton"
+      }
+    },
+    "ok": true,
+    "requestId": "04e781209c0145cfb58e755ae00f5fa1",
+    "data": {
+      "selector": {
+        "view": "HeroView",
+        "element": "SupplyButton"
+      },
+      "targetElement": "SupplyButton",
+      "targetPath": "HeroView/SupplyButton",
+      "targetInstanceId": -206986,
+      "screenPosition": {
+        "x": 583,
+        "y": 145
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "0b231d65dfa0419081cbbf77867423d3",
+    "data": {
+      "views": [
+        {
+          "name": "HeroView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "HeroViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "27adf4edf98d406ba82532f2e39edbd0",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "HeroView",
+        "element": "HeroUpgradeBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "53f96e022a3b442bac1665f2c7987a4d",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "HeroUpgradeBadgeVisual",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "HeroView",
+        "element": "BackButton"
+      }
+    },
+    "ok": true,
+    "requestId": "b09ec38012aa494d8d1edd29ad2d1603",
+    "data": {
+      "selector": {
+        "view": "HeroView",
+        "element": "BackButton"
+      },
+      "targetElement": "BackButton",
+      "targetPath": "HeroView/TopBar/BackButton",
+      "targetInstanceId": -206702,
+      "screenPosition": {
+        "x": 118,
+        "y": 1007
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "f7570fe1c3ae46d896abf786ef61e9db",
+    "data": {
+      "views": [
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "MailButton"
+      }
+    },
+    "ok": true,
+    "requestId": "12679b96371f4622aed24e8507545e41",
+    "data": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "MailButton"
+      },
+      "targetElement": "MailButton",
+      "targetPath": "GameHomeView/MailButton",
+      "targetInstanceId": -204838,
+      "screenPosition": {
+        "x": 1122,
+        "y": 197
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "cfde735f431d48cab92debe706f06223",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "e0a7839713174ae7b7933b33f4bde04d",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "ThreatBadgeCount"
+      }
+    },
+    "ok": true,
+    "requestId": "d5a7bb283bf047a0a5a3d718493971db",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "ThreatBadgeCount",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "5",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleCenter",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "12",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "25",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "23",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "ThreatBadgeCount",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "Message1Button"
+      }
+    },
+    "ok": true,
+    "requestId": "8f30964456db435c9edace6a933d031d",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "Message1Button"
+      },
+      "targetElement": "Message1Button",
+      "targetPath": "MailView/InboxPanel/Message1Button",
+      "targetInstanceId": -207280,
+      "screenPosition": {
+        "x": 242,
+        "y": 785
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "03cd3beaf1bc4857b8770e9c436fb5e4",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "ReadButton"
+      }
+    },
+    "ok": true,
+    "requestId": "816007b5bf334aeea4967ec1620e5113",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "ReadButton"
+      },
+      "targetElement": "ReadButton",
+      "targetPath": "MailView/ReadButton",
+      "targetInstanceId": -207528,
+      "screenPosition": {
+        "x": 583,
+        "y": 287.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "292a9b71c99e4f60bdf7c05036fd65d0",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "MailItemBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "9bb4735ca4894869a8776409830fd5d0",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "MailItemBadgeVisual",
+          "activeInHierarchy": "False",
+          "activeSelf": "False",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "ArchiveButton"
+      }
+    },
+    "ok": true,
+    "requestId": "8f2821fc4b5b41beb714f8da7ee601f3",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "ArchiveButton"
+      },
+      "targetElement": "ArchiveButton",
+      "targetPath": "MailView/ArchiveButton",
+      "targetInstanceId": -207552,
+      "screenPosition": {
+        "x": 959,
+        "y": 287.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "c9a9673d3063432bbd59c91ca785b9ea",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "ThreatButton"
+      }
+    },
+    "ok": true,
+    "requestId": "5e9de3e7cde44580b4c406318b398512",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "ThreatButton"
+      },
+      "targetElement": "ThreatButton",
+      "targetPath": "MailView/ThreatButton",
+      "targetInstanceId": -207576,
+      "screenPosition": {
+        "x": 1335,
+        "y": 287.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "9ed8f4f0830840d6bdc2c05520af2185",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "ThreatBadgeCount"
+      }
+    },
+    "ok": true,
+    "requestId": "c01728f19f42402491e2b8d62b8f7711",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "ThreatBadgeCount",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "3",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleCenter",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "12",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "25",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "23",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "ThreatBadgeCount",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "RuleFaultButton"
+      }
+    },
+    "ok": true,
+    "requestId": "9b35c8dabcb14c73bbf1a921c7bdf680",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "RuleFaultButton"
+      },
+      "targetElement": "RuleFaultButton",
+      "targetPath": "MailView/RuleFaultButton",
+      "targetInstanceId": -207600,
+      "screenPosition": {
+        "x": 1711,
+        "y": 287.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "0232d4c5ec2d49eaa730517aa3e2c3a6",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "AggregateFaultButton"
+      }
+    },
+    "ok": true,
+    "requestId": "d773735c35c449349938b49f2d7499c8",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "AggregateFaultButton"
+      },
+      "targetElement": "AggregateFaultButton",
+      "targetPath": "MailView/AggregateFaultButton",
+      "targetInstanceId": -207624,
+      "screenPosition": {
+        "x": 207,
+        "y": 182.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "048058c3593e4b4f86bcb82459b76086",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "CallbackFaultButton"
+      }
+    },
+    "ok": true,
+    "requestId": "cdbddd45110d4f56a99aef4ed5de93c8",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "CallbackFaultButton"
+      },
+      "targetElement": "CallbackFaultButton",
+      "targetPath": "MailView/CallbackFaultButton",
+      "targetInstanceId": -207648,
+      "screenPosition": {
+        "x": 583,
+        "y": 182.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "8df597d087064fdea9189061a9e46e90",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "StartFaultButton"
+      }
+    },
+    "ok": true,
+    "requestId": "4b4e7d24aca1432f8f8b1ce85ace0ad1",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "StartFaultButton"
+      },
+      "targetElement": "StartFaultButton",
+      "targetPath": "MailView/StartFaultButton",
+      "targetInstanceId": -207672,
+      "screenPosition": {
+        "x": 959,
+        "y": 182.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "40e7c5ccff3c4df385c10d456592a390",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "StopFaultButton"
+      }
+    },
+    "ok": true,
+    "requestId": "b2f58b10a601439fa6253f16f1322976",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "StopFaultButton"
+      },
+      "targetElement": "StopFaultButton",
+      "targetPath": "MailView/StopFaultButton",
+      "targetInstanceId": -207696,
+      "screenPosition": {
+        "x": 1335,
+        "y": 182.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "e5ed141e442a429aa49912ddf86e7add",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "DetailsButton"
+      }
+    },
+    "ok": true,
+    "requestId": "effff6768c7b4403b833889b0f884c06",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "DetailsButton"
+      },
+      "targetElement": "DetailsButton",
+      "targetPath": "MailView/DetailsButton",
+      "targetInstanceId": -207768,
+      "screenPosition": {
+        "x": 152,
+        "y": 70
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "54d9663b048c4f07b9c8d68de5adf982",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "93de1e25c59f4849801245905d713495",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "DetailsText"
+      }
+    },
+    "ok": true,
+    "requestId": "09f8777b23ea418fa6b6f643cd08c41b",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "DetailsText",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "邮件 9000000002\n最高威胁：3　链路：5\n传感器故障：True\n操作：StopFault\n预期：Max(2,5,3)=5，最高链路移除后3。Rule失败保留旧贡献，聚合失败保留旧节点，回调失败不阻断其他观察者。恢复不会删除历史故障。\nKey: Home/Mail/Message/10~9000000002\nSumAggregator / Count 1 / Batch 1\nDirty False / Rules 0 / Subscribers 1 / Dynamic True\n父 Home/Mail\n直接贡献 MemorySource: 1\n历史 RuleFailure / FactRule / batch 7: Simulated sensor read failure.\n历史 AggregatorFailure / LinkHealthAggregator / batch 8: Simulated link decoder failure.\n历史 SubscriberFailure / <FailSubscriber>b__79_0 / batch 8: Simulated terminal callback failure.\n历史 SourceFailure / FaultSource / batch 8: Cannot access a disposed object.\nObject name: 'IRedDotPublisher'.\n",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "UpperLeft",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "1373",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "425",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "54",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "DetailsText",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "DetailsButton"
+      }
+    },
+    "ok": true,
+    "requestId": "2451f626ae98420ba84fb674a1198f6b",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "DetailsButton"
+      },
+      "targetElement": "DetailsButton",
+      "targetPath": "MailView/DetailsButton",
+      "targetInstanceId": -207768,
+      "screenPosition": {
+        "x": 152,
+        "y": 70
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "0be0cfe372244cfc916d537188878a10",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "RecoverButton"
+      }
+    },
+    "ok": true,
+    "requestId": "4e5ae548590b49df9434352c97952add",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "RecoverButton"
+      },
+      "targetElement": "RecoverButton",
+      "targetPath": "MailView/RecoverButton",
+      "targetInstanceId": -207720,
+      "screenPosition": {
+        "x": 1711,
+        "y": 182.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "fb0d57a1607b4245bb9d79783a549e12",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "LinkBadgeCount"
+      }
+    },
+    "ok": true,
+    "requestId": "3919f96347e140bb871349cd85c8c72e",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "LinkBadgeCount",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "5",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleCenter",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "12",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "25",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "26",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "LinkBadgeCount",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "BackButton"
+      }
+    },
+    "ok": true,
+    "requestId": "b480bd3c9347439a94b7a737d6baf428",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "BackButton"
+      },
+      "targetElement": "BackButton",
+      "targetPath": "MailView/TopBar/BackButton",
+      "targetInstanceId": -207216,
+      "screenPosition": {
+        "x": 118,
+        "y": 1007
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "b34b558bedb64402b53621e73ce87ae4",
+    "data": {
+      "views": [
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "SeasonButton"
+      }
+    },
+    "ok": true,
+    "requestId": "9ee6a2e56fe84b0591dba757d44a982c",
+    "data": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "SeasonButton"
+      },
+      "targetElement": "SeasonButton",
+      "targetPath": "GameHomeView/SeasonButton",
+      "targetInstanceId": -204896,
+      "screenPosition": {
+        "x": 1436,
+        "y": 197
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "bccd92c514454ede9d6e1217a1bfcd47",
+    "data": {
+      "views": [
+        {
+          "name": "SeasonView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "SeasonViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "64b38f4577eb4a1e824532ad53ee0da0",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "SeasonRewardBadgeCount"
+      }
+    },
+    "ok": true,
+    "requestId": "452c4c6cd00f4c72a87abff77acc04af",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "SeasonRewardBadgeCount",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "2",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleCenter",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "12",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "25",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "12",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "SeasonRewardBadgeCount",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "FleetButton"
+      }
+    },
+    "ok": true,
+    "requestId": "e1f1f7ba4b4848c99627f7bf65d12158",
+    "data": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "FleetButton"
+      },
+      "targetElement": "FleetButton",
+      "targetPath": "SeasonView/FleetButton",
+      "targetInstanceId": -208122,
+      "screenPosition": {
+        "x": 180,
+        "y": 143
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "74f6e4df31b24e5b9381ad7991901079",
+    "data": {
+      "views": [
+        {
+          "name": "SeasonView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "SeasonViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "SeasonRewardBadgeCount"
+      }
+    },
+    "ok": true,
+    "requestId": "60b29b82e3334b1a9ba4f200819c11f0",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "SeasonRewardBadgeCount",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "5",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleCenter",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "12",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "25",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "12",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "SeasonRewardBadgeCount",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "FleetConnectionButton"
+      }
+    },
+    "ok": true,
+    "requestId": "80209cfdd1b24beba8ccf86c6d4c98b3",
+    "data": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "FleetConnectionButton"
+      },
+      "targetElement": "FleetConnectionButton",
+      "targetPath": "SeasonView/FleetConnectionButton",
+      "targetInstanceId": -208146,
+      "screenPosition": {
+        "x": 494,
+        "y": 143
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "053d1c400ce64f559c2502adfa3b8ef6",
+    "data": {
+      "views": [
+        {
+          "name": "SeasonView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "SeasonViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "SeasonRewardBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "749a28a556fe41f1b93423bbc5c10737",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "SeasonRewardBadgeVisual",
+          "activeInHierarchy": "False",
+          "activeSelf": "False",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "WingScopeButton"
+      }
+    },
+    "ok": true,
+    "requestId": "61f8c9905aa64331a6834a5cb563307b",
+    "data": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "WingScopeButton"
+      },
+      "targetElement": "WingScopeButton",
+      "targetPath": "SeasonView/WingScopeButton",
+      "targetInstanceId": -208194,
+      "screenPosition": {
+        "x": 1122,
+        "y": 143
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "79aaf16f7d8748abb0d6dc94ade34683",
+    "data": {
+      "views": [
+        {
+          "name": "SeasonView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "SeasonViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "WingBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "c998c9ba945a4255890fc3f1c8d4ce32",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "WingBadgeVisual",
+          "activeInHierarchy": "False",
+          "activeSelf": "False",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "WingMoveButton"
+      }
+    },
+    "ok": true,
+    "requestId": "e6aaf51b119c4f90b37e8869395bb319",
+    "data": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "WingMoveButton"
+      },
+      "targetElement": "WingMoveButton",
+      "targetPath": "SeasonView/WingMoveButton",
+      "targetInstanceId": -208170,
+      "screenPosition": {
+        "x": 808,
+        "y": 143
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "33c0ae34cc9b445d95890cee75c9e46e",
+    "data": {
+      "views": [
+        {
+          "name": "SeasonView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "SeasonViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "5a0f5e17f0eb455f86fcb8bcada496c5",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "WingBadgeCount"
+      }
+    },
+    "ok": true,
+    "requestId": "ddd19d6c2a3c4a4b9c16c9d5e531a320",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "WingBadgeCount",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "3",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleCenter",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "12",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "25",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "20",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "WingBadgeCount",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "BackButton"
+      }
+    },
+    "ok": true,
+    "requestId": "d3dc7465f7e84d869642c62161b6fd4f",
+    "data": {
+      "selector": {
+        "view": "SeasonView",
+        "element": "BackButton"
+      },
+      "targetElement": "BackButton",
+      "targetPath": "SeasonView/TopBar/BackButton",
+      "targetInstanceId": -207888,
+      "screenPosition": {
+        "x": 118,
+        "y": 1007
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "1d2cc4ba761e4d779d725a6074cf508a",
+    "data": {
+      "views": [
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "SeasonNavBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "841f0e71c7324604930d2903bec97470",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "SeasonNavBadgeVisual",
+          "activeInHierarchy": "False",
+          "activeSelf": "False",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "console",
+    "args": {
+      "action": "get",
+      "types": [
+        "error"
+      ],
+      "count": 50
+    },
+    "ok": true,
+    "requestId": "aac76b8980d94aba810f1e48e9861f9b",
+    "data": {
+      "action": "get",
+      "totalCount": 220,
+      "requestedCount": 50,
+      "returnedCount": 0,
+      "entries": []
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "TacticalButton"
+      }
+    },
+    "ok": true,
+    "requestId": "2703c4fae5c94751a600bb27af03088b",
+    "data": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "TacticalButton"
+      },
+      "targetElement": "TacticalButton",
+      "targetPath": "GameHomeView/TacticalButton",
+      "targetInstanceId": -204954,
+      "screenPosition": {
+        "x": 1750,
+        "y": 197
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "dd373dfc87974a099861ce80571e55dd",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "RepeatedButton"
+      }
+    },
+    "ok": true,
+    "requestId": "d8efb4fbb2ca4372a423e9071253ddbc",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "RepeatedButton"
+      },
+      "targetElement": "RepeatedButton",
+      "targetPath": "TacticalView/RepeatedButton",
+      "targetInstanceId": -208578,
+      "screenPosition": {
+        "x": 583,
+        "y": 157.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "3c69f15b96484810a8dbfb32b9859108",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "e9483fd8b03b4d45aa258412de814674",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StatusText"
+      }
+    },
+    "ok": true,
+    "requestId": "a276f623731b42b391b3c1d40bcda246",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "StatusText",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "节点 10000　待提交 True\n本批计算 0　通知 0\nFlush 0.002 ms　GC 0 B\n原子读取 True　递归拒绝 False\n连续推进 False",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleLeft",
+          "alignByGeometry": "False",
+          "fontSize": "26",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "364",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "150",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "15",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "StatusText",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      }
+    },
+    "ok": true,
+    "requestId": "737ee4727c9b43639cc360b0f3ffd6fa",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      },
+      "targetElement": "StepButton",
+      "targetPath": "TacticalView/StepButton",
+      "targetInstanceId": -208626,
+      "screenPosition": {
+        "x": 1335,
+        "y": 157.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "c33078edada74cb3ba8b0b90971625be",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "c4908c966e904a83af4273e6b71c8bf3",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StatusText"
+      }
+    },
+    "ok": true,
+    "requestId": "e947eb34d18742c3b8d4244bf4d6c612",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "StatusText",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "节点 10000　待提交 False\n本批计算 1　通知 2\nFlush 2.582 ms　GC 0 B\n原子读取 True　递归拒绝 False\n连续推进 False",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleLeft",
+          "alignByGeometry": "False",
+          "fontSize": "26",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "364",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "150",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "15",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "StatusText",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "DistinctButton"
+      }
+    },
+    "ok": true,
+    "requestId": "c97fb7ce441c4233893a19f1cb6c5f8b",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "DistinctButton"
+      },
+      "targetElement": "DistinctButton",
+      "targetPath": "TacticalView/DistinctButton",
+      "targetInstanceId": -208602,
+      "screenPosition": {
+        "x": 959,
+        "y": 157.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "6e7bbf73b3e240b69ffab1f72939b53e",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      }
+    },
+    "ok": true,
+    "requestId": "becd168d1747421892af5e17acb53f13",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      },
+      "targetElement": "StepButton",
+      "targetPath": "TacticalView/StepButton",
+      "targetInstanceId": -208626,
+      "screenPosition": {
+        "x": 1335,
+        "y": 157.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "a2de9d5df9b24b2aa644777c6de43036",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "486f598a7a7149219d6a869adc28a237",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StatusText"
+      }
+    },
+    "ok": true,
+    "requestId": "52df549026b647038e6aabc6d299c1c3",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "StatusText",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "节点 10000　待提交 False\n本批计算 1000　通知 1001\nFlush 4.893 ms　GC 0 B\n原子读取 True　递归拒绝 False\n连续推进 False",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleLeft",
+          "alignByGeometry": "False",
+          "fontSize": "26",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "364",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "150",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "15",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "StatusText",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "UnchangedButton"
+      }
+    },
+    "ok": true,
+    "requestId": "406bba1247104a85bf11fdc5ed0db99a",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "UnchangedButton"
+      },
+      "targetElement": "UnchangedButton",
+      "targetPath": "TacticalView/UnchangedButton",
+      "targetInstanceId": -208674,
+      "screenPosition": {
+        "x": 207,
+        "y": 77.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "636951d6a754407da6388d6c6665661a",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      }
+    },
+    "ok": true,
+    "requestId": "30a9611531a04321a7cf1c1954c505cd",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      },
+      "targetElement": "StepButton",
+      "targetPath": "TacticalView/StepButton",
+      "targetInstanceId": -208626,
+      "screenPosition": {
+        "x": 1335,
+        "y": 157.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "701f34e844d848e5b44923b22b475b57",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StatusText"
+      }
+    },
+    "ok": true,
+    "requestId": "dd5c7ab6b4804e56a6efe35ae0dc2ddb",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "StatusText",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "节点 10000　待提交 False\n本批计算 1000　通知 0\nFlush 0.415 ms　GC 0 B\n原子读取 True　递归拒绝 False\n连续推进 False",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleLeft",
+          "alignByGeometry": "False",
+          "fontSize": "26",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "364",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "150",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "15",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "StatusText",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "WaveButton"
+      }
+    },
+    "ok": true,
+    "requestId": "15c04f7d4b1a41c5a5d9b65ac3983ad4",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "WaveButton"
+      },
+      "targetElement": "WaveButton",
+      "targetPath": "TacticalView/WaveButton",
+      "targetInstanceId": -208698,
+      "screenPosition": {
+        "x": 583,
+        "y": 77.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "93ff88df106042d88481e2f25485edb4",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      }
+    },
+    "ok": true,
+    "requestId": "81b18b2d8eb04fd68cc8a73d89c6965c",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      },
+      "targetElement": "StepButton",
+      "targetPath": "TacticalView/StepButton",
+      "targetInstanceId": -208626,
+      "screenPosition": {
+        "x": 1335,
+        "y": 157.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "2d221423708c401eb9008a0a346ff341",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StatusText"
+      }
+    },
+    "ok": true,
+    "requestId": "58e21196259645248bd9dc8a530c40a3",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "StatusText",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "节点 10000　待提交 True\n本批计算 1　通知 2\nFlush 2.139 ms　GC 0 B\n原子读取 True　递归拒绝 False\n连续推进 False",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleLeft",
+          "alignByGeometry": "False",
+          "fontSize": "26",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "364",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "150",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "15",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "StatusText",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      }
+    },
+    "ok": true,
+    "requestId": "1257e61827224ad3aa9be8726ed0daf5",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      },
+      "targetElement": "StepButton",
+      "targetPath": "TacticalView/StepButton",
+      "targetInstanceId": -208626,
+      "screenPosition": {
+        "x": 1335,
+        "y": 157.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "e238a8fad91c4e739d3e9be815c7c480",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "RecursiveButton"
+      }
+    },
+    "ok": true,
+    "requestId": "efc9157eaa7340d395cfb74ee3d9c82f",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "RecursiveButton"
+      },
+      "targetElement": "RecursiveButton",
+      "targetPath": "TacticalView/RecursiveButton",
+      "targetInstanceId": -208722,
+      "screenPosition": {
+        "x": 959,
+        "y": 77.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "ab83c12afae14b7b9b8b2a4498d7b154",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      }
+    },
+    "ok": true,
+    "requestId": "83e4e3ecebf946fc926bd60a1e931269",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      },
+      "targetElement": "StepButton",
+      "targetPath": "TacticalView/StepButton",
+      "targetInstanceId": -208626,
+      "screenPosition": {
+        "x": 1335,
+        "y": 157.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "d273928fad9b47ca9696f2eae82e1e7b",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StatusText"
+      }
+    },
+    "ok": true,
+    "requestId": "6a5159e9638a401cbea21089c9be330c",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "StatusText",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "节点 10000　待提交 False\n本批计算 1　通知 2\nFlush 2.375 ms　GC 0 B\n原子读取 True　递归拒绝 True\n连续推进 False",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleLeft",
+          "alignByGeometry": "False",
+          "fontSize": "26",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "354",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "150",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "15",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "StatusText",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "SaturationButton"
+      }
+    },
+    "ok": true,
+    "requestId": "6793d8e61b4e445e90ba9a13ec565044",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "SaturationButton"
+      },
+      "targetElement": "SaturationButton",
+      "targetPath": "TacticalView/SaturationButton",
+      "targetInstanceId": -208746,
+      "screenPosition": {
+        "x": 1335,
+        "y": 77.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "e042c35a69b945f380e365feccfe6331",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      }
+    },
+    "ok": true,
+    "requestId": "8105737fc0904ee789d945d116329346",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "StepButton"
+      },
+      "targetElement": "StepButton",
+      "targetPath": "TacticalView/StepButton",
+      "targetInstanceId": -208626,
+      "screenPosition": {
+        "x": 1335,
+        "y": 157.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "01ed4dd898f64bff8cba65da9c712bba",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "DetailsButton"
+      }
+    },
+    "ok": true,
+    "requestId": "959d37ec5f1d47dfbe26a84b3871d2b0",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "DetailsButton"
+      },
+      "targetElement": "DetailsButton",
+      "targetPath": "TacticalView/DetailsButton",
+      "targetInstanceId": -208770,
+      "screenPosition": {
+        "x": 1711,
+        "y": 77.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "c9efc756188d42d69255c96e81bfe00d",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "1dc38f2812a345038ac1d53f094fdd30",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "DetailsText"
+      }
+    },
+    "ok": true,
+    "requestId": "9bd45fb514d34618897fb71bcb69ec9c",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "DetailsText",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "节点 10000　待提交 False\n本批计算 2　通知 3\nFlush 2.098 ms　GC 0 B\n原子读取 True　递归拒绝 True\n连续推进 False\n操作：Step\n预期：1000次重复失效计算1次；1000个不同Rule计算1000次。同批BatchVersion相同，回调失效下一批生效；同值不通知。耗时与分配仅测Flush。\nKey: Simulation\nSumAggregator / Count 2147483647 / Batch 8\nDirty False / Rules 0 / Subscribers 2 / Dynamic False\n子 Simulation/1\n子 Simulation/2\n子 Simulation/3\n子 Simulation/4\n子 Simulation/5\n子 Simulation/6\n共 9999 个子节点；完整图见 Debugger。\n",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "UpperLeft",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "1440",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "475",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "40",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "DetailsText",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "DetailsButton"
+      }
+    },
+    "ok": true,
+    "requestId": "fd699725102b482da7c1d0f12fd65ae6",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "DetailsButton"
+      },
+      "targetElement": "DetailsButton",
+      "targetPath": "TacticalView/DetailsButton",
+      "targetInstanceId": -208770,
+      "screenPosition": {
+        "x": 1711,
+        "y": 77.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "8248ebcd702e449794bf72867c5e3882",
+    "data": {
+      "views": [
+        {
+          "name": "TacticalView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "TacticalViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "BackButton"
+      }
+    },
+    "ok": true,
+    "requestId": "06688fbf4d3444ceb8f8e7a67895b998",
+    "data": {
+      "selector": {
+        "view": "TacticalView",
+        "element": "BackButton"
+      },
+      "targetElement": "BackButton",
+      "targetPath": "TacticalView/TopBar/BackButton",
+      "targetInstanceId": -208386,
+      "screenPosition": {
+        "x": 118,
+        "y": 1007
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "83cf9cc9cd084e3899c4822a35c9b3fd",
+    "data": {
+      "views": [
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "console",
+    "args": {
+      "action": "get",
+      "types": [
+        "error"
+      ],
+      "count": 50
+    },
+    "ok": true,
+    "requestId": "e0bc3fb6d73a442abdac5ed6a5ae6c49",
+    "data": {
+      "action": "get",
+      "totalCount": 312,
+      "requestedCount": 50,
+      "returnedCount": 0,
+      "entries": []
+    }
+  },
+  {
+    "tool": "scene",
+    "args": {
+      "action": "get_active"
+    },
+    "ok": true,
+    "requestId": "f3bd882d2b1a47bc9c8ae842d6e5a9f2",
+    "data": {
+      "action": "get_active",
+      "scene": {
+        "name": "RedDotQuickStart",
+        "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Scenes/RedDotQuickStart.unity",
+        "isDirty": false,
+        "buildIndex": 0,
+        "isLoaded": true,
+        "rootCount": 4
+      }
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "30195ee039ea48d59181def4d094dade",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "HomeBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "52bac02e0a9f4d5eaa9ce9931f64c001",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "HomeBadgeVisual",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "CompleteWatchButton"
+      }
+    },
+    "ok": true,
+    "requestId": "2c9c9cfb86634e84a88746e396e240d3",
+    "data": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "CompleteWatchButton"
+      },
+      "targetElement": "CompleteWatchButton",
+      "targetPath": "GameHomeView/CompleteWatchButton",
+      "targetInstanceId": -234038,
+      "screenPosition": {
+        "x": 456,
+        "y": 70
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "acd52d598bcd49428527c1aa6c58f4af",
+    "data": {
+      "views": [
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "a8a8c14ffb45464098fc3cc4b3ccbeca",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "StatusText"
+      }
+    },
+    "ok": true,
+    "requestId": "731140eb6b474e93ae14c20a36e78034",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "StatusText",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "档案 曙光 · 已连接\n当前基地事务已全部处理。\n请选择下方部门，远征舰队独立运行。",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleLeft",
+          "alignByGeometry": "False",
+          "fontSize": "26",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "442",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "90",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "10",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "StatusText",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "HomeBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "1b975c04fb694d6a897a4fc95ff2b132",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "HomeBadgeVisual",
+          "activeInHierarchy": "False",
+          "activeSelf": "False",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "SeasonNavBadgeCount"
+      }
+    },
+    "ok": true,
+    "requestId": "280b966b51fb4263ad1d50b22590254b",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "SeasonNavBadgeCount",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      },
+      {
+        "type": "Text",
+        "properties": {
+          "text": "2",
+          "supportRichText": "True",
+          "resizeTextForBestFit": "False",
+          "resizeTextMinSize": "10",
+          "resizeTextMaxSize": "40",
+          "alignment": "MiddleCenter",
+          "alignByGeometry": "False",
+          "fontSize": "22",
+          "horizontalOverflow": "Wrap",
+          "verticalOverflow": "Truncate",
+          "lineSpacing": "1",
+          "fontStyle": "Normal",
+          "pixelsPerUnit": "1",
+          "minWidth": "0",
+          "preferredWidth": "12",
+          "flexibleWidth": "-1",
+          "minHeight": "0",
+          "preferredHeight": "25",
+          "flexibleHeight": "-1",
+          "layoutPriority": "0",
+          "maskable": "True",
+          "isMaskingGraphic": "False",
+          "color": "RGBA(0.918, 0.957, 0.973, 1.000)",
+          "raycastTarget": "False",
+          "depth": "44",
+          "useGUILayout": "True",
+          "didStart": "True",
+          "didAwake": "True",
+          "runInEditMode": "True",
+          "enabled": "True",
+          "isActiveAndEnabled": "True",
+          "tag": "Untagged",
+          "name": "SeasonNavBadgeCount",
+          "hideFlags": "None"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "MailButton"
+      }
+    },
+    "ok": true,
+    "requestId": "be428f0599734d4387044be3019e93a8",
+    "data": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "MailButton"
+      },
+      "targetElement": "MailButton",
+      "targetPath": "GameHomeView/MailButton",
+      "targetInstanceId": -233790,
+      "screenPosition": {
+        "x": 1122,
+        "y": 197
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "aaaf0059504843b9a04a153ed4f89b69",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "ReceiveButton"
+      }
+    },
+    "ok": true,
+    "requestId": "226fed6a59054ec790c601037f5af186",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "ReceiveButton"
+      },
+      "targetElement": "ReceiveButton",
+      "targetPath": "MailView/ReceiveButton",
+      "targetInstanceId": -234448,
+      "screenPosition": {
+        "x": 207,
+        "y": 287.5
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "505d887037c34319af4cbfb09baf598a",
+    "data": {
+      "views": [
+        {
+          "name": "MailView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 1,
+          "viewModelType": "MailViewModel"
+        },
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 2
+    }
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "MailView",
+        "element": "BackButton"
+      }
+    },
+    "ok": true,
+    "requestId": "58f85b31f3b94c5b97065843c256d2e6",
+    "data": {
+      "selector": {
+        "view": "MailView",
+        "element": "BackButton"
+      },
+      "targetElement": "BackButton",
+      "targetPath": "MailView/TopBar/BackButton",
+      "targetInstanceId": -234160,
+      "screenPosition": {
+        "x": 118,
+        "y": 1007
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "a02a25624e3e4e8c813f2a8d63327d60",
+    "data": {
+      "views": [
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "HomeBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "74f97dfb5b88441983c447fed69bce13",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "HomeBadgeVisual",
+          "activeInHierarchy": "True",
+          "activeSelf": "True",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "DisconnectButton"
+      }
+    },
+    "ok": true,
+    "requestId": "c9c0def6288c49c3a683c5e6070690a2",
+    "data": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "DisconnectButton"
+      },
+      "targetElement": "DisconnectButton",
+      "targetPath": "GameHomeView/DisconnectButton",
+      "targetInstanceId": -233568,
+      "screenPosition": {
+        "x": 1525,
+        "y": 380
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "12bdac5dc68c4cc69e7d94b86f013259",
+    "data": {
+      "views": [
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "editor",
+    "args": {
+      "action": "menu_item",
+      "menu_path": "FUI/Red Dot/Sample/Capture Game View"
+    },
+    "ok": true,
+    "requestId": "1a93375ef0764e05a8dbb24be04fdf2f",
+    "data": {
+      "action": "menu_item",
+      "success": true,
+      "menuPath": "FUI/Red Dot/Sample/Capture Game View",
+      "executed": true
+    }
+  },
+  {
+    "tool": "ui_inspect_element_detail",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "HomeBadgeVisual"
+      }
+    },
+    "ok": true,
+    "requestId": "6c3d2f9eff78434b98c626919b111c0f",
+    "data": [
+      {
+        "type": "GameObject",
+        "properties": {
+          "name": "HomeBadgeVisual",
+          "activeInHierarchy": "False",
+          "activeSelf": "False",
+          "layer": "Default",
+          "tag": "Untagged"
+        }
+      }
+    ]
+  },
+  {
+    "tool": "ui_click_element",
+    "args": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "ConnectButton"
+      }
+    },
+    "ok": true,
+    "requestId": "685441ba3b124408afe4e187f7827df4",
+    "data": {
+      "selector": {
+        "view": "GameHomeView",
+        "element": "ConnectButton"
+      },
+      "targetElement": "ConnectButton",
+      "targetPath": "GameHomeView/ConnectButton",
+      "targetInstanceId": -233544,
+      "screenPosition": {
+        "x": 1307,
+        "y": 380
+      },
+      "clickedVia": "Button",
+      "isOccluded": false
+    }
+  },
+  {
+    "tool": "ui_list_open_views",
+    "args": {},
+    "ok": true,
+    "requestId": "e41043583bfb49f1b299bc0eed025c7d",
+    "data": {
+      "views": [
+        {
+          "name": "GameHomeView",
+          "state": "Alive, Enabled",
+          "layer": 0,
+          "order": 0,
+          "viewModelType": "GameHomeViewModel"
+        }
+      ],
+      "count": 1
+    }
+  },
+  {
+    "tool": "console",
+    "args": {
+      "action": "get",
+      "types": [
+        "error"
+      ],
+      "count": 50
+    },
+    "ok": true,
+    "requestId": "866c7459f9ba4393a8d597a4e649bd8b",
+    "data": {
+      "action": "get",
+      "totalCount": 50,
+      "requestedCount": 50,
+      "returnedCount": 0,
+      "entries": []
+    }
+  }
+]

@@ -404,11 +404,9 @@ namespace FUI.Editor.ILPostProcessing
 		{
 			var debugInfo = setter.DebugInformation;
 			SequencePoint firstSp = null;
-			List<SequencePoint> original = null;
 			if (debugInfo != null && debugInfo.HasSequencePoints)
 			{
 				firstSp = debugInfo.SequencePoints[0];
-				original = new List<SequencePoint>(debugInfo.SequencePoints);
 			}
 
 			setter.Body.Variables.Clear();
@@ -466,7 +464,7 @@ namespace FUI.Editor.ILPostProcessing
 
 			var ret = il.Create(OpCodes.Ret);
 			il.Append(ret);
-			MapSequencePoints(debugInfo, firstSp, original, firstInstruction, ret);
+			MapSequencePoints(debugInfo, firstSp, firstInstruction);
 		}
 
 		/// <summary>
@@ -511,9 +509,10 @@ namespace FUI.Editor.ILPostProcessing
 		}
 
 		/// <summary>
-		/// 映射调试序列点，尽量保留源代码行信息。
+		/// 用原 setter 的首个源代码跨度标记新方法入口。
+		/// 不合成零跨度可见点或重复 IL 偏移，以免生成无法解码的 Portable PDB。
 		/// </summary>
-		static void MapSequencePoints(MethodDebugInformation debugInfo, SequencePoint firstSp, List<SequencePoint> original, Instruction firstInstruction, Instruction ret)
+		static void MapSequencePoints(MethodDebugInformation debugInfo, SequencePoint firstSp, Instruction firstInstruction)
 		{
 			if (debugInfo == null || firstSp == null || firstSp.Document == null)
 			{
@@ -524,31 +523,6 @@ namespace FUI.Editor.ILPostProcessing
 			{
 				StartLine = firstSp.StartLine,
 				StartColumn = firstSp.StartColumn,
-				EndLine = firstSp.EndLine,
-				EndColumn = firstSp.EndColumn
-			});
-			if (original != null && original.Count >1)
-			{
-				for (var i =1; i < original.Count; i++)
-				{
-					var osp = original[i];
-					if (osp == null || osp.Document == null)
-					{
-						continue;
-					}
-					debugInfo.SequencePoints.Add(new SequencePoint(ret, osp.Document)
-					{
-						StartLine = osp.StartLine,
-						StartColumn = osp.StartColumn,
-						EndLine = osp.EndLine,
-						EndColumn = osp.EndColumn
-					});
-				}
-			}
-			debugInfo.SequencePoints.Add(new SequencePoint(ret, firstSp.Document)
-			{
-				StartLine = firstSp.EndLine,
-				StartColumn = firstSp.EndColumn,
 				EndLine = firstSp.EndLine,
 				EndColumn = firstSp.EndColumn
 			});

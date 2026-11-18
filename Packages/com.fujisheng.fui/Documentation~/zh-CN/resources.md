@@ -37,13 +37,14 @@ Provider 不应依赖生成的 `Routes` 类型，也不应把具体后端 Handle
 - 创建失败前已经取得的临时资源由 Provider 自行释放。
 - 返回成功后，资源所有权转移给返回 Lease。
 - `Dispose` 必须幂等，避免取消、回滚和关闭竞争导致重复释放。
+- `Navigator.PreloadAsync` 捕获调用时的 Provider；替换 Provider 或关闭 Navigator 会使未完成预热失效，迟到 Lease 只释放，不进入新 Provider 的预热池。
 
 ## View 创建
 
 Provider 完成以下工作：
 
 1. 依据 `RouteDescriptor.AssetKey` 定位资源。
-2. 创建 UGUI 实例并取得 `FUI.Rendering.UGUI.View`。
+2. 创建 UGUI 实例并取得 `FUI.Rendering.UGUI.View`（需安装 `com.fujisheng.fui.ugui`）。
 3. 为页面创建 `IAssetScope`。
 4. 返回同时持有 View 与 Scope 的 `IViewLease`。
 

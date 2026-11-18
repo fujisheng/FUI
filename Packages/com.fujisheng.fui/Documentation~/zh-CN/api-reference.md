@@ -12,8 +12,7 @@
 
 - `ViewModel`、`Presenter<TViewModel>`
 - `IView`、`IElement`、`IListView`
-- `View`、`Element`、`ComponentElement<TComponent>`
-- `FUI.Rendering.UGUI.Elements` 中的内置 Element
+- `com.fujisheng.fui.ugui` 中的 uGUI 实现：`View`、`Element`、`ComponentElement<TComponent>`，以及 `FUI.Rendering.UGUI.Elements` 中的内置 Element
 
 ## Navigation
 

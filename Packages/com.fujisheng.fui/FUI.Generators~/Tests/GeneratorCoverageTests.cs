@@ -76,7 +76,7 @@ public partial class SecondViewModel : FUI.Binding.INotifyPropertyChanged { }
         }
 
         [Test]
-        public void AsyncPresenterDisablesSynchronousRouteOpening()
+        public void BusinessAsyncMethodDoesNotChangeRouteContract()
         {
             const string source = @"
 using System;
@@ -95,7 +95,7 @@ namespace FUI.Presentation
 {
     public abstract class PresenterBase
     {
-        protected virtual ValueTask OnOpenAsync(object parameter) => default;
+        protected virtual ValueTask LoadBusinessDataAsync(object parameter) => default;
     }
 }
 [FUI.Binding.ViewContract(""AsyncView"")]
@@ -103,7 +103,7 @@ public partial class AsyncViewModel : FUI.Binding.INotifyPropertyChanged { }
 [FUI.Binding.PresenterFor(typeof(AsyncViewModel))]
 public sealed class AsyncPresenter : FUI.Presentation.PresenterBase
 {
-    protected override ValueTask OnOpenAsync(object parameter) => default;
+    protected override ValueTask LoadBusinessDataAsync(object parameter) => default;
 }
 ";
 
@@ -111,7 +111,57 @@ public sealed class AsyncPresenter : FUI.Presentation.PresenterBase
             var routes = result.GeneratedTrees.Single(tree => tree.FilePath.Contains("Routes.g.cs")).ToString();
 
             Assert.That(routes, Does.Contain("typeof(global::AsyncPresenter)"));
-            Assert.That(routes, Does.Contain("supportsSynchronousOpen: false"));
+            Assert.That(routes, Does.Not.Contain("supportsSynchronousOpen"));
+        }
+
+        [Test]
+        public void BusinessAsyncDependencyDoesNotChangeParentRouteContract()
+        {
+            const string source = @"
+using System;
+using System.Threading.Tasks;
+[assembly: FUI.Binding.ViewModule(""Tests.UI"")]
+namespace FUI.Binding
+{
+    public sealed class ViewModuleAttribute : Attribute { public ViewModuleAttribute(string name) { } }
+    public sealed class ViewContractAttribute : Attribute { public ViewContractAttribute(string name) { } }
+    public sealed class PresenterForAttribute : Attribute { public PresenterForAttribute(Type type) { } }
+    public interface INotifyPropertyChanged { }
+    public interface INotifyCollectionChanged { }
+    public interface IBindableProperty<T> { }
+}
+namespace FUI.Navigation
+{
+    public sealed class RoutePolicyAttribute : Attribute
+    {
+        public Type[] RequiredBefore { get; set; }
+    }
+}
+namespace FUI.Presentation
+{
+    public abstract class PresenterBase
+    {
+        protected virtual ValueTask LoadBusinessDataAsync(object parameter) => default;
+    }
+}
+[FUI.Binding.ViewContract(""ChildView"")]
+public partial class ChildViewModel : FUI.Binding.INotifyPropertyChanged { }
+[FUI.Binding.PresenterFor(typeof(ChildViewModel))]
+public sealed class ChildPresenter : FUI.Presentation.PresenterBase
+{
+    protected override ValueTask LoadBusinessDataAsync(object parameter) => default;
+}
+[FUI.Binding.ViewContract(""ParentView"")]
+[FUI.Navigation.RoutePolicy(RequiredBefore = new[] { typeof(ChildViewModel) })]
+public partial class ParentViewModel : FUI.Binding.INotifyPropertyChanged { }
+";
+
+            var result = RunGenerator(source);
+            var routes = result.GeneratedTrees.Single(tree => tree.FilePath.Contains("Routes.g.cs")).ToString();
+
+            Assert.That(result.Diagnostics, Is.Empty);
+            Assert.That(routes, Does.Not.Contain("supportsSynchronousOpen"));
+            Assert.That(routes, Does.Contain("DependencyTiming.RequiredBefore"));
         }
 
         [Test]

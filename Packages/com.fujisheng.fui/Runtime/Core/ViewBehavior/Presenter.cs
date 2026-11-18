@@ -34,10 +34,6 @@ namespace FUI.Presentation
         /// <param name="param">打开时传入的参数</param>
         protected virtual void OnOpen(object param) { }
 
-        /// <summary>
-        /// 异步打开生命周期。覆盖后该 Route 只能通过 OpenAsync 打开。
-        /// </summary>
-        protected virtual ValueTask OnOpenAsync(object param, CancellationToken cancellationToken) => default;
 
         /// <summary>
         /// 当这个界面是当前聚焦的View的时候
@@ -102,7 +98,6 @@ namespace FUI.Presentation
         }
 
         void IPresenter.OnOpen(object param) => OnOpen(param);
-        ValueTask IPresenter.OnOpenAsync(object param, CancellationToken cancellationToken) => OnOpenAsync(param, cancellationToken);
         void IPresenter.OnFocus() => OnFocus();
         void IPresenter.OnUnfocus() => OnUnfocus();
         void IPresenter.OnCovered() => OnCovered();

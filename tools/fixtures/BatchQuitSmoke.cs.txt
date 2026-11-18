@@ -1,0 +1,34 @@
+using System;
+using FUI.Samples.Settings;
+using MixedNotificationProbe;
+using UnityEngine;
+
+// 仅放入隔离测试工程的 Editor 目录；不能调用手动注入或重编译补救。
+public static class BatchQuitSmoke
+{
+    public static void Verify()
+    {
+        var mixed = new MixedNotificationViewModel();
+        var mixedCount = 0;
+        mixed.PropertyChanged += (sender, property) =>
+        {
+            if (property == nameof(mixed.Message)) { mixedCount++; }
+        };
+        mixed.Message = "batch-changed";
+        mixed.Message = "batch-changed";
+
+        var pure = new SettingsViewModel();
+        var pureCount = 0;
+        pure.PropertyChanged += (sender, property) =>
+        {
+            if (property == nameof(pure.Volume)) { pureCount++; }
+        };
+        pure.Volume = 0.25f;
+        pure.Volume = 0.25f;
+        if (mixedCount != 1 || pureCount != 1)
+        {
+            throw new InvalidOperationException($"FUI_BATCH_QUIT_SMOKE Mixed={mixedCount}; Pure={pureCount}; expected 1/1");
+        }
+        Debug.Log("FUI_BATCH_QUIT_SMOKE Mixed=1; Pure=1");
+    }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "com.fujisheng.fui.reddot",
+  "displayName": "FUI Red Dot",
+  "version": "0.1.1",
+  "unity": "6000.0",
+  "description": "A batched, generated and FUI-ready red dot notification graph.",
+  "keywords": ["unity", "fui", "red-dot", "notification"],
+  "author": {
+    "name": "Fujisheng",
+    "url": "https://github.com/fujisheng"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fujisheng/FUI.git",
+    "directory": "Packages/com.fujisheng.fui.reddot"
+  },
+  "dependencies": {
+    "com.fujisheng.fui": "2.0.0",
+    "com.fujisheng.fui.ugui": "1.0.0",
+    "com.unity.ugui": "2.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Red Dot Sample",
+      "description": "Static and dynamic nodes, rules, sources and FUI red dot elements.",
+      "path": "Samples~/RedDot Sample"
+    }
+  ]
+}

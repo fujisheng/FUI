@@ -19,5 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../FUI.Generators.csproj" />
+    <ProjectReference Include="../../../../tools/dotnet/FUI.Core.csproj" Aliases="RuntimeCore" />
+    <ProjectReference Include="../../../../tools/dotnet/FUI.Navigation.csproj" Aliases="RuntimeNavigation" />
   </ItemGroup>
 </Project>

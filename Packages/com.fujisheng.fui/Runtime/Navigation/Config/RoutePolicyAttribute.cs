@@ -13,6 +13,8 @@ namespace FUI.Navigation
         public Type EnterTransitionProvider { get; set; }
         public Type ExitTransitionProvider { get; set; }
 
+        /// <summary>提示覆盖层设为 false，保持当前页面的焦点和交互。</summary>
+        public bool TakeFocus { get; set; } = true;
         public bool AllowMultiple { get; set; }
         public HistoryMode HistoryMode { get; set; } = HistoryMode.Stack;
         public CoverageMode CoverageMode { get; set; } = CoverageMode.KeepVisible;

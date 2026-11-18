@@ -138,9 +138,13 @@ public sealed class Target
                 .Select(field => (DiagnosticDescriptor)field.GetValue(null))
                 .ToArray();
 
+            var expectedErrors = Enumerable.Range(1, 11).Select(value => $"FUI{value:000}");
+            Assert.That(descriptors.Where(item => item.DefaultSeverity == DiagnosticSeverity.Error).Select(item => item.Id), Is.EquivalentTo(expectedErrors));
+            Assert.That(descriptors.Where(item => item.DefaultSeverity == DiagnosticSeverity.Warning).Select(item => item.Id), Is.EquivalentTo(new[] { "FUI101", "FUI102", "FUI103", "FUI105" }));
+            Assert.That(descriptors.Where(item => item.DefaultSeverity == DiagnosticSeverity.Info).Select(item => item.Id), Is.EquivalentTo(new[] { "FUI104", "FUI201", "FUI202" }));
             Assert.That(descriptors.Select(item => item.Id), Is.Unique);
             Assert.That(descriptors.All(item => item.Id.StartsWith("FUI", StringComparison.Ordinal)), Is.True);
-            Assert.That(descriptors.Count(item => item.DefaultSeverity == DiagnosticSeverity.Error), Is.EqualTo(9));
+            Assert.That(descriptors.Count(item => item.DefaultSeverity == DiagnosticSeverity.Error), Is.EqualTo(11));
             Assert.That(descriptors.Count(item => item.DefaultSeverity == DiagnosticSeverity.Warning), Is.EqualTo(4));
             Assert.That(descriptors.Count(item => item.DefaultSeverity == DiagnosticSeverity.Info), Is.EqualTo(3));
         }

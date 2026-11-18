@@ -54,8 +54,7 @@ namespace FUI.Navigation
             Func<TViewModel> viewModelFactory,
             Func<IView, TViewModel, object> bindingContextFactory,
             Func<object> presenterFactory,
-            RoutePolicy settings,
-            bool supportsSynchronousOpen = true)
+            RoutePolicy settings)
             : base(new RouteDescriptor(
                 assetKey,
                 typeof(TViewModel),
@@ -69,13 +68,12 @@ namespace FUI.Navigation
                             ?? throw new ArgumentException(
                                 $"Route {assetKey} cannot bind ViewModel {assignedViewModel.GetType().FullName}.",
                                 nameof(assignedViewModel));
-                    view.Initialize();
+                    ViewInstance.PrepareView(view);
                     var bindingContext = bindingContextFactory(view, viewModel);
                     var presenter = presenterFactory();
                     return ViewInstance.CreateGenerated(bindingContext, presenter);
                 },
-                settings,
-                supportsSynchronousOpen))
+                settings))
         {
             if (viewModelFactory == null)
             {
@@ -102,8 +100,7 @@ namespace FUI.Navigation
         /// </summary>
         public Route<TViewModel> CreateViewVariant(
             string assetKey,
-            RoutePolicy settings,
-            bool? supportsSynchronousOpen = null)
+            RoutePolicy settings)
         {
             return new Route<TViewModel>(
                 assetKey,
@@ -111,8 +108,7 @@ namespace FUI.Navigation
                 viewModelFactory,
                 bindingContextFactory,
                 presenterFactory,
-                settings ?? RoutePolicy.Default,
-                supportsSynchronousOpen ?? Descriptor.SupportsSynchronousOpen);
+                settings ?? RoutePolicy.Default);
         }
     }
 
@@ -131,15 +127,13 @@ namespace FUI.Navigation
 
         public RoutePolicy Settings { get; }
 
-        public bool SupportsSynchronousOpen { get; }
 
         internal RouteDescriptor(
             string assetKey,
             Type viewModelType,
             Type presenterType,
             Func<IView, ObservableObject, ViewInstance> instanceFactory,
-            RoutePolicy settings,
-            bool supportsSynchronousOpen)
+            RoutePolicy settings)
         {
             AssetKey = string.IsNullOrWhiteSpace(assetKey)
                 ? throw new ArgumentException("The Route asset key cannot be empty.", nameof(assetKey))
@@ -148,7 +142,6 @@ namespace FUI.Navigation
             PresenterType = presenterType ?? throw new ArgumentNullException(nameof(presenterType));
             this.instanceFactory = instanceFactory ?? throw new ArgumentNullException(nameof(instanceFactory));
             Settings = settings ?? RoutePolicy.Default;
-            SupportsSynchronousOpen = supportsSynchronousOpen;
         }
 
         internal ViewInstance CreateInstance(IView view, ObservableObject viewModel = null)

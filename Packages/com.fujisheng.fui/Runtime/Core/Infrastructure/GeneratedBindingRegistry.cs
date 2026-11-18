@@ -31,7 +31,7 @@ namespace FUI.Infrastructure
                 typeof(TViewModel),
                 (view, viewModel) =>
                 {
-                    view.Initialize();
+                    ViewInstance.PrepareView(view);
                     return ViewInstance.CreateGenerated(
                         bindingContextFactory(view, (TViewModel)viewModel),
                         presenterFactory());

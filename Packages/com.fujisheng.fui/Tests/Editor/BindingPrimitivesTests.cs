@@ -58,6 +58,32 @@ namespace FUI.Tests
         }
 
         [Test]
+        public void NormalizedPropertyNotifiesCanonicalValueOnceAcrossTypedAndObjectWriters()
+        {
+            var changes = new List<float>();
+            var property = new BindableProperty<float>(0, (_, value) => changes.Add(value), value => (float)Math.Round(value));
+            property.Value = 2.6f;
+            ((IWriteOnlyBindableProperty<float>)property).SetValue((object)3.4f);
+            ((IWriteOnlyBindableProperty<float>)property).SetValue((object)4.6f);
+            Assert.That(changes, Is.EqualTo(new[] { 3f, 5f }));
+            Assert.That(property.Value, Is.EqualTo(5f));
+        }
+
+        [Test]
+        public void NormalizerFailureLeavesStoredValueAndNotificationsUnchanged()
+        {
+            var notifications = 0;
+            var property = new BindableProperty<int>(2, (_, value) => notifications++, value =>
+            {
+                if (value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+                return value;
+            });
+            Assert.Throws<ArgumentOutOfRangeException>(() => property.Value = -1);
+            Assert.That(property.Value, Is.EqualTo(2));
+            Assert.That(notifications, Is.Zero);
+        }
+
+        [Test]
         public void BindablePropertyObjectSetterValidatesTypeAndSupportsNullReset()
         {
             var property = new BindableProperty<int>(5);

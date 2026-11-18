@@ -41,11 +41,6 @@ namespace FUI.Presentation
         internal void OnOpen(object param);
 
         /// <summary>
-        /// 同步 OnOpen 完成后执行的异步打开阶段。
-        /// </summary>
-        internal ValueTask OnOpenAsync(object param, CancellationToken cancellationToken);
-
-        /// <summary>
         /// 当这个界面是当前聚焦的View的时候
         /// </summary>
         internal void OnFocus();

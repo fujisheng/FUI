@@ -184,14 +184,18 @@ void {{functionName}}()
         /// <returns></returns>
         public static string BuildV2VMInitFunctionCode(BindingManifest contextInfo, PropertyBindingDescriptor info, string functionName, string converters)
         {
-            return $$"""
-[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-void {{functionName}}()
-{
+            // 仅双向绑定保留非默认 VM 初值；只读视图源必须始终以实际元素为准。
+            var preserveModel = info.bindingMode.HasFlag(BindingMode.OneWay) ? $$"""
     if(this.vm.{{info.propertyInfo.name}} != default)
     {
         return;
     }
+""" : string.Empty;
+            return $$"""
+[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+void {{functionName}}()
+{
+{{preserveModel}}
 
     var element = this.{{GetElementFieldName(info.targetInfo.path, info.targetInfo.type)}};
     if(element == null)

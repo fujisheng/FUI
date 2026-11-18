@@ -6,6 +6,8 @@ UserSettings/
 obj/
 bin/
 *.csproj
+!Packages/com.fujisheng.fui.reddot/FUI.RedDot.Generators~/FUI.RedDot.Generators.csproj
+!Packages/com.fujisheng.fui.reddot/FUI.RedDot.Generators~/Tests/FUI.RedDot.Generators.Tests.csproj
 *.sln
 *.suo
 *.user
@@ -16,3 +18,4 @@ bin/
 *.mdb
 *.opendb
 *.VC.db
+!tools/dotnet/*.csproj

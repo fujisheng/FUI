@@ -114,6 +114,7 @@ namespace FUI.Generators
                 return;
             }
 
+
             var moduleNamespace = Utility.GetModuleNamespace(compilation);
             var source = BuildRegistry(moduleNamespace, routes, defaultByView, defaultByModel);
             context.AddSource("Routes.g.cs", Utility.FormatCode(source));
@@ -162,8 +163,6 @@ namespace FUI.Generators
             var presenter = route.Presenter?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? "global::FUI.Presentation.EmptyPresenter";
             var contextName = $"{vm}.{route.ViewModel.Name}_{route.OwnViewName}_BindingContext";
             var settings = BuildSettings(route, defaultByModel);
-            // Presenter 覆盖 OnOpenAsync 时禁止同步 Open，避免同步 API 返回半提交页面。
-            var supportsSync = !OverridesAsyncOpen(route.Presenter);
             return $@"
     public static global::FUI.Navigation.Route<{vm}> {route.PropertyName} {{ get; }} =
         global::FUI.Infrastructure.GeneratedRouteFactory.Create<{vm}>(
@@ -172,14 +171,14 @@ namespace FUI.Generators
             static () => new {vm}(),
             static (view, viewModel) => new {contextName}(view, viewModel),
             static () => new {presenter}(),
-            {settings},
-            supportsSynchronousOpen: {supportsSync.ToString().ToLowerInvariant()});";
+            {settings});";
         }
 
         static string BuildSettings(RouteInfo route, Dictionary<INamedTypeSymbol, RouteInfo> defaultByModel)
         {
             var layer = 0;
             var allowMultiple = false;
+            var takeFocus = true;
             string enterProvider = null;
             string exitProvider = null;
             var history = "FUI.Navigation.HistoryMode.Stack";
@@ -206,6 +205,7 @@ namespace FUI.Generators
                         case "CacheMode": cache = $"(FUI.Navigation.CacheMode){Convert.ToInt32(pair.Value.Value)}"; break;
                         case "CacheCapacity": cacheCapacity = (int)pair.Value.Value; break;
                         case "CacheDuration": cacheDuration = Convert.ToSingle(pair.Value.Value); break;
+                        case "TakeFocus": takeFocus = (bool)pair.Value.Value; break;
                         case "AllowMultiple": allowMultiple = (bool)pair.Value.Value; break;
                     }
                 }
@@ -230,7 +230,7 @@ namespace FUI.Generators
                 cacheDuration: {cacheDuration.ToString(System.Globalization.CultureInfo.InvariantCulture)}f,
                 enterTransitionProvider: {(enterProvider == null ? "null" : $"new {enterProvider}()")},
                 exitTransitionProvider: {(exitProvider == null ? "null" : $"new {exitProvider}()")},
-                dependencies: {dependencies})";
+                dependencies: {dependencies}){(takeFocus ? "" : ".WithFocus(false)")}";
         }
 
         static bool ValidateDependencies(
@@ -411,15 +411,6 @@ namespace FUI.Generators
                 yield return nested;
                 foreach (var descendant in GetNestedTypes(nested)) yield return descendant;
             }
-        }
-
-        static bool OverridesAsyncOpen(INamedTypeSymbol presenter)
-        {
-            for (var current = presenter; current != null && current.ContainingNamespace?.ToDisplayString() != "FUI.Presentation"; current = current.BaseType)
-            {
-                if (current.GetMembers("OnOpenAsync").OfType<IMethodSymbol>().Any(method => method.IsOverride)) return true;
-            }
-            return false;
         }
 
         static void MakePropertyNamesUnique(List<RouteInfo> routes)

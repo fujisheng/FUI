@@ -18,8 +18,17 @@ namespace FUI.Navigation
     /// </summary>
     public sealed partial class Navigator
     {
+        /// <summary>独立预热操作捕获创建它的 Provider 与版本，防止迟到结果污染新后端。</summary>
+        sealed class PreloadOperation
+        {
+            public int Generation;
+            public IViewProvider Provider;
+            public CancellationTokenSource Cancellation;
+            public CancellationToken Token;
+        }
+
         /// <summary>
-        /// 同步打开强类型 Route。包含异步 OnOpen 的 Route 必须使用 OpenAsync。
+        /// 同步加载资源并呈现强类型 Route；进入动画独立完成。
         /// </summary>
         public ViewHandle Open<TViewModel>(
             Route<TViewModel> route,
@@ -61,10 +70,6 @@ namespace FUI.Navigation
             {
                 throw new ArgumentNullException(nameof(route));
             }
-            if (!route.Descriptor.SupportsSynchronousOpen)
-            {
-                throw new InvalidOperationException($"Route {route} has an asynchronous OnOpen handler and must be opened with OpenAsync.");
-            }
 
             return Open(route, null, param, options);
         }
@@ -80,16 +85,12 @@ namespace FUI.Navigation
             {
                 throw new ArgumentNullException(nameof(route));
             }
-            if (!route.Descriptor.SupportsSynchronousOpen)
-            {
-                throw new InvalidOperationException($"Route {route} has an asynchronous OnOpen handler and must be opened with OpenAsync.");
-            }
 
             return OpenSync(route, viewModel, param, options, OpenOrigin.Explicit, ViewHandle.Invalid, new HashSet<Route>());
         }
 
         /// <summary>
-        /// 异步打开强类型 Route，只等待本次打开操作，不等待其他页面的全局队列。
+        /// 并行准备资源，按异步调用顺序呈现；返回时不等待进入动画。
         /// </summary>
         public async ValueTask<ViewHandle> OpenAsync<TViewModel>(
             Route<TViewModel> route,
@@ -150,15 +151,7 @@ namespace FUI.Navigation
                 throw new ArgumentNullException(nameof(route));
             }
 
-            return await OpenAsyncCore(
-                route,
-                viewModel,
-                param,
-                options,
-                OpenOrigin.Explicit,
-                ViewHandle.Invalid,
-                new HashSet<Route>(),
-                cancellationToken);
+            return await EnqueueOpen(route, viewModel, param, options, cancellationToken);
         }
 
         /// <summary>
@@ -354,13 +347,28 @@ namespace FUI.Navigation
                 return;
             }
 
+            var operation = new PreloadOperation
+            {
+                Generation = preloadGeneration,
+                Provider = viewProvider,
+                Cancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken),
+            };
+            operation.Token = operation.Cancellation.Token;
+            pendingPreloadOperations.Add(operation);
             using var gate = inputGate?.Acquire(ViewHandle.Invalid, OperationPhase.Preload);
             IPreloadLease preload = null;
             try
             {
-                preload = await viewProvider.PreloadAsync(route.Descriptor, cancellationToken);
-                await executionContext.SwitchToMainThreadAsync(cancellationToken);
-                if (preload == null)
+                preload = await operation.Provider.PreloadAsync(route.Descriptor, operation.Token);
+                await executionContext.SwitchToMainThreadAsync(CancellationToken.None);
+                operation.Token.ThrowIfCancellationRequested();
+                if (operation.Generation != preloadGeneration
+                    || !ReferenceEquals(operation.Provider, viewProvider)
+                    || shuttingDown)
+                {
+                    throw new OperationCanceledException("The preload result is stale.", operation.Token);
+                }
+                if (preload == null || !preload.Route.Equals(route.Descriptor))
                 {
                     throw new InvalidOperationException($"The provider could not preload Route {route}.");
                 }
@@ -374,7 +382,26 @@ namespace FUI.Navigation
             }
             finally
             {
-                preload?.Dispose();
+                DisposePreparedResource(preload);
+                await executionContext.SwitchToMainThreadAsync(CancellationToken.None);
+                pendingPreloadOperations.Remove(operation);
+                operation.Cancellation.Dispose();
+            }
+        }
+
+        void InvalidatePendingPreloads()
+        {
+            preloadGeneration++;
+            foreach (var operation in pendingPreloadOperations.ToArray())
+            {
+                try
+                {
+                    operation.Cancellation.Cancel();
+                }
+                catch (Exception exception)
+                {
+                    LogFailure(null, "CancelPreload", exception, "Late preload result will be rejected by generation");
+                }
             }
         }
 
@@ -461,6 +488,8 @@ namespace FUI.Navigation
             }
 
             shuttingDown = true;
+            CancelPendingOpens();
+            InvalidatePendingPreloads();
             var snapshot = entries.Values.ToArray();
             activeOrder.Clear();
             history.Clear();

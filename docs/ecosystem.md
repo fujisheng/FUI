@@ -2,8 +2,15 @@
 
 FUI is a Monorepo for Core and tightly coupled first-party integrations.
 
+## First-party packages
+
+- `com.fujisheng.fui` — renderer-neutral Core: binding, navigation, source generation, and resource leases.
+- `com.fujisheng.fui.ugui` — independent first-party uGUI rendering backend. Core never depends on it; uGUI projects install it alongside Core.
+- `com.fujisheng.fui.reddot` — generated red dot extension. It depends on Core and the uGUI backend and remains uGUI-based.
+
 ## Packages accepted here
 
+- rendering backends implementing the renderer-neutral element contracts;
 - resource backends implementing `IViewProvider` or asset lease contracts;
 - transition integrations implementing `ITransitionProvider`;
 - FUI-specific input gates, log sinks, Elements, converters, or validators;

@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>FUI.Navigation</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="FUI.Core.csproj" />
+    <Compile Include="$(FuiPackageRoot)Runtime/Navigation/**/*.cs" />
+  </ItemGroup>
+</Project>

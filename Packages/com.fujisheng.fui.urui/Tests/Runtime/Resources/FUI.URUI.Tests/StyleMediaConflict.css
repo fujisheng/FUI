@@ -1,0 +1,4 @@
+@media (min-width:1px) {
+ img {opacity:1;}
+ @keyframes enter {from{opacity:.2;}to{opacity:1;}}
+}

@@ -76,14 +76,16 @@ namespace FUI.Generators
             //为每个属性生成对应的委托 并添加绑定代码和解绑代码
             foreach (var property in bindingInfo.properties)
             {
-                BuildNormalPropertyBinding(bindingInfo, property, ref functionBuilder, ref bindingBuilder, ref unbindingBuilder);
-
-                var propertyTargetUniqueName = GetPropertyTargetUniqueName(bindingInfo, property);
-                synchronizationBuilder.AppendLine(
-                    $"            PropertyChanged__{propertyTargetUniqueName}(this.vm, this.vm.{property.propertyInfo.name}, this.vm.{property.propertyInfo.name});");
+                if (property.bindingMode.HasFlag(BindingMode.OneWay))
+                {
+                    BuildNormalPropertyBinding(bindingInfo, property, ref functionBuilder, ref bindingBuilder, ref unbindingBuilder);
+                    var propertyTargetUniqueName = GetPropertyTargetUniqueName(bindingInfo, property);
+                    synchronizationBuilder.AppendLine(
+                        $"            PropertyChanged__{propertyTargetUniqueName}(this.vm, this.vm.{property.propertyInfo.name}, this.vm.{property.propertyInfo.name});");
+                }
 
                 //如果是列表 需要单独构建ListUnbinding代码
-                if (property.propertyInfo.isList)
+                if (property.propertyInfo.isList && property.bindingMode.HasFlag(BindingMode.OneWay))
                 {
                     var listUnbindingFunctionName = $"UnbindingList_{GetPropertyTargetUniqueName(bindingInfo, property)}";
                     functionBuilder.AppendLine(BuildListUnbindingFunctionCode(listUnbindingFunctionName, property));
@@ -138,7 +140,12 @@ namespace FUI.Generators
 
         static bool IsExternalValueProperty(string propertyName)
         {
-            return propertyName == "Position"
+            return propertyName == "RotationValue"
+                || propertyName == "WorldPositionValue"
+                || propertyName == "LocalPositionValue"
+                || propertyName == "LocalScaleValue"
+                || propertyName == "AnchoredPositionValue"
+                || propertyName == "Position"
                 || propertyName == "LocalPosition"
                 || propertyName == "Rotation"
                 || propertyName == "LocalRotation"

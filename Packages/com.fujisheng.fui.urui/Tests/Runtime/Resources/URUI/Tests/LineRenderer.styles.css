@@ -1,0 +1,4 @@
+body { margin:0; }
+.line-parent { position:absolute; left:10px; top:10px; width:200px; height:100px; transform-origin:0 0; transform:scale(2); }
+.line-parent.shifted { left:30px; }
+.line-canvas { position:absolute; left:10px; top:20px; width:100px; height:80px; }

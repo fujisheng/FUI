@@ -31,9 +31,21 @@ namespace FUI.Editor.ILPostProcessing
 			Initialize();
 			CompilationPipeline.assemblyCompilationFinished += OnAssemblyCompilationFinished;
 			EditorApplication.delayCall += EnsureCurrentTargetProcessed;
+			EditorApplication.quitting += CompleteTargetBeforeQuit;
 		}
 
 		static void EnsureCurrentTargetProcessed()
+		{
+			EnsureCurrentTargetProcessed(true);
+		}
+
+		static void CompleteTargetBeforeQuit()
+		{
+			// batchmode -quit 不保证执行 delayCall；退出前完成检查，供下次加载使用。
+			EnsureCurrentTargetProcessed(false);
+		}
+
+		static void EnsureCurrentTargetProcessed(bool reloadModifiedTarget)
 		{
 			if (!TryLoadSetting(out setting) || !HasValidTarget(setting))
 			{
@@ -48,7 +60,7 @@ namespace FUI.Editor.ILPostProcessing
 
 			try
 			{
-				if (ObservableObjectILPostProcessor.ProcessAssemblyFile(assemblyPath))
+				if (ObservableObjectILPostProcessor.ProcessAssemblyFile(assemblyPath) && reloadModifiedTarget)
 				{
 					// 包或 ILPP 自身升级时，目标程序集可能已由旧处理器编译；补写后重新加载一次。
 					EditorUtility.RequestScriptReload();

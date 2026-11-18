@@ -1,0 +1,28 @@
+{
+  "name": "com.fujisheng.fui.ugui",
+  "displayName": "FUI UGUI",
+  "version": "1.0.0",
+  "unity": "6000.0",
+  "keywords": ["unity", "framework", "mvvm", "fui", "ugui"],
+  "description": "uGUI rendering backend for FUI.",
+  "author": { "name": "Fujisheng", "url": "https://github.com/fujisheng" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fujisheng/FUI.git",
+    "directory": "Packages/com.fujisheng.fui.ugui"
+  },
+  "documentationUrl": "https://github.com/fujisheng/FUI/tree/main/Packages/com.fujisheng.fui.ugui/Documentation~",
+  "changelogUrl": "https://github.com/fujisheng/FUI/blob/main/Packages/com.fujisheng.fui.ugui/CHANGELOG.md",
+  "licensesUrl": "https://github.com/fujisheng/FUI/blob/main/Packages/com.fujisheng.fui.ugui/LICENSE.md",
+  "samples": [
+    {
+      "displayName": "Settings Sample",
+      "description": "Generated binding, typed navigation and two-way uGUI controls without external assets.",
+      "path": "Samples~/Settings Sample"
+    }
+  ],
+  "dependencies": {
+    "com.fujisheng.fui": "2.0.0",
+    "com.unity.ugui": "2.0.0"
+  }
+}

@@ -1,0 +1,45 @@
+using System;using System.Collections.Generic;using FUI.Binding;using FUI.Rendering;using FUI.Testing;
+[assembly:ViewModule("Batch2Probe.Generated",PropertyMode=PropertyGenerationMode.Pure)]
+namespace Batch2Probe{
+[ViewContract("Controls")]public partial class Vm:FUI.Presentation.ViewModel{
+[ObservableProperty][Bind("Drop",nameof(IDropdownElement.Value),bindingMode:BindingMode.TwoWay)]int selection=5;
+[ObservableProperty][Bind("Drop",nameof(IDropdownElement.Options))]IReadOnlyList<string> options=new[]{"a","b","c"};
+[ObservableProperty][Bind("Drop",nameof(IMultiSelectDropdownElement.MultiSelect))]bool multiple=true;
+[ObservableProperty][Bind("Drop",nameof(IDropdownElement.AlphaFadeSpeed))]float fade=.25f;
+[ObservableProperty][Bind("Input",nameof(IInputFieldElement.Text),bindingMode:BindingMode.TwoWay)]string draft="seed";
+[ObservableProperty][Bind("Input",nameof(IInputFieldElement.ReadOnly))]bool readOnly=false;
+[ObservableProperty][Bind("Input",nameof(IInputFieldElement.CharacterLimit))]int limit=7;
+[ObservableProperty][Bind("Input",nameof(IInputFieldElement.CaretWidth))]int width=2;
+[ObservableProperty][Bind("Input",nameof(IInputFieldElement.CaretBlinkRate))]float blink=.5f;
+[ObservableProperty][Bind("Scroll",nameof(IScrollbarElement.Value),bindingMode:BindingMode.TwoWay)]float position=.25f;
+[ObservableProperty][Bind("Scroll",nameof(IScrollbarElement.Size))]float size=.3f;
+[ObservableProperty][Bind("Scroll",nameof(IScrollbarElement.NumberOfSteps))]int steps=4;
+[ObservableProperty][Bind("Input",nameof(IInputFieldElement.Visible))]bool showInput=true;
+[ObservableProperty][Bind("Drop",nameof(IDropdownElement.Interactable))]bool enableDrop=true;
+[ObservableProperty][Bind("Scroll",nameof(IScrollbarElement.Interactable))]bool enableScroll=true;
+public List<string> Trace=new List<string>();
+[Command("Drop",nameof(IDropdownElement.ValueChanged))]void Select(int value){Trace.Add("drop:"+value);}
+[Command("Input",nameof(IInputFieldElement.ValueChanged))]void Edit(string value){Trace.Add("edit:"+value);}
+[Command("Input",nameof(IInputFieldElement.EndEdit))]void Finish(string value){Trace.Add("end:"+value);}
+[Command("Input",nameof(IInputFieldElement.Submit))]void Send(string value){Trace.Add("submit:"+value);}
+[Command("Scroll",nameof(IScrollbarElement.ValueChanged))]void Scroll(float value){Trace.Add("scroll:"+value);}
+}
+public static class Scenario{public static string[] Run(int n){Generated.Routes.Initialize();var d=new HeadlessMultiSelectDropdownElement("Drop");var i=new HeadlessInputFieldElement("Input");var s=new HeadlessScrollbarElement("Scroll");var vm=new Vm();var view=new HeadlessView("Controls",d,i,s);using(var p=Projection.Create(view,vm)){p.Activate();
+if(n==0){return new[]{ReferenceEquals(((IDropdownElement)d).ValueChanged,d.OnValueChanged).ToString(),ReferenceEquals(((IScrollbarElement)s).Value,((IFloatValueElement)s).Value).ToString(),ReferenceEquals(((IScrollbarElement)s).ValueChanged,s.OnValueChanged).ToString(),ReferenceEquals(((IInputFieldElement)i).ValueChanged,i.OnValueChanged).ToString(),ReferenceEquals(((IInputFieldElement)i).EndEdit,i.OnEndEdit).ToString(),ReferenceEquals(((IInputFieldElement)i).Submit,i.OnSubmit).ToString(),(((object)new HeadlessDropdownElement("Plain")) is IMultiSelectDropdownElement).ToString()};}
+if(n==1){vm.Selection=10;vm.Draft="code";vm.Position=.8f;return new[]{d.Value.Value.ToString(),i.Text.Value,s.Value.Value.ToString(),vm.Trace.Count.ToString()};}
+if(n==2){d.Input(10);return new[]{vm.Selection.ToString(),d.Value.Value.ToString(),d.MultiSelect.Value.ToString(),string.Join("|",vm.Trace)};}
+if(n==3){var c=0;d.Value.OnValueChanged+=(a,b)=>c++;d.Input(10);d.Input(10);return new[]{c.ToString(),string.Join("|",vm.Trace)};}
+if(n==4){i.Input(null);i.EndEditing("finish");i.SubmitInput("send");return new[]{vm.Draft,i.Text.Value,string.Join("|",vm.Trace)};}
+if(n==5){vm.ReadOnly=true;i.Input("blocked");i.EndEditing("end");i.SubmitInput(null);return new[]{vm.Draft,i.Text.Value,string.Join("|",vm.Trace)};}
+if(n==6){d.Interactable.Value=false;i.Visible.Value=false;s.Interactable.Value=false;d.Input(9);i.Input("blocked");s.Input(.9f);var c=vm.Trace.Count;d.Interactable.Value=true;i.Visible.Value=true;s.Interactable.Value=true;d.Input(9);i.Input("go");s.Input(.9f);return new[]{c.ToString(),vm.Selection.ToString(),vm.Draft,vm.Position.ToString(),vm.Trace.Count.ToString()};}
+if(n==7){s.Input(-.75f);s.Input(-.75f);return new[]{vm.Position.ToString(),string.Join("|",vm.Trace)};}
+if(n==8){var d2=new HeadlessMultiSelectDropdownElement("Drop");var i2=new HeadlessInputFieldElement("Input");var s2=new HeadlessScrollbarElement("Scroll");using(var p2=Projection.Create(new HeadlessView("Controls",d2,i2,s2),vm)){p2.Activate();p.Deactivate();d.Input(9);i.Input("closed");s.Input(.9f);i2.Input("second");d2.Input(10);s2.Input(.6f);return new[]{vm.Draft,i.Text.Value,i2.Text.Value,vm.Selection.ToString(),d.Value.Value.ToString(),vm.Trace.Count.ToString()};}}
+if(n==9){d.Interactable.Value=false;view.Interactable=false;d.Input(9);i.Input("cover");s.Input(.9f);view.Interactable=true;d.Input(9);i.Input("open");return new[]{d.Interactable.Value.ToString(),vm.Selection.ToString(),vm.Draft,vm.Trace.Count.ToString()};}
+if(n==10){var c=0;d.OnValueChanged.AddListener(v=>c++);i.OnValueChanged.AddListener(v=>c++);i.OnEndEdit.AddListener(v=>c++);i.OnSubmit.AddListener(v=>c++);s.OnValueChanged.AddListener(v=>c++);i.CharacterLimit.OnValueChanged+=(a,b)=>c++;view.Destroy();d.Input(9);i.Input("dead");i.EndEditing("dead");i.SubmitInput("dead");s.Input(.9f);i.CharacterLimit.Value=8;return new[]{c.ToString(),d.IsDisposed.ToString(),i.IsDisposed.ToString(),s.IsDisposed.ToString()};}
+if(n==11){var opts=new[]{"x",null,"z"};vm.Options=opts;vm.Fade=.7f;return new[]{ReferenceEquals(d.Options.Value,opts).ToString(),d.Options.Value[1]==null?"null":"changed",d.AlphaFadeSpeed.Value.ToString(),vm.Trace.Count.ToString()};}
+if(n==12){return new[]{i.CharacterLimit.Value.ToString(),i.CaretWidth.Value.ToString(),i.CaretBlinkRate.Value.ToString(),s.Size.Value.ToString(),s.NumberOfSteps.Value.ToString()};}
+if(n==13){var bad=new HeadlessView("Controls",new HeadlessDropdownElement("Drop"),new HeadlessInputFieldElement("Input"),new HeadlessScrollbarElement("Scroll"));using(var wrong=Projection.Create(bad,new Vm())){try{wrong.Activate();return new[]{"accepted"};}catch(InvalidOperationException){return new[]{"rejected"};}}}
+if(n==14){var bad=new HeadlessView("Controls",new HeadlessMultiSelectDropdownElement("Drop"),new HeadlessTextElement("Input"),new HeadlessScrollbarElement("Scroll"));using(var wrong=Projection.Create(bad,new Vm())){try{wrong.Activate();return new[]{"accepted"};}catch(InvalidOperationException){return new[]{"rejected"};}}}
+if(n==15){vm.ShowInput=false;vm.EnableDrop=false;vm.EnableScroll=false;d.Input(9);i.Input("blocked");s.Input(.9f);return new[]{i.Visible.Value.ToString(),d.Interactable.Value.ToString(),s.Interactable.Value.ToString(),vm.Trace.Count.ToString()};}
+throw new ArgumentOutOfRangeException();}}}
+}

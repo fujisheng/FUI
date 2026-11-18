@@ -1,0 +1,120 @@
+{
+  "view": "TrackedStatusView",
+  "referenceResolution": {
+    "width": 1920,
+    "height": 1080
+  },
+  "designMaster": "design-master.png",
+  "assets": [
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/PanelFrame.png",
+      "width": 512,
+      "height": 512,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "TerminalPanel",
+        "DetailsPanel"
+      ],
+      "layout": [
+        {
+          "node": "TerminalPanel",
+          "rect": {
+            "x": 1292,
+            "y": 150,
+            "width": 590,
+            "height": 365
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsPanel",
+          "rect": {
+            "x": 750,
+            "y": 530,
+            "width": 1130,
+            "height": 480
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonSecondary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "BackButton",
+        "DetailsButton"
+      ],
+      "layout": [
+        {
+          "node": "BackButton",
+          "rect": {
+            "x": 1702,
+            "y": 166,
+            "width": 154,
+            "height": 58
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsButton",
+          "rect": {
+            "x": 1320,
+            "y": 425,
+            "width": 280,
+            "height": 60
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/BagView/SupplyContainer.png",
+      "width": 1024,
+      "height": 1024,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "TrackedIcon"
+      ],
+      "layout": [
+        {
+          "node": "TrackedIcon",
+          "rect": {
+            "x": 1316,
+            "y": 250,
+            "width": 120,
+            "height": 120
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/BadgeAlert.png",
+      "width": 128,
+      "height": 128,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "TrackedBadgeVisual"
+      ],
+      "layout": [
+        {
+          "node": "TrackedBadgeVisual",
+          "rect": {
+            "x": 1767,
+            "y": 370,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+using System;
+using FUI.Binding;
+using FUI.Rendering;
+namespace TextMigration
+{
+    // 旧版自定义实现原有Name/Parent/Text保持；新增成员需由真实后端提供合理支持。
+    public sealed class CustomText : ITextElement, IDisposable
+    {
+        public string Name => "Custom";
+        public IElement Parent => null;
+        public BindableProperty<string> Text { get; } = new BindableProperty<string>(string.Empty);
+        public BindableProperty<float> FontSize { get; } = new BindableProperty<float>(16);
+        public BindableProperty<bool> RichText { get; } = new BindableProperty<bool>(false);
+        public BindableProperty<bool> Visible { get; } = new BindableProperty<bool>(true);
+        public BindableProperty<Rgba> Tint { get; } = new BindableProperty<Rgba>(new Rgba(1,1,1,1));
+        public BindableProperty<TextAlignment> TextAlignment { get; } = new BindableProperty<TextAlignment>();
+        public BindableProperty<IFormattedTextValue> FormattedTextValue { get; } = new BindableProperty<IFormattedTextValue>();
+        public void Dispose()
+        {
+            Text.Dispose();FontSize.Dispose();RichText.Dispose();Visible.Dispose();Tint.Dispose();TextAlignment.Dispose();FormattedTextValue.Dispose();
+        }
+    }
+    public static class Scenario
+    {
+        public static string[] Run()
+        {
+            var custom = new CustomText();
+            ITextElement label = custom;IGraphicElement graphic = label;
+            var changed = 0;
+            label.FontSize.OnValueChanged += (oldValue,newValue) => changed++;
+            label.FontSize.Value = 24;
+            var same = ReferenceEquals(label.Visible,graphic.Visible) && ReferenceEquals(label.Tint,graphic.Tint);
+            custom.Dispose();label.FontSize.Value = 30;
+            return new[] {same.ToString(),changed.ToString(),label.FontSize.Value.ToString()};
+        }
+    }
+}

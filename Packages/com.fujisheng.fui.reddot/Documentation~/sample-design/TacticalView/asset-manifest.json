@@ -1,0 +1,307 @@
+{
+  "view": "TacticalView",
+  "referenceResolution": {
+    "width": 1920,
+    "height": 1080
+  },
+  "designMaster": "design-master.png",
+  "assets": [
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/Background.png",
+      "width": 1920,
+      "height": 1080,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "Background"
+      ],
+      "layout": [
+        {
+          "node": "Background",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/PanelFrame.png",
+      "width": 512,
+      "height": 512,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "TopBar",
+        "BattlefieldPanel",
+        "TimelinePanel",
+        "StatusPanel",
+        "DetailsPanel"
+      ],
+      "layout": [
+        {
+          "node": "TopBar",
+          "rect": {
+            "x": 24,
+            "y": 20,
+            "width": 1872,
+            "height": 106
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "BattlefieldPanel",
+          "rect": {
+            "x": 32,
+            "y": 150,
+            "width": 785,
+            "height": 720
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "TimelinePanel",
+          "rect": {
+            "x": 839,
+            "y": 150,
+            "width": 410,
+            "height": 720
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "StatusPanel",
+          "rect": {
+            "x": 1271,
+            "y": 150,
+            "width": 617,
+            "height": 720
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsPanel",
+          "rect": {
+            "x": 400,
+            "y": 190,
+            "width": 1120,
+            "height": 730
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonSecondary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "BackButton",
+        "UnchangedButton",
+        "WaveButton",
+        "RecursiveButton",
+        "SaturationButton",
+        "DetailsButton"
+      ],
+      "layout": [
+        {
+          "node": "BackButton",
+          "rect": {
+            "x": 40,
+            "y": 38,
+            "width": 156,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "UnchangedButton",
+          "rect": {
+            "x": 32,
+            "y": 970,
+            "width": 350,
+            "height": 65
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "WaveButton",
+          "rect": {
+            "x": 408,
+            "y": 970,
+            "width": 350,
+            "height": 65
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "RecursiveButton",
+          "rect": {
+            "x": 784,
+            "y": 970,
+            "width": 350,
+            "height": 65
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "SaturationButton",
+          "rect": {
+            "x": 1160,
+            "y": 970,
+            "width": 350,
+            "height": 65
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsButton",
+          "rect": {
+            "x": 1536,
+            "y": 970,
+            "width": 350,
+            "height": 65
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/GameHomeView/TacticalMap.png",
+      "width": 1536,
+      "height": 768,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "BattlefieldMap"
+      ],
+      "layout": [
+        {
+          "node": "BattlefieldMap",
+          "rect": {
+            "x": 56,
+            "y": 246,
+            "width": 737,
+            "height": 595
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV3/TacticalNavIcon.png",
+      "width": 512,
+      "height": 512,
+      "source": "imagegen-ArtV3",
+      "textPolicy": "noText",
+      "usedBy": [
+        "SimulationIcon"
+      ],
+      "layout": [
+        {
+          "node": "SimulationIcon",
+          "rect": {
+            "x": 949,
+            "y": 685,
+            "width": 180,
+            "height": 160
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/BadgeAlert.png",
+      "width": 128,
+      "height": 128,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "SimulationBadgeVisual"
+      ],
+      "layout": [
+        {
+          "node": "SimulationBadgeVisual",
+          "rect": {
+            "x": 1802,
+            "y": 168,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonPrimary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "DeployButton",
+        "RepeatedButton",
+        "DistinctButton",
+        "StepButton",
+        "ContinuousButton"
+      ],
+      "layout": [
+        {
+          "node": "DeployButton",
+          "rect": {
+            "x": 32,
+            "y": 890,
+            "width": 350,
+            "height": 65
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "RepeatedButton",
+          "rect": {
+            "x": 408,
+            "y": 890,
+            "width": 350,
+            "height": 65
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DistinctButton",
+          "rect": {
+            "x": 784,
+            "y": 890,
+            "width": 350,
+            "height": 65
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "StepButton",
+          "rect": {
+            "x": 1160,
+            "y": 890,
+            "width": 350,
+            "height": 65
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "ContinuousButton",
+          "rect": {
+            "x": 1536,
+            "y": 890,
+            "width": 350,
+            "height": 65
+          },
+          "imageType": "sliced"
+        }
+      ]
+    }
+  ]
+}

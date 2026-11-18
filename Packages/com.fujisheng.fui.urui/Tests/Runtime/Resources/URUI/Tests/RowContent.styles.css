@@ -1,0 +1,5 @@
+body { margin:0; }
+.viewport { position:absolute; left:0; top:0; width:200px; height:100px; overflow-x:auto; }
+.row { display:inline-flex; position:relative; flex-direction:row; height:80px; box-sizing:border-box; column-gap:10px; padding-left:20px; padding-right:30px; border-left:3px solid black; border-right:7px solid black; }
+.cell { display:block; position:relative; width:100px; height:40px; margin-right:5px; flex-shrink:0; }
+.hide-last .last, .empty .cell { display:none; }

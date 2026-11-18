@@ -1,0 +1,154 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using FUI.Binding;
+using FUI.Rendering;
+using FUI.Navigation;
+using FUI.Resources;
+
+namespace FUI.Samples.Settings
+{
+    public sealed class HeadlessText : ITextElement
+    {
+        public string Name { get; }
+        public IElement Parent => null;
+        public BindableProperty<float> FontSize { get; } = new BindableProperty<float>(16);
+        public BindableProperty<bool> RichText { get; } = new BindableProperty<bool>(true);
+        public BindableProperty<bool> Visible { get; } = new BindableProperty<bool>(true);
+        public BindableProperty<Rgba> Tint { get; } = new BindableProperty<Rgba>();
+        public BindableProperty<TextAlignment> TextAlignment { get; } = new BindableProperty<TextAlignment>();
+        public BindableProperty<IFormattedTextValue> FormattedTextValue { get; } = new BindableProperty<IFormattedTextValue>();
+        public BindableProperty<string> Text { get; } = new BindableProperty<string>("");
+        public HeadlessText(string name) { Name = name; }
+    }
+
+    public sealed class HeadlessClick : IButtonElement
+    {
+        public string Name { get; }
+        public IElement Parent => null;
+        public BindableProperty<bool> Visible { get; } = new BindableProperty<bool>(true);
+        public BindableProperty<bool> Interactable { get; } = new BindableProperty<bool>(true);
+        public Command Click { get; } = new Command();
+        public HeadlessClick(string name) { Name = name; }
+    }
+
+    public class HeadlessValue<T> : ISelectableElement
+    {
+        public string Name { get; }
+        public IElement Parent => null;
+        public BindableProperty<bool> Visible { get; } = new BindableProperty<bool>(true);
+        public BindableProperty<bool> Interactable { get; } = new BindableProperty<bool>(true);
+        public BindableProperty<T> Value { get; }
+        public Command<T> ValueChanged { get; } = new Command<T>();
+        public HeadlessValue(string name, T initial) { Name = name; Value = new BindableProperty<T>(initial); }
+        public void Input(T value)
+        {
+            if (EqualityComparer<T>.Default.Equals(Value.Value, value)) return;
+            Value.Value = value;
+            ValueChanged.Invoke(value);
+        }
+    }
+
+    public sealed class HeadlessFloat : HeadlessValue<float>, ISliderElement
+    {
+        public HeadlessFloat(string name) : base(name, 0F) { }
+        public BindableProperty<float> MinValue { get; } = new BindableProperty<float>(0);
+        public BindableProperty<float> MaxValue { get; } = new BindableProperty<float>(1);
+        public BindableProperty<bool> WholeNumbers { get; } = new BindableProperty<bool>(false);
+
+    }
+
+    public sealed class HeadlessBool : HeadlessValue<bool>, IToggleElement
+    {
+        public HeadlessBool(string name) : base(name, false) { }
+        public BindableProperty<bool> IsOn => Value;
+    }
+
+    public sealed class HeadlessSettingsView : IView
+    {
+        readonly string missing;
+        public HeadlessSettingsView(string missing = null) { this.missing = missing; }
+        public HeadlessText Title { get; } = new HeadlessText("Title");
+        public HeadlessText Status { get; } = new HeadlessText("Status");
+        public HeadlessFloat Volume { get; } = new HeadlessFloat("Volume");
+        public HeadlessBool Vibration { get; } = new HeadlessBool("Vibration");
+        public HeadlessClick Close { get; } = new HeadlessClick("Close");
+        public string Name => "SettingsView";
+        public int Layer { get; set; }
+        public int Order { get; set; }
+        public bool Visible { get; set; }
+        public bool Interactable { get; set; }
+        public bool Destroyed { get; private set; }
+        public IReadOnlyList<IElement> Elements => new IElement[] { Title, Status, Volume, Vibration, Close };
+        public T GetElement<T>(string path) where T : IElement => (T)GetElement(path, typeof(T));
+        public IElement GetElement(string path, Type type)
+        {
+            foreach (var element in Elements)
+            {
+                if (path != missing && element.Name == path && type.IsInstanceOfType(element)) return element;
+            }
+            throw new InvalidOperationException("Missing required element: " + path);
+        }
+        public void Initialize() { }
+        public void Destroy() => Destroyed = true;
+    }
+
+    public sealed class HeadlessSettingsProvider : IViewProvider
+    {
+        public List<HeadlessSettingsLease> Leases { get; } = new List<HeadlessSettingsLease>();
+        public IViewLease Create(RouteDescriptor route, IPreloadLease preload = null)
+        {
+            var lease = new HeadlessSettingsLease();
+            Leases.Add(lease);
+            return lease;
+        }
+        public ValueTask<IViewLease> CreateAsync(RouteDescriptor route, IPreloadLease preload, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            return new ValueTask<IViewLease>(Create(route, preload));
+        }
+        public ValueTask<IPreloadLease> PreloadAsync(RouteDescriptor route, CancellationToken token)
+            => throw new NotSupportedException("This fixture exercises synchronous Settings navigation.");
+    }
+
+    public sealed class HeadlessSettingsLease : IViewLease
+    {
+        public HeadlessSettingsView Settings { get; } = new HeadlessSettingsView();
+        public IView View => Settings;
+        public IAssetScope Assets { get; } = new HeadlessAssetScope();
+        public int DisposeCount { get; private set; }
+        public void Dispose()
+        {
+            DisposeCount++;
+            Settings.Destroy();
+            Assets.Dispose();
+        }
+    }
+
+    public sealed class HeadlessAssetScope : IAssetScope
+    {
+        public int DisposeCount { get; private set; }
+        public void Dispose() => DisposeCount++;
+        public IAssetLease<T> Load<T>(string key) => throw new NotSupportedException();
+        public ValueTask<IAssetLease<T>> LoadAsync<T>(string key, CancellationToken token) => throw new NotSupportedException();
+        public IAssetLease<T> Instantiate<T>(string key) => throw new NotSupportedException();
+        public ValueTask<IAssetLease<T>> InstantiateAsync<T>(string key, CancellationToken token) => throw new NotSupportedException();
+    }
+
+    public sealed class OwnerThreadDispatcher : IMainThreadDispatcher
+    {
+        readonly int owner = Environment.CurrentManagedThreadId;
+        public bool IsMainThread => owner == Environment.CurrentManagedThreadId;
+        public void AssertMainThread()
+        {
+            if (!IsMainThread) throw new InvalidOperationException("Headless fixture requires its owner thread.");
+        }
+        public ValueTask SwitchToMainThreadAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            AssertMainThread();
+            return default;
+        }
+    }
+}

@@ -1,16 +1,15 @@
 {
   "name": "com.fujisheng.fui",
   "displayName": "FUI",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "unity": "6000.0",
   "keywords": [
     "unity",
     "framework",
     "mvvm",
-    "fui",
-    "ugui"
+    "fui"
   ],
-  "description": "Compile-time MVVM, typed navigation and resource-safe UGUI rendering for Unity.",
+  "description": "Compile-time MVVM and typed navigation for Unity.",
   "author": {
     "name": "Fujisheng",
     "url": "https://github.com/fujisheng"
@@ -23,14 +22,5 @@
   "documentationUrl": "https://github.com/fujisheng/FUI/tree/main/Packages/com.fujisheng.fui/Documentation~",
   "changelogUrl": "https://github.com/fujisheng/FUI/blob/main/Packages/com.fujisheng.fui/CHANGELOG.md",
   "licensesUrl": "https://github.com/fujisheng/FUI/blob/main/Packages/com.fujisheng.fui/LICENSE.md",
-  "samples": [
-    {
-      "displayName": "Settings Sample",
-      "description": "Generated binding, typed navigation and two-way uGUI controls without external assets.",
-      "path": "Samples~/Settings Sample"
-    }
-  ],
-  "dependencies": {
-    "com.unity.ugui": "2.0.0"
-  }
+  "dependencies": {}
 }

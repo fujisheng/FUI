@@ -63,7 +63,7 @@ namespace FUI.Resources
     /// </summary>
     public interface IViewProvider
     {
-        /// <summary>同步创建 View，并在成功时接管匹配的预热 Lease。</summary>
+        /// <summary>同步创建 View，并在成功时接管匹配的预热 Lease；提供 Lease 时只能实例化已准备资源，不得重新加载。</summary>
         IViewLease Create(RouteDescriptor route, IPreloadLease preload = null);
 
         /// <summary>异步创建 View，并在成功时接管匹配的预热 Lease。</summary>

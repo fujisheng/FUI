@@ -10,6 +10,18 @@ namespace FUI.Generators
     /// </summary>
     public static class DiagnosticDescriptors
     {
+        /// <summary>不同继承声明不能静默选择，即使返回类型相同。</summary>
+        public static readonly DiagnosticDescriptor AmbiguousInterfaceTargetMember = new(
+            id: "FUI010", title: "Ambiguous interface binding member",
+            messageFormat: "Control interface '{0}' has conflicting inherited declarations for '{1}'; explicitly redeclare the intended member",
+            category: "FUI.Binding", defaultSeverity: DiagnosticSeverity.Error, isEnabledByDefault: true);
+
+        /// <summary>缺失接口成员不能使整个生成器崩溃。</summary>
+        public static readonly DiagnosticDescriptor MissingInterfaceTargetMember = new(
+            id: "FUI011", title: "Missing interface binding member",
+            messageFormat: "Control interface '{0}' has no public binding member '{1}'",
+            category: "FUI.Binding", defaultSeverity: DiagnosticSeverity.Error, isEnabledByDefault: true);
+
         // ========== 错误 (Errors) ==========
 
         /// <summary>

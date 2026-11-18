@@ -1,0 +1,24 @@
+{
+  "name": "FUI.Rendering.UGUI.Tests.Editor",
+  "references": [
+    "FUI.Core",
+    "FUI.Navigation",
+    "FUI.Navigation.TestSupport",
+    "FUI.Rendering.UGUI",
+    "FUI.Editor",
+    "FUI.Rendering.UGUI.Editor",
+    "Unity.ugui",
+    "Unity.TextMeshPro",
+    "Unity.PerformanceTesting"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": ["nunit.framework.dll"],
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": ["TestAssemblies"]
+}

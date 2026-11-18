@@ -1,5 +1,7 @@
 # UGUI Element 扩展指南
 
+> 本章的 Element 基类与 View 集成位于独立安装的 [`com.fujisheng.fui.ugui`](../../../com.fujisheng.fui.ugui/README.md) 包。
+
 FUI Element 采用适配器/包装器结构。Unity Component 是视觉状态来源；Element 只负责绑定、生命周期、事件方向和资源所有权。Element 不继承 `Image`、`Button` 等 Unity 组件。
 
 ```text

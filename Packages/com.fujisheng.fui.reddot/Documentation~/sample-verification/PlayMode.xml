@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="33" result="Passed" total="33" passed="33" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:36Z" duration="0.9433278">
+  <test-suite type="TestSuite" id="1049" name="FUITestProject" fullname="FUITestProject" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:36Z" duration="0.943328" total="33" passed="33" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1010" name="FUI.RedDot.Tests.PlayMode.dll" fullname="/Volumes/FData/ArtOfTD/FUI/Library/FUITestProject/Library/ScriptAssemblies/FUI.RedDot.Tests.PlayMode.dll" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.074798" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="96022" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1011" name="FUI" fullname="FUI" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.073510" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1012" name="RedDot" fullname="FUI.RedDot" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.072675" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1013" name="Tests" fullname="FUI.RedDot.Tests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.071767" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1001" name="RedDotElementPlayModeTests" fullname="FUI.RedDot.Tests.RedDotElementPlayModeTests" classname="FUI.RedDot.Tests.RedDotElementPlayModeTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.070482" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1008" name="DestroyingNearestScopeRebindsElementToOuterScope" fullname="FUI.RedDot.Tests.RedDotElementPlayModeTests.DestroyingNearestScopeRebindsElementToOuterScope" methodname="DestroyingNearestScopeRebindsElementToOuterScope" classname="FUI.RedDot.Tests.RedDotElementPlayModeTests" runstate="Runnable" seed="2036020751" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.051796" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1009" name="DotModeNeverEnablesCountLabel" fullname="FUI.RedDot.Tests.RedDotElementPlayModeTests.DotModeNeverEnablesCountLabel" methodname="DotModeNeverEnablesCountLabel" classname="FUI.RedDot.Tests.RedDotElementPlayModeTests" runstate="Runnable" seed="1899785667" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.003100" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1003" name="ElementCreatedBeforeRuntimeConfigurationRecoversAutomatically" fullname="FUI.RedDot.Tests.RedDotElementPlayModeTests.ElementCreatedBeforeRuntimeConfigurationRecoversAutomatically" methodname="ElementCreatedBeforeRuntimeConfigurationRecoversAutomatically" classname="FUI.RedDot.Tests.RedDotElementPlayModeTests" runstate="Runnable" seed="395729418" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.000332" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1005" name="InvalidElementDoesNotBlockOtherElementsDuringRuntimeConfiguration" fullname="FUI.RedDot.Tests.RedDotElementPlayModeTests.InvalidElementDoesNotBlockOtherElementsDuringRuntimeConfiguration" methodname="InvalidElementDoesNotBlockOtherElementsDuringRuntimeConfiguration" classname="FUI.RedDot.Tests.RedDotElementPlayModeTests" runstate="Runnable" seed="2126079635" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.003994" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[KeyNotFoundException: Red dot key 'Missing' is not registered by a catalog.
+FUI.RedDot.RedDotCenter.EnsureNode (FUI.RedDot.RedDotKey key) (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/Core/RedDotCenter.cs:632)
+FUI.RedDot.RedDotCenter.Subscribe (FUI.RedDot.RedDotKey key, System.Action`1[T] callback) (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/Core/RedDotCenter.cs:341)
+FUI.RedDot.UGUI.RedDotElement.TrySubscribe () (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/UGUI/RedDotElement.cs:143)
+FUI.RedDot.UGUI.RedDotElement.ResolveContext () (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/UGUI/RedDotElement.cs:108)
+FUI.RedDot.UGUI.RedDotElement.OnContextChanged () (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/UGUI/RedDotElement.cs:113)
+FUI.RedDot.UGUI.RedDotRuntime.NotifyContextChanged () (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/UGUI/RedDotRuntime.cs:78)
+UnityEngine.Debug:LogException(Exception)
+FUI.RedDot.UGUI.RedDotRuntime:NotifyContextChanged() (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/UGUI/RedDotRuntime.cs:82)
+FUI.RedDot.UGUI.RedDotRuntime:Configure(RedDotCenter) (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/UGUI/RedDotRuntime.cs:32)
+FUI.RedDot.Tests.<>c__DisplayClass7_0:<InvalidElementDoesNotBlockOtherElementsDuringRuntimeConfiguration>b__0() (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Tests/Runtime/RedDotElementPlayModeTests.cs:141)
+NUnit.Framework.Constraints.VoidInvocationDescriptor:Invoke()
+NUnit.Framework.Constraints.ExceptionInterceptor:Intercept(Object)
+NUnit.Framework.Constraints.ThrowsNothingConstraint:ApplyTo(Object)
+NUnit.Framework.Assert:That(Object, IResolveConstraint, String, Object[])
+NUnit.Framework.Assert:That(TestDelegate, IResolveConstraint, String, Object[])
+NUnit.Framework.Assert:DoesNotThrow(TestDelegate, String, Object[])
+NUnit.Framework.Assert:DoesNotThrow(TestDelegate)
+FUI.RedDot.Tests.RedDotElementPlayModeTests:InvalidElementDoesNotBlockOtherElementsDuringRuntimeConfiguration() (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Tests/Runtime/RedDotElementPlayModeTests.cs:141)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.MethodWrapper:Invoke(Object, Object[])
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod(ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod(ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:Execute(ITestExecutionContext)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr) (at /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+]]></output>
+              </test-case>
+              <test-case id="1006" name="InvalidElementDoesNotBlockOtherElementsDuringScopeConfiguration" fullname="FUI.RedDot.Tests.RedDotElementPlayModeTests.InvalidElementDoesNotBlockOtherElementsDuringScopeConfiguration" methodname="InvalidElementDoesNotBlockOtherElementsDuringScopeConfiguration" classname="FUI.RedDot.Tests.RedDotElementPlayModeTests" runstate="Runnable" seed="602857507" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.001497" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[KeyNotFoundException: Red dot key 'ScopedMissing' is not registered by a catalog.
+FUI.RedDot.RedDotCenter.EnsureNode (FUI.RedDot.RedDotKey key) (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/Core/RedDotCenter.cs:632)
+FUI.RedDot.RedDotCenter.Subscribe (FUI.RedDot.RedDotKey key, System.Action`1[T] callback) (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/Core/RedDotCenter.cs:341)
+FUI.RedDot.UGUI.RedDotElement.TrySubscribe () (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/UGUI/RedDotElement.cs:143)
+FUI.RedDot.UGUI.RedDotElement.ResolveContext () (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/UGUI/RedDotElement.cs:108)
+FUI.RedDot.UGUI.RedDotElement.OnContextChanged () (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/UGUI/RedDotElement.cs:113)
+FUI.RedDot.UGUI.RedDotScope.NotifyReaderChanged () (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/UGUI/RedDotScope.cs:58)
+UnityEngine.Debug:LogException(Exception, Object)
+FUI.RedDot.UGUI.RedDotScope:NotifyReaderChanged() (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/UGUI/RedDotScope.cs:62)
+FUI.RedDot.UGUI.RedDotScope:Configure(IRedDotReader) (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Runtime/UGUI/RedDotScope.cs:28)
+FUI.RedDot.Tests.<>c__DisplayClass8_0:<InvalidElementDoesNotBlockOtherElementsDuringScopeConfiguration>b__0() (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Tests/Runtime/RedDotElementPlayModeTests.cs:167)
+NUnit.Framework.Constraints.VoidInvocationDescriptor:Invoke()
+NUnit.Framework.Constraints.ExceptionInterceptor:Intercept(Object)
+NUnit.Framework.Constraints.ThrowsNothingConstraint:ApplyTo(Object)
+NUnit.Framework.Assert:That(Object, IResolveConstraint, String, Object[])
+NUnit.Framework.Assert:That(TestDelegate, IResolveConstraint, String, Object[])
+NUnit.Framework.Assert:DoesNotThrow(TestDelegate, String, Object[])
+NUnit.Framework.Assert:DoesNotThrow(TestDelegate)
+FUI.RedDot.Tests.RedDotElementPlayModeTests:InvalidElementDoesNotBlockOtherElementsDuringScopeConfiguration() (at /Volumes/FData/ArtOfTD/FUI/Packages/com.fujisheng.fui.reddot/Tests/Runtime/RedDotElementPlayModeTests.cs:167)
+System.Reflection.MethodBase:Invoke(Object, Object[])
+NUnit.Framework.Internal.Reflect:InvokeMethod(MethodInfo, Object, Object[])
+NUnit.Framework.Internal.MethodWrapper:Invoke(Object, Object[])
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunNonAsyncTestMethod(ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:RunTestMethod(ITestExecutionContext)
+NUnit.Framework.Internal.Commands.TestMethodCommand:Execute(ITestExecutionContext)
+UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr) (at /Users/bokken/build/output/unity/unity/Runtime/Export/Scripting/Coroutines.cs:17)
+
+]]></output>
+              </test-case>
+              <test-case id="1007" name="NearestScopeIsAnExplicitIsolationBoundaryAndReparentingRebinds" fullname="FUI.RedDot.Tests.RedDotElementPlayModeTests.NearestScopeIsAnExplicitIsolationBoundaryAndReparentingRebinds" methodname="NearestScopeIsAnExplicitIsolationBoundaryAndReparentingRebinds" classname="FUI.RedDot.Tests.RedDotElementPlayModeTests" runstate="Runnable" seed="1307487475" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.000616" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1004" name="ShutdownAndReconfigureMoveActiveSubscription" fullname="FUI.RedDot.Tests.RedDotElementPlayModeTests.ShutdownAndReconfigureMoveActiveSubscription" methodname="ShutdownAndReconfigureMoveActiveSubscription" classname="FUI.RedDot.Tests.RedDotElementPlayModeTests" runstate="Runnable" seed="510359160" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.000343" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1002" name="TwoViewsSwitchKeysHideRestoreFormatAndReleaseIndependently" fullname="FUI.RedDot.Tests.RedDotElementPlayModeTests.TwoViewsSwitchKeysHideRestoreFormatAndReleaseIndependently" methodname="TwoViewsSwitchKeysHideRestoreFormatAndReleaseIndependently" classname="FUI.RedDot.Tests.RedDotElementPlayModeTests" runstate="Runnable" seed="1923722877" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.001549" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="1042" name="FUI.Samples.RedDot.Tests.PlayMode.dll" fullname="/Volumes/FData/ArtOfTD/FUI/Library/FUITestProject/Library/ScriptAssemblies/FUI.Samples.RedDot.Tests.PlayMode.dll" runstate="Runnable" testcasecount="25" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:36Z" duration="0.859260" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="96022" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1043" name="FUI" fullname="FUI" runstate="Runnable" testcasecount="25" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:36Z" duration="0.856123" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1044" name="Samples" fullname="FUI.Samples" runstate="Runnable" testcasecount="25" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:36Z" duration="0.855143" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1045" name="RedDot" fullname="FUI.Samples.RedDot" runstate="Runnable" testcasecount="25" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:36Z" duration="0.854302" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestSuite" id="1046" name="Tests" fullname="FUI.Samples.RedDot.Tests" runstate="Runnable" testcasecount="25" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:36Z" duration="0.853454" total="25" passed="25" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="TestFixture" id="1014" name="GameSessionTests" fullname="FUI.Samples.RedDot.Tests.GameSessionTests" classname="FUI.Samples.RedDot.Tests.GameSessionTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.356503" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1015" name="CargoSourcesKeepIdentityAndRemoveOnlyTheirOwnKeys" fullname="FUI.Samples.RedDot.Tests.GameSessionTests.CargoSourcesKeepIdentityAndRemoveOnlyTheirOwnKeys" methodname="CargoSourcesKeepIdentityAndRemoveOnlyTheirOwnKeys" classname="FUI.Samples.RedDot.Tests.GameSessionTests" runstate="Runnable" seed="1532502035" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.008492" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1021" name="FailedSourceStartRollsBackAndStopCannotRepublish" fullname="FUI.Samples.RedDot.Tests.GameSessionTests.FailedSourceStartRollsBackAndStopCannotRepublish" methodname="FailedSourceStartRollsBackAndStopCannotRepublish" classname="FUI.Samples.RedDot.Tests.GameSessionTests" runstate="Runnable" seed="1897563748" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.001754" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1020" name="FailuresRetainCorrectContributionAndRecoveryKeepsHistory" fullname="FUI.Samples.RedDot.Tests.GameSessionTests.FailuresRetainCorrectContributionAndRecoveryKeepsHistory" methodname="FailuresRetainCorrectContributionAndRecoveryKeepsHistory" classname="FUI.Samples.RedDot.Tests.GameSessionTests" runstate="Runnable" seed="1657190870" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.000877" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1022" name="FleetGuidAndCompositeFactoriesUseSeparateWorlds" fullname="FUI.Samples.RedDot.Tests.GameSessionTests.FleetGuidAndCompositeFactoriesUseSeparateWorlds" methodname="FleetGuidAndCompositeFactoriesUseSeparateWorlds" classname="FUI.Samples.RedDot.Tests.GameSessionTests" runstate="Runnable" seed="176985630" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.000710" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1019" name="MailLongKeysAndMaxSourcesAreIndependent" fullname="FUI.Samples.RedDot.Tests.GameSessionTests.MailLongKeysAndMaxSourcesAreIndependent" methodname="MailLongKeysAndMaxSourcesAreIndependent" classname="FUI.Samples.RedDot.Tests.GameSessionTests" runstate="Runnable" seed="43320422" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.000779" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1016" name="RulesBatchAndStopIndependently" fullname="FUI.Samples.RedDot.Tests.GameSessionTests.RulesBatchAndStopIndependently" methodname="RulesBatchAndStopIndependently" classname="FUI.Samples.RedDot.Tests.GameSessionTests" runstate="Runnable" seed="89061649" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.000523" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1017" name="SharedRewardCountsTwoPathsAndCustomAggregationIgnoresHints" fullname="FUI.Samples.RedDot.Tests.GameSessionTests.SharedRewardCountsTwoPathsAndCustomAggregationIgnoresHints" methodname="SharedRewardCountsTwoPathsAndCustomAggregationIgnoresHints" classname="FUI.Samples.RedDot.Tests.GameSessionTests" runstate="Runnable" seed="710822956" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.000389" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1023" name="TacticalMeasurementsUseTheActualBatchAndAtomicSnapshot" fullname="FUI.Samples.RedDot.Tests.GameSessionTests.TacticalMeasurementsUseTheActualBatchAndAtomicSnapshot" methodname="TacticalMeasurementsUseTheActualBatchAndAtomicSnapshot" classname="FUI.Samples.RedDot.Tests.GameSessionTests" runstate="Runnable" seed="1077332515" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.173299" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1024" name="TacticalReentryIsNextBatchAndSaturationDoesNotOverflow" fullname="FUI.Samples.RedDot.Tests.GameSessionTests.TacticalReentryIsNextBatchAndSaturationDoesNotOverflow" methodname="TacticalReentryIsNextBatchAndSaturationDoesNotOverflow" classname="FUI.Samples.RedDot.Tests.GameSessionTests" runstate="Runnable" seed="1708396471" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.166689" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1018" name="UnitConditionsAndLastObserverControlDynamicLifetime" fullname="FUI.Samples.RedDot.Tests.GameSessionTests.UnitConditionsAndLastObserverControlDynamicLifetime" methodname="UnitConditionsAndLastObserverControlDynamicLifetime" classname="FUI.Samples.RedDot.Tests.GameSessionTests" runstate="Runnable" seed="1448404303" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.001248" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="TestFixture" id="1040" name="QuickStartScenePlayModeTests" fullname="FUI.Samples.RedDot.Tests.QuickStartScenePlayModeTests" classname="FUI.Samples.RedDot.Tests.QuickStartScenePlayModeTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.080942" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1041" name="SceneProvidesCameraAndEventSystem" fullname="FUI.Samples.RedDot.Tests.QuickStartScenePlayModeTests.SceneProvidesCameraAndEventSystem" methodname="SceneProvidesCameraAndEventSystem" classname="FUI.Samples.RedDot.Tests.QuickStartScenePlayModeTests" runstate="Runnable" seed="1091299014" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:35Z" duration="0.079167" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[AudioListener component deleted: Component belongs to a disabled built-in package.
+]]></output>
+                </test-case>
+              </test-suite>
+              <test-suite type="TestFixture" id="1025" name="SamplePlayModeTests" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:36Z" duration="0.415087" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1027" name="AllSevenPagesAreIndependentAndBackRevealsCachedHome" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.AllSevenPagesAreIndependentAndBackRevealsCachedHome" methodname="AllSevenPagesAreIndependentAndBackRevealsCachedHome" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="1849910936" result="Passed" start-time="2026-09-05 05:56:35Z" end-time="2026-09-05 05:56:36Z" duration="0.238148" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1030" name="AllVisualModesAndLimitsUseTheSameCommittedKey" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.AllVisualModesAndLimitsUseTheSameCommittedKey" methodname="AllVisualModesAndLimitsUseTheSameCommittedKey" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="471553886" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.022020" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1036" name="CachedHomeFleetEntryRebindsAfterFleetSwitchAndDisconnect" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.CachedHomeFleetEntryRebindsAfterFleetSwitchAndDisconnect" methodname="CachedHomeFleetEntryRebindsAfterFleetSwitchAndDisconnect" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="76829806" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.009988" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1029" name="CargoIsPendingUntilCommitAndCachedHomeRestoresLatestState" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.CargoIsPendingUntilCommitAndCachedHomeRestoresLatestState" methodname="CargoIsPendingUntilCommitAndCachedHomeRestoresLatestState" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="512452510" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.011245" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1038" name="CargoSelectionExposesSingleKeyRemovalAndWholeSourceDisposal" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.CargoSelectionExposesSingleKeyRemovalAndWholeSourceDisposal" methodname="CargoSelectionExposesSingleKeyRemovalAndWholeSourceDisposal" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="2146750729" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.009865" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1028" name="CompletingWatchMakesAnyZeroWithoutDisconnectingAndNewMailRestoresIt" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.CompletingWatchMakesAnyZeroWithoutDisconnectingAndNewMailRestoresIt" methodname="CompletingWatchMakesAnyZeroWithoutDisconnectingAndNewMailRestoresIt" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="736181665" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.014616" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1034" name="FleetScopeClearNestingReparentAndDestroyAreReal" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.FleetScopeClearNestingReparentAndDestroyAreReal" methodname="FleetScopeClearNestingReparentAndDestroyAreReal" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="1858065594" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.026934" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1039" name="GeneratedPrefabsContainFuiControlsFontsAndNoWholeScreenMaster" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.GeneratedPrefabsContainFuiControlsFontsAndNoWholeScreenMaster" methodname="GeneratedPrefabsContainFuiControlsFontsAndNoWholeScreenMaster" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="1823684870" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.009563" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1032" name="HotUnitKeySwitchAndDischargeRespectPinnedTerminalLifetime" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.HotUnitKeySwitchAndDischargeRespectPinnedTerminalLifetime" methodname="HotUnitKeySwitchAndDischargeRespectPinnedTerminalLifetime" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="1502035341" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.009979" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1026" name="InitialAnyAndLateRuntimeConfigurationProjectToHome" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.InitialAnyAndLateRuntimeConfigurationProjectToHome" methodname="InitialAnyAndLateRuntimeConfigurationProjectToHome" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="558626735" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.004687" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1033" name="ShutdownHidesOldAccountAndReconnectRestoresEnabledElements" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.ShutdownHidesOldAccountAndReconnectRestoresEnabledElements" methodname="ShutdownHidesOldAccountAndReconnectRestoresEnabledElements" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="1803867373" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.004911" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1035" name="SignalDetailsAreCollapsedAndDoNotCreateObservingSubscriptions" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.SignalDetailsAreCollapsedAndDoNotCreateObservingSubscriptions" methodname="SignalDetailsAreCollapsedAndDoNotCreateObservingSubscriptions" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="567511364" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.015379" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1037" name="SignalDetailsStartInsideViewportAndGrowToRealTextHeight" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.SignalDetailsStartInsideViewportAndGrowToRealTextHeight" methodname="SignalDetailsStartInsideViewportAndGrowToRealTextHeight" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="1934128959" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.024605" asserts="0">
+                  <properties>
+                    <property name="_JOINTYPE" value="UnityCombinatorial" />
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1031" name="TerminalAndPageHaveIndependentSubscriptionsAndCloseReleasesOnlyTerminal" fullname="FUI.Samples.RedDot.Tests.SamplePlayModeTests.TerminalAndPageHaveIndependentSubscriptionsAndCloseReleasesOnlyTerminal" methodname="TerminalAndPageHaveIndependentSubscriptionsAndCloseReleasesOnlyTerminal" classname="FUI.Samples.RedDot.Tests.SamplePlayModeTests" runstate="Runnable" seed="1746043450" result="Passed" start-time="2026-09-05 05:56:36Z" end-time="2026-09-05 05:56:36Z" duration="0.010267" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: /Users/yefanhua/Library/Application Support/DefaultCompany/FUITestProject/TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

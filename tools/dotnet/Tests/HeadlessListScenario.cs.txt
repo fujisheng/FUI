@@ -1,0 +1,92 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using FUI.Binding;
+using FUI.Navigation;
+using FUI.Presentation;
+using FUI.Rendering;
+using FUI.Testing;
+using FUI.Resources;
+using System.Threading;
+using System.Threading.Tasks;
+[assembly: ViewModule("PortableList.Generated", PropertyMode = PropertyGenerationMode.Pure)]
+namespace PortableList
+{
+    [ViewContract("Row")]
+    public partial class RowVm : ViewModel
+    {
+        [ObservableProperty]
+        [Bind("Label", nameof(ITextElement.Text))]
+        string label;
+        public RowVm() : this("") { }
+        public RowVm(string value) { label = value; }
+        public int ClickCount { get; private set; }
+        [Command("Button", nameof(IClickElement.Click))]
+        public void Pick() { ClickCount++; Label = "picked:" + Label; }
+    }
+    [ViewContract("List")]
+    public partial class ListVm : ViewModel
+    {
+        [ObservableProperty]
+        [Bind("Rows", nameof(IListView.Items))]
+        ObservableList<RowVm> items = new ObservableList<RowVm>();
+    }
+    public sealed class CleanupFailureElement : IElement, IDisposable
+    {
+        public string Name => "Fault";
+        public IElement Parent => null;
+        public void Dispose() => throw new InvalidOperationException("row cleanup failure");
+    }
+    public sealed class ListProvider : IViewProvider
+    {
+        public List<ListLease> Leases { get; } = new List<ListLease>();
+        public IViewLease Create(RouteDescriptor route, IPreloadLease preload=null)
+        {
+            var lease=new ListLease(); Leases.Add(lease); return lease;
+        }
+        public ValueTask<IViewLease> CreateAsync(RouteDescriptor route, IPreloadLease preload, CancellationToken token)
+        { token.ThrowIfCancellationRequested(); return new ValueTask<IViewLease>(Create(route,preload)); }
+        public ValueTask<IPreloadLease> PreloadAsync(RouteDescriptor route,CancellationToken token)=>throw new NotSupportedException();
+    }
+    public sealed class ListLease : IViewLease
+    {
+        public ListLease() { View=Scenario.CreateList(out var list); List=list; }
+        public IView View { get; }
+        public HeadlessListElement List { get; }
+        public IAssetScope Assets { get; } = new ListScope();
+        public int DisposeCount { get; private set; }
+        public void Dispose() { if(DisposeCount!=0)return; DisposeCount++; View.Destroy(); Assets.Dispose(); }
+    }
+    public sealed class ListScope : IAssetScope
+    {
+        public void Dispose() { }
+        public IAssetLease<T> Load<T>(string key)=>throw new NotSupportedException();
+        public ValueTask<IAssetLease<T>> LoadAsync<T>(string key,CancellationToken token)=>throw new NotSupportedException();
+        public IAssetLease<T> Instantiate<T>(string key)=>throw new NotSupportedException();
+        public ValueTask<IAssetLease<T>> InstantiateAsync<T>(string key,CancellationToken token)=>throw new NotSupportedException();
+    }
+    public sealed class ListDispatcher : IMainThreadDispatcher
+    {
+        readonly int owner=Environment.CurrentManagedThreadId;
+        public bool IsMainThread=>Environment.CurrentManagedThreadId==owner;
+        public void AssertMainThread() { if(!IsMainThread)throw new InvalidOperationException("Owner thread required."); }
+        public ValueTask SwitchToMainThreadAsync(CancellationToken token=default) { token.ThrowIfCancellationRequested(); AssertMainThread(); return default; }
+    }
+    public static class Scenario
+    {
+        public static HeadlessView CreateRow(ObservableObject item)
+            => new HeadlessView("Row", new HeadlessTextElement("Label"), new HeadlessClickElement("Button"));
+        public static string Texts(HeadlessListElement list)
+            => string.Join("/", list.Rows.Select(row => row.View.GetElement<ITextElement>("Label").Text.Value));
+        public static HeadlessView CreateList(out HeadlessListElement list)
+        {
+            list = new HeadlessListElement("Rows", CreateRow);
+            return new HeadlessView("List", list);
+        }
+        public static string[] Run()
+        {
+            Generated.Routes.Initialize();
+            /* SCENARIO */
+        }
+    }
+}

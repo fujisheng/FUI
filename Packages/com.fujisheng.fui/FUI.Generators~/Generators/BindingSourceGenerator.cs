@@ -1,6 +1,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace FUI.Generators
 {
@@ -27,17 +28,20 @@ namespace FUI.Generators
                 var observableGenerator = new ObservableObjectGenerator();
                 var infoGenerator = new BindingContextInfoGenerator();
 
+                var validDeclarations = new List<ClassDeclarationSyntax>();
                 // 每个类型生成自身代码；全局 Binding Registry 与 Route Registry 只生成一次。
                 foreach (var declaration in pair.Right)
                 {
                     productionContext.CancellationToken.ThrowIfCancellationRequested();
+                    if (!ElementTargetValidation.Validate(productionContext, compilation, declaration)) { continue; }
+                    validDeclarations.Add(declaration);
                     observableGenerator.Generate(productionContext, compilation, declaration);
                     bindingGenerator.Generate(productionContext, compilation, declaration);
                     infoGenerator.Generate(productionContext, compilation, declaration);
                 }
 
-                new BindingFactoryGenerator().Generate(productionContext, compilation, pair.Right);
-                new RouteGenerator().Generate(productionContext, compilation, pair.Right);
+                new BindingFactoryGenerator().Generate(productionContext, compilation, validDeclarations);
+                new RouteGenerator().Generate(productionContext, compilation, validDeclarations);
             });
         }
 

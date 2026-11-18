@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Sources;
 
 namespace FUI.Navigation
 {
@@ -58,15 +59,83 @@ namespace FUI.Navigation
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            // 这里只负责线程切换，不捕获或吞掉调用方后续状态提交的异常。
-            var completion = new TaskCompletionSource<bool>();
-            var registration = cancellationToken.Register(() => completion.TrySetCanceled(cancellationToken));
-            synchronizationContext.Post(_ =>
+            // Task 在主线程完成并不保证其续体在主线程执行；直接调度 ValueTask 的续体。
+            return new ValueTask(new MainThreadSwitch(synchronizationContext, threadId, cancellationToken), 0);
+        }
+
+        /// <summary>将一次等待的续体直接投递到捕获线程，不复用或池化等待状态。</summary>
+        sealed class MainThreadSwitch : IValueTaskSource
+        {
+            readonly SynchronizationContext context;
+            readonly int threadId;
+            readonly CancellationToken token;
+            OperationCanceledException cancellation;
+            int registered;
+            int completed;
+
+            public MainThreadSwitch(SynchronizationContext context, int threadId, CancellationToken token)
             {
-                registration.Dispose();
-                completion.TrySetResult(true);
-            }, null);
-            return new ValueTask(completion.Task);
+                this.context = context;
+                this.threadId = threadId;
+                this.token = token;
+            }
+
+            public ValueTaskSourceStatus GetStatus(short version)
+            {
+                if (Volatile.Read(ref completed) == 0)
+                {
+                    return ValueTaskSourceStatus.Pending;
+                }
+                return cancellation == null ? ValueTaskSourceStatus.Succeeded : ValueTaskSourceStatus.Canceled;
+            }
+
+            public void GetResult(short version)
+            {
+                if (Volatile.Read(ref completed) == 0 || Environment.CurrentManagedThreadId != threadId)
+                {
+                    throw new InvalidOperationException("The main-thread switch must be awaited on its captured thread.");
+                }
+                if (cancellation != null)
+                {
+                    throw cancellation;
+                }
+            }
+
+            public void OnCompleted(Action<object> continuation, object state, short version, ValueTaskSourceOnCompletedFlags flags)
+            {
+                if (Interlocked.Exchange(ref registered, 1) != 0)
+                {
+                    throw new InvalidOperationException("A main-thread switch can only be awaited once.");
+                }
+                var flow = (flags & ValueTaskSourceOnCompletedFlags.FlowExecutionContext) != 0
+                    ? ExecutionContext.Capture()
+                    : null;
+                // 此操作明确选择目标线程，不回到调用者可能拥有的另一个 SchedulingContext。
+                context.Post(_ =>
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        cancellation = new OperationCanceledException(token);
+                    }
+                    Volatile.Write(ref completed, 1);
+                    if (flow == null)
+                    {
+                        continuation(state);
+                    }
+                    else
+                    {
+                        ExecutionContext.Run(flow, ignored =>
+                        {
+                            // Mono 的 ExecutionContext 也会携带调用方的 SynchronizationContext。
+                            // 流转 AsyncLocal，但在回调内部保持本次操作选择的目标上下文。
+                            var previous = SynchronizationContext.Current;
+                            SynchronizationContext.SetSynchronizationContext(context);
+                            try { continuation(state); }
+                            finally { SynchronizationContext.SetSynchronizationContext(previous); }
+                        }, null);
+                    }
+                }, null);
+            }
         }
     }
 }

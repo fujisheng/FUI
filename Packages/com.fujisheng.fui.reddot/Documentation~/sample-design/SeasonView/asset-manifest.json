@@ -1,0 +1,285 @@
+{
+  "view": "SeasonView",
+  "referenceResolution": {
+    "width": 1920,
+    "height": 1080
+  },
+  "designMaster": "design-master.png",
+  "assets": [
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/Background.png",
+      "width": 1920,
+      "height": 1080,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "Background"
+      ],
+      "layout": [
+        {
+          "node": "Background",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/PanelFrame.png",
+      "width": 512,
+      "height": 512,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "TopBar",
+        "RoutePanel",
+        "FleetPanel",
+        "WingPanel",
+        "DefaultPanel",
+        "DetailsPanel"
+      ],
+      "layout": [
+        {
+          "node": "TopBar",
+          "rect": {
+            "x": 24,
+            "y": 20,
+            "width": 1872,
+            "height": 106
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "RoutePanel",
+          "rect": {
+            "x": 32,
+            "y": 150,
+            "width": 850,
+            "height": 728
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "FleetPanel",
+          "rect": {
+            "x": 904,
+            "y": 150,
+            "width": 984,
+            "height": 455
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "WingPanel",
+          "rect": {
+            "x": 934,
+            "y": 375,
+            "width": 884,
+            "height": 188
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DefaultPanel",
+          "rect": {
+            "x": 904,
+            "y": 625,
+            "width": 984,
+            "height": 253
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsPanel",
+          "rect": {
+            "x": 400,
+            "y": 190,
+            "width": 1120,
+            "height": 730
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonSecondary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "BackButton",
+        "FleetButton",
+        "FleetConnectionButton",
+        "WingMoveButton",
+        "WingScopeButton",
+        "ClaimFleetButton",
+        "DetailsButton"
+      ],
+      "layout": [
+        {
+          "node": "BackButton",
+          "rect": {
+            "x": 40,
+            "y": 38,
+            "width": 156,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "FleetButton",
+          "rect": {
+            "x": 32,
+            "y": 902,
+            "width": 296,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "FleetConnectionButton",
+          "rect": {
+            "x": 346,
+            "y": 902,
+            "width": 296,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "WingMoveButton",
+          "rect": {
+            "x": 660,
+            "y": 902,
+            "width": 296,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "WingScopeButton",
+          "rect": {
+            "x": 974,
+            "y": 902,
+            "width": 296,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "ClaimFleetButton",
+          "rect": {
+            "x": 1602,
+            "y": 902,
+            "width": 296,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsButton",
+          "rect": {
+            "x": 32,
+            "y": 980,
+            "width": 240,
+            "height": 60
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/SeasonView/FrontierRoute.png",
+      "width": 1536,
+      "height": 768,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "RouteMap"
+      ],
+      "layout": [
+        {
+          "node": "RouteMap",
+          "rect": {
+            "x": 56,
+            "y": 242,
+            "width": 802,
+            "height": 610
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/BadgeAlert.png",
+      "width": 128,
+      "height": 128,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "SeasonRewardBadgeVisual",
+        "WingBadgeVisual",
+        "DefaultFleetBadgeVisual"
+      ],
+      "layout": [
+        {
+          "node": "SeasonRewardBadgeVisual",
+          "rect": {
+            "x": 1779,
+            "y": 170,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        },
+        {
+          "node": "WingBadgeVisual",
+          "rect": {
+            "x": 1724,
+            "y": 401,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        },
+        {
+          "node": "DefaultFleetBadgeVisual",
+          "rect": {
+            "x": 1779,
+            "y": 645,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonPrimary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "AdvanceButton"
+      ],
+      "layout": [
+        {
+          "node": "AdvanceButton",
+          "rect": {
+            "x": 1288,
+            "y": 902,
+            "width": 296,
+            "height": 70
+          },
+          "imageType": "sliced"
+        }
+      ]
+    }
+  ]
+}

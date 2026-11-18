@@ -1,0 +1,362 @@
+{
+  "view": "QuestView",
+  "referenceResolution": {
+    "width": 1920,
+    "height": 1080
+  },
+  "designMaster": "design-master.png",
+  "assets": [
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/Background.png",
+      "width": 1920,
+      "height": 1080,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "Background"
+      ],
+      "layout": [
+        {
+          "node": "Background",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/PanelFrame.png",
+      "width": 512,
+      "height": 512,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "TopBar",
+        "MissionGroupsPanel",
+        "MissionCard0",
+        "MissionCard1",
+        "MissionCard2",
+        "SharedExplanationPanel",
+        "StatusPanel",
+        "DetailsPanel"
+      ],
+      "layout": [
+        {
+          "node": "TopBar",
+          "rect": {
+            "x": 24,
+            "y": 20,
+            "width": 1872,
+            "height": 106
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "MissionGroupsPanel",
+          "rect": {
+            "x": 32,
+            "y": 150,
+            "width": 268,
+            "height": 728
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "MissionCard0",
+          "rect": {
+            "x": 322,
+            "y": 150,
+            "width": 282,
+            "height": 525
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "MissionCard1",
+          "rect": {
+            "x": 622,
+            "y": 150,
+            "width": 282,
+            "height": 525
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "MissionCard2",
+          "rect": {
+            "x": 922,
+            "y": 150,
+            "width": 282,
+            "height": 525
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "SharedExplanationPanel",
+          "rect": {
+            "x": 322,
+            "y": 695,
+            "width": 882,
+            "height": 183
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "StatusPanel",
+          "rect": {
+            "x": 1224,
+            "y": 150,
+            "width": 664,
+            "height": 728
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsPanel",
+          "rect": {
+            "x": 400,
+            "y": 190,
+            "width": 1120,
+            "height": 730
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonSecondary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "BackButton",
+        "TrackingButton",
+        "HintButton",
+        "SharedButton",
+        "TrackButton",
+        "DetailsButton"
+      ],
+      "layout": [
+        {
+          "node": "BackButton",
+          "rect": {
+            "x": 40,
+            "y": 38,
+            "width": 156,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "TrackingButton",
+          "rect": {
+            "x": 784,
+            "y": 902,
+            "width": 350,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "HintButton",
+          "rect": {
+            "x": 1160,
+            "y": 902,
+            "width": 350,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "SharedButton",
+          "rect": {
+            "x": 1536,
+            "y": 902,
+            "width": 350,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "TrackButton",
+          "rect": {
+            "x": 1535,
+            "y": 980,
+            "width": 350,
+            "height": 60
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsButton",
+          "rect": {
+            "x": 32,
+            "y": 980,
+            "width": 240,
+            "height": 60
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/BadgeAlert.png",
+      "width": 128,
+      "height": 128,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "HintBadgeVisual",
+        "SharedBadgeVisual",
+        "ReadinessBadgeVisual",
+        "QuestClaimBadgeVisual"
+      ],
+      "layout": [
+        {
+          "node": "HintBadgeVisual",
+          "rect": {
+            "x": 222,
+            "y": 700,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        },
+        {
+          "node": "SharedBadgeVisual",
+          "rect": {
+            "x": 1132,
+            "y": 580,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        },
+        {
+          "node": "ReadinessBadgeVisual",
+          "rect": {
+            "x": 1112,
+            "y": 720,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        },
+        {
+          "node": "QuestClaimBadgeVisual",
+          "rect": {
+            "x": 1802,
+            "y": 168,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/QuestView/OutpostThumbnail.png",
+      "width": 768,
+      "height": 432,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "MissionImage0"
+      ],
+      "layout": [
+        {
+          "node": "MissionImage0",
+          "rect": {
+            "x": 338,
+            "y": 242,
+            "width": 250,
+            "height": 235
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/QuestView/MineThumbnail.png",
+      "width": 768,
+      "height": 432,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "MissionImage1"
+      ],
+      "layout": [
+        {
+          "node": "MissionImage1",
+          "rect": {
+            "x": 638,
+            "y": 242,
+            "width": 250,
+            "height": 235
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/QuestView/OperationMap.png",
+      "width": 1536,
+      "height": 1024,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "MissionImage2"
+      ],
+      "layout": [
+        {
+          "node": "MissionImage2",
+          "rect": {
+            "x": 938,
+            "y": 242,
+            "width": 250,
+            "height": 235
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonPrimary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "CompleteButton",
+        "ClaimButton"
+      ],
+      "layout": [
+        {
+          "node": "CompleteButton",
+          "rect": {
+            "x": 32,
+            "y": 902,
+            "width": 350,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "ClaimButton",
+          "rect": {
+            "x": 408,
+            "y": 902,
+            "width": 350,
+            "height": 70
+          },
+          "imageType": "sliced"
+        }
+      ]
+    }
+  ]
+}

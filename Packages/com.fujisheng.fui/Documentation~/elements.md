@@ -1,5 +1,7 @@
 # uGUI Elements
 
+> These Elements ship in the separately installed [`com.fujisheng.fui.ugui`](../../com.fujisheng.fui.ugui/README.md) package (`FUI.Rendering.UGUI` assembly).
+
 Elements adapt Unity components to FUI bindable properties and commands. The Unity component remains the visual source of truth; the Element owns binding-facing state, event direction, cleanup, and dynamic resource leases.
 
 Built-in groups include text, image, button, toggle, slider, input, dropdown, event trigger, scroll views, lists, nested views, and dynamic views.

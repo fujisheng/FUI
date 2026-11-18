@@ -2,8 +2,15 @@
 
 FUI 使用 Monorepo 管理 Core 与紧密耦合的第一方集成。
 
+## 第一方 Package
+
+- `com.fujisheng.fui` — 渲染无关的 Core：绑定、导航、Source Generator 与资源 Lease。
+- `com.fujisheng.fui.ugui` — 独立版本的第一方 uGUI 渲染后端。Core 永远不依赖它；uGUI 项目将它与 Core 一起安装。
+- `com.fujisheng.fui.reddot` — 生成式红点扩展，依赖 Core 与 uGUI 后端，并保持基于 uGUI。
+
 ## 可以进入本仓库
 
+- 实现渲染无关 Element 协议的渲染后端；
 - 实现 `IViewProvider` 或资源 Lease 的资源后端；
 - 实现 `ITransitionProvider` 的动画集成；
 - FUI 专用 Input Gate、Log Sink、Element、Converter 或 Validator；

@@ -1,0 +1,362 @@
+{
+  "view": "HeroView",
+  "referenceResolution": {
+    "width": 1920,
+    "height": 1080
+  },
+  "designMaster": "design-master.png",
+  "assets": [
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/Background.png",
+      "width": 1920,
+      "height": 1080,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "Background"
+      ],
+      "layout": [
+        {
+          "node": "Background",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/PanelFrame.png",
+      "width": 512,
+      "height": 512,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "TopBar",
+        "RosterPanel",
+        "UnitPanel",
+        "StatusPanel",
+        "UnitHintPanel",
+        "DetailsPanel"
+      ],
+      "layout": [
+        {
+          "node": "TopBar",
+          "rect": {
+            "x": 24,
+            "y": 20,
+            "width": 1872,
+            "height": 106
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "RosterPanel",
+          "rect": {
+            "x": 32,
+            "y": 150,
+            "width": 365,
+            "height": 732
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "UnitPanel",
+          "rect": {
+            "x": 418,
+            "y": 150,
+            "width": 720,
+            "height": 732
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "StatusPanel",
+          "rect": {
+            "x": 1160,
+            "y": 150,
+            "width": 728,
+            "height": 410
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "UnitHintPanel",
+          "rect": {
+            "x": 1160,
+            "y": 580,
+            "width": 728,
+            "height": 302
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsPanel",
+          "rect": {
+            "x": 400,
+            "y": 190,
+            "width": 1120,
+            "height": 730
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonSecondary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "BackButton",
+        "Unit1Button",
+        "Unit2Button",
+        "Unit3Button",
+        "RecruitButton",
+        "DischargeButton",
+        "TrackButton",
+        "DetailsButton"
+      ],
+      "layout": [
+        {
+          "node": "BackButton",
+          "rect": {
+            "x": 40,
+            "y": 38,
+            "width": 156,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "Unit1Button",
+          "rect": {
+            "x": 54,
+            "y": 230,
+            "width": 320,
+            "height": 188
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "Unit2Button",
+          "rect": {
+            "x": 54,
+            "y": 440,
+            "width": 320,
+            "height": 188
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "Unit3Button",
+          "rect": {
+            "x": 54,
+            "y": 650,
+            "width": 320,
+            "height": 188
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "RecruitButton",
+          "rect": {
+            "x": 1160,
+            "y": 900,
+            "width": 350,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DischargeButton",
+          "rect": {
+            "x": 1536,
+            "y": 900,
+            "width": 350,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "TrackButton",
+          "rect": {
+            "x": 1535,
+            "y": 980,
+            "width": 350,
+            "height": 60
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsButton",
+          "rect": {
+            "x": 32,
+            "y": 980,
+            "width": 240,
+            "height": 60
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV3/ScoutMechIcon.png",
+      "width": 512,
+      "height": 512,
+      "source": "imagegen-ArtV3",
+      "textPolicy": "noText",
+      "usedBy": [
+        "UnitPortrait0"
+      ],
+      "layout": [
+        {
+          "node": "UnitPortrait0",
+          "rect": {
+            "x": 64,
+            "y": 240,
+            "width": 116,
+            "height": 116
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV3/HeavyMechIcon.png",
+      "width": 512,
+      "height": 512,
+      "source": "imagegen-ArtV3",
+      "textPolicy": "noText",
+      "usedBy": [
+        "UnitPortrait1"
+      ],
+      "layout": [
+        {
+          "node": "UnitPortrait1",
+          "rect": {
+            "x": 64,
+            "y": 450,
+            "width": 116,
+            "height": 116
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV3/EngineerMechIcon.png",
+      "width": 512,
+      "height": 512,
+      "source": "imagegen-ArtV3",
+      "textPolicy": "noText",
+      "usedBy": [
+        "UnitPortrait2"
+      ],
+      "layout": [
+        {
+          "node": "UnitPortrait2",
+          "rect": {
+            "x": 64,
+            "y": 660,
+            "width": 116,
+            "height": 116
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV3/MechShowcase.png",
+      "width": 768,
+      "height": 1024,
+      "source": "imagegen-ArtV3",
+      "textPolicy": "noText",
+      "usedBy": [
+        "UnitShowcase"
+      ],
+      "layout": [
+        {
+          "node": "UnitShowcase",
+          "rect": {
+            "x": 523,
+            "y": 172,
+            "width": 510,
+            "height": 680
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/BadgeAlert.png",
+      "width": 128,
+      "height": 128,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "HeroUpgradeBadgeVisual"
+      ],
+      "layout": [
+        {
+          "node": "HeroUpgradeBadgeVisual",
+          "rect": {
+            "x": 1802,
+            "y": 168,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonPrimary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "TrainButton",
+        "SupplyButton",
+        "UpgradeButton"
+      ],
+      "layout": [
+        {
+          "node": "TrainButton",
+          "rect": {
+            "x": 32,
+            "y": 900,
+            "width": 350,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "SupplyButton",
+          "rect": {
+            "x": 408,
+            "y": 900,
+            "width": 350,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "UpgradeButton",
+          "rect": {
+            "x": 784,
+            "y": 900,
+            "width": 350,
+            "height": 70
+          },
+          "imageType": "sliced"
+        }
+      ]
+    }
+  ]
+}

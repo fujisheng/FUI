@@ -1,0 +1,516 @@
+{
+  "view": "GameHomeView",
+  "referenceResolution": {
+    "width": 1920,
+    "height": 1080
+  },
+  "designMaster": "design-master.png",
+  "assets": [
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/Background.png",
+      "width": 1920,
+      "height": 1080,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "Background"
+      ],
+      "layout": [
+        {
+          "node": "Background",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/PanelFrame.png",
+      "width": 512,
+      "height": 512,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "TopBar",
+        "MapPanel",
+        "StatusPanel",
+        "ConnectionPanel",
+        "DetailsPanel"
+      ],
+      "layout": [
+        {
+          "node": "TopBar",
+          "rect": {
+            "x": 24,
+            "y": 20,
+            "width": 1872,
+            "height": 106
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "MapPanel",
+          "rect": {
+            "x": 32,
+            "y": 150,
+            "width": 1130,
+            "height": 620
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "StatusPanel",
+          "rect": {
+            "x": 1180,
+            "y": 150,
+            "width": 708,
+            "height": 285
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "ConnectionPanel",
+          "rect": {
+            "x": 1180,
+            "y": 454,
+            "width": 708,
+            "height": 316
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsPanel",
+          "rect": {
+            "x": 400,
+            "y": 190,
+            "width": 1120,
+            "height": 730
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/GameHomeView/CommanderPortrait.png",
+      "width": 256,
+      "height": 256,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "CommanderPortrait"
+      ],
+      "layout": [
+        {
+          "node": "CommanderPortrait",
+          "rect": {
+            "x": 44,
+            "y": 29,
+            "width": 88,
+            "height": 88
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/GameHomeView/TacticalMap.png",
+      "width": 1536,
+      "height": 768,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "TacticalMap"
+      ],
+      "layout": [
+        {
+          "node": "TacticalMap",
+          "rect": {
+            "x": 56,
+            "y": 232,
+            "width": 1080,
+            "height": 510
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/BadgeAlert.png",
+      "width": 128,
+      "height": 128,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "HomeBadgeVisual",
+        "BagNavBadgeVisual",
+        "QuestNavBadgeVisual",
+        "HeroNavBadgeVisual",
+        "MailNavBadgeVisual",
+        "SeasonNavBadgeVisual"
+      ],
+      "layout": [
+        {
+          "node": "HomeBadgeVisual",
+          "rect": {
+            "x": 1802,
+            "y": 168,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        },
+        {
+          "node": "BagNavBadgeVisual",
+          "rect": {
+            "x": 270,
+            "y": 808,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        },
+        {
+          "node": "QuestNavBadgeVisual",
+          "rect": {
+            "x": 584,
+            "y": 808,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        },
+        {
+          "node": "HeroNavBadgeVisual",
+          "rect": {
+            "x": 898,
+            "y": 808,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        },
+        {
+          "node": "MailNavBadgeVisual",
+          "rect": {
+            "x": 1212,
+            "y": 808,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        },
+        {
+          "node": "SeasonNavBadgeVisual",
+          "rect": {
+            "x": 1526,
+            "y": 808,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonPrimary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "ConnectButton"
+      ],
+      "layout": [
+        {
+          "node": "ConnectButton",
+          "rect": {
+            "x": 1205,
+            "y": 664,
+            "width": 204,
+            "height": 72
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonSecondary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "DisconnectButton",
+        "ProfileButton",
+        "TrackButton",
+        "DetailsButton",
+        "CompleteWatchButton"
+      ],
+      "layout": [
+        {
+          "node": "DisconnectButton",
+          "rect": {
+            "x": 1423,
+            "y": 664,
+            "width": 204,
+            "height": 72
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "ProfileButton",
+          "rect": {
+            "x": 1641,
+            "y": 664,
+            "width": 204,
+            "height": 72
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "TrackButton",
+          "rect": {
+            "x": 1580,
+            "y": 980,
+            "width": 306,
+            "height": 60
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsButton",
+          "rect": {
+            "x": 32,
+            "y": 980,
+            "width": 240,
+            "height": 60
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "CompleteWatchButton",
+          "rect": {
+            "x": 306,
+            "y": 980,
+            "width": 300,
+            "height": 60
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/NavTile.png",
+      "width": 512,
+      "height": 320,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "BagButton",
+        "QuestButton",
+        "HeroButton",
+        "MailButton",
+        "SeasonButton",
+        "TacticalButton"
+      ],
+      "layout": [
+        {
+          "node": "BagButton",
+          "rect": {
+            "x": 32,
+            "y": 798,
+            "width": 296,
+            "height": 170
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "QuestButton",
+          "rect": {
+            "x": 346,
+            "y": 798,
+            "width": 296,
+            "height": 170
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "HeroButton",
+          "rect": {
+            "x": 660,
+            "y": 798,
+            "width": 296,
+            "height": 170
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "MailButton",
+          "rect": {
+            "x": 974,
+            "y": 798,
+            "width": 296,
+            "height": 170
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "SeasonButton",
+          "rect": {
+            "x": 1288,
+            "y": 798,
+            "width": 296,
+            "height": 170
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "TacticalButton",
+          "rect": {
+            "x": 1602,
+            "y": 798,
+            "width": 296,
+            "height": 170
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/GameHomeView/BagNavIcon.png",
+      "width": 256,
+      "height": 256,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "BagNavIcon"
+      ],
+      "layout": [
+        {
+          "node": "BagNavIcon",
+          "rect": {
+            "x": 52,
+            "y": 826,
+            "width": 105,
+            "height": 105
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/GameHomeView/QuestNavIcon.png",
+      "width": 256,
+      "height": 256,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "QuestNavIcon"
+      ],
+      "layout": [
+        {
+          "node": "QuestNavIcon",
+          "rect": {
+            "x": 366,
+            "y": 826,
+            "width": 105,
+            "height": 105
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/GameHomeView/HeroNavIcon.png",
+      "width": 256,
+      "height": 256,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "HeroNavIcon"
+      ],
+      "layout": [
+        {
+          "node": "HeroNavIcon",
+          "rect": {
+            "x": 680,
+            "y": 826,
+            "width": 105,
+            "height": 105
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/GameHomeView/MailNavIcon.png",
+      "width": 256,
+      "height": 256,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "MailNavIcon"
+      ],
+      "layout": [
+        {
+          "node": "MailNavIcon",
+          "rect": {
+            "x": 994,
+            "y": 826,
+            "width": 105,
+            "height": 105
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/GameHomeView/SeasonNavIcon.png",
+      "width": 256,
+      "height": 256,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "SeasonNavIcon"
+      ],
+      "layout": [
+        {
+          "node": "SeasonNavIcon",
+          "rect": {
+            "x": 1308,
+            "y": 826,
+            "width": 105,
+            "height": 105
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV3/TacticalNavIcon.png",
+      "width": 512,
+      "height": 512,
+      "source": "imagegen-ArtV3",
+      "textPolicy": "noText",
+      "usedBy": [
+        "TacticalNavIcon"
+      ],
+      "layout": [
+        {
+          "node": "TacticalNavIcon",
+          "rect": {
+            "x": 1622,
+            "y": 826,
+            "width": 105,
+            "height": 105
+          },
+          "imageType": "simple"
+        }
+      ]
+    }
+  ]
+}

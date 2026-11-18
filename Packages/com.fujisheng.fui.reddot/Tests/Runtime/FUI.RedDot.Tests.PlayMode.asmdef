@@ -1,0 +1,9 @@
+{
+  "name": "FUI.RedDot.Tests.PlayMode",
+  "rootNamespace": "FUI.RedDot.Tests",
+  "references": ["FUI.Core", "FUI.RedDot", "FUI.RedDot.UGUI", "FUI.Rendering.UGUI", "Unity.ugui", "Unity.TextMeshPro"],
+  "includePlatforms": [],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "autoReferenced": false,
+  "defineConstraints": ["UNITY_INCLUDE_TESTS"]
+}

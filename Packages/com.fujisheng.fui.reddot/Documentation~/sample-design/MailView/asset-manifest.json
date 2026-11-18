@@ -1,0 +1,362 @@
+{
+  "view": "MailView",
+  "referenceResolution": {
+    "width": 1920,
+    "height": 1080
+  },
+  "designMaster": "design-master.png",
+  "assets": [
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/Background.png",
+      "width": 1920,
+      "height": 1080,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "Background"
+      ],
+      "layout": [
+        {
+          "node": "Background",
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/PanelFrame.png",
+      "width": 512,
+      "height": 512,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "TopBar",
+        "InboxPanel",
+        "StatusPanel",
+        "LinksPanel",
+        "DetailsPanel"
+      ],
+      "layout": [
+        {
+          "node": "TopBar",
+          "rect": {
+            "x": 24,
+            "y": 20,
+            "width": 1872,
+            "height": 106
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "InboxPanel",
+          "rect": {
+            "x": 32,
+            "y": 150,
+            "width": 420,
+            "height": 576
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "StatusPanel",
+          "rect": {
+            "x": 474,
+            "y": 150,
+            "width": 716,
+            "height": 576
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "LinksPanel",
+          "rect": {
+            "x": 1212,
+            "y": 150,
+            "width": 676,
+            "height": 576
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsPanel",
+          "rect": {
+            "x": 400,
+            "y": 190,
+            "width": 1120,
+            "height": 730
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonSecondary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "BackButton",
+        "Message1Button",
+        "Message2Button",
+        "Message3Button",
+        "ThreatButton",
+        "RuleFaultButton",
+        "AggregateFaultButton",
+        "CallbackFaultButton",
+        "StartFaultButton",
+        "StopFaultButton",
+        "RecoverButton",
+        "TrackButton",
+        "DetailsButton"
+      ],
+      "layout": [
+        {
+          "node": "BackButton",
+          "rect": {
+            "x": 40,
+            "y": 38,
+            "width": 156,
+            "height": 70
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "Message1Button",
+          "rect": {
+            "x": 52,
+            "y": 230,
+            "width": 380,
+            "height": 130
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "Message2Button",
+          "rect": {
+            "x": 52,
+            "y": 376,
+            "width": 380,
+            "height": 130
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "Message3Button",
+          "rect": {
+            "x": 52,
+            "y": 522,
+            "width": 380,
+            "height": 130
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "ThreatButton",
+          "rect": {
+            "x": 1160,
+            "y": 750,
+            "width": 350,
+            "height": 85
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "RuleFaultButton",
+          "rect": {
+            "x": 1536,
+            "y": 750,
+            "width": 350,
+            "height": 85
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "AggregateFaultButton",
+          "rect": {
+            "x": 32,
+            "y": 855,
+            "width": 350,
+            "height": 85
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "CallbackFaultButton",
+          "rect": {
+            "x": 408,
+            "y": 855,
+            "width": 350,
+            "height": 85
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "StartFaultButton",
+          "rect": {
+            "x": 784,
+            "y": 855,
+            "width": 350,
+            "height": 85
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "StopFaultButton",
+          "rect": {
+            "x": 1160,
+            "y": 855,
+            "width": 350,
+            "height": 85
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "RecoverButton",
+          "rect": {
+            "x": 1536,
+            "y": 855,
+            "width": 350,
+            "height": 85
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "TrackButton",
+          "rect": {
+            "x": 1535,
+            "y": 980,
+            "width": 350,
+            "height": 60
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "DetailsButton",
+          "rect": {
+            "x": 32,
+            "y": 980,
+            "width": 240,
+            "height": 60
+          },
+          "imageType": "sliced"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/BadgeAlert.png",
+      "width": 128,
+      "height": 128,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "MailItemBadgeVisual",
+        "ThreatBadgeVisual",
+        "LinkBadgeVisual"
+      ],
+      "layout": [
+        {
+          "node": "MailItemBadgeVisual",
+          "rect": {
+            "x": 1104,
+            "y": 168,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        },
+        {
+          "node": "ThreatBadgeVisual",
+          "rect": {
+            "x": 1722,
+            "y": 505,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        },
+        {
+          "node": "LinkBadgeVisual",
+          "rect": {
+            "x": 1742,
+            "y": 580,
+            "width": 52,
+            "height": 52
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/MailView/CommsRelay.png",
+      "width": 1536,
+      "height": 768,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "RelayImage"
+      ],
+      "layout": [
+        {
+          "node": "RelayImage",
+          "rect": {
+            "x": 1240,
+            "y": 244,
+            "width": 290,
+            "height": 280
+          },
+          "imageType": "simple"
+        }
+      ]
+    },
+    {
+      "path": "Assets/Samples/FUI Red Dot/0.1.0/Red Dot Sample/Resources/UI/ArtV2/Shared/ButtonPrimary.png",
+      "width": 512,
+      "height": 160,
+      "source": "imagegen-ArtV2-reused",
+      "textPolicy": "noText",
+      "usedBy": [
+        "ReceiveButton",
+        "ReadButton",
+        "ArchiveButton"
+      ],
+      "layout": [
+        {
+          "node": "ReceiveButton",
+          "rect": {
+            "x": 32,
+            "y": 750,
+            "width": 350,
+            "height": 85
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "ReadButton",
+          "rect": {
+            "x": 408,
+            "y": 750,
+            "width": 350,
+            "height": 85
+          },
+          "imageType": "sliced"
+        },
+        {
+          "node": "ArchiveButton",
+          "rect": {
+            "x": 784,
+            "y": 750,
+            "width": 350,
+            "height": 85
+          },
+          "imageType": "sliced"
+        }
+      ]
+    }
+  ]
+}

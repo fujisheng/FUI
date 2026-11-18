@@ -1,0 +1,7 @@
+using FUI.Binding;namespace FUI.Rendering{
+    public interface ITextElement : IElement
+    {
+        /// <summary>节点展示的纯文本值。</summary>
+        BindableProperty<string> Text { get; }
+    }
+}

@@ -11,4 +11,4 @@ FUI Core remains functional without any optional package.
 
 The tools are maintained in independent repositories. After publication, installing FUI CLI resolves its UnityCli dependency and the availability flag is enabled in a Core patch release.
 
-Future first-party packages that directly implement FUI providers, transitions, Elements, or validators may live in the FUI Monorepo and keep independent SemVer versions.
+First-party packages that directly implement FUI providers, transitions, Elements, or validators may live in the FUI Monorepo and keep independent SemVer versions. The experimental [`com.fujisheng.fui.reddot`](../../com.fujisheng.fui.reddot/README.md) package is developed this way but is not listed in FUI Setup until it is published and compatibility-verified.

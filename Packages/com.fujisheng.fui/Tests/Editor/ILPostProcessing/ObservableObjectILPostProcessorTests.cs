@@ -4,6 +4,7 @@ using Mono.Cecil.Cil;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.IO;
 using UnityEditor;
 
 namespace FUI.Tests.ILPostProcessing
@@ -75,6 +76,57 @@ namespace FUI.Tests.ILPostProcessing
                 Assert.That(ObservableObjectILPostProcessor.ProcessAssembly(manualAssembly), Is.False);
                 Assert.That(FindSetter(unboundAssembly).Body.Instructions.Any(IsSetHelperCall), Is.False);
                 Assert.That(FindSetter(manualAssembly).Body.Instructions.Any(IsSetHelperCall), Is.False);
+            }
+        }
+
+        [TestCase(1)]
+        [TestCase(3)]
+        public void RewrittenSetterPreservesValidPortablePdbSequencePoints(int originalPointCount)
+        {
+            using (var assembly = CreateAssembly(1, true, true))
+            {
+                var setter = FindSetter(assembly);
+                var document = new Document("PortableSetter.cs");
+                for (var i = 0; i < originalPointCount; i++)
+                {
+                    setter.DebugInformation.SequencePoints.Add(new SequencePoint(setter.Body.Instructions[i], document)
+                    {
+                        StartLine = 10 + i,
+                        StartColumn = 1,
+                        EndLine = 10 + i,
+                        EndColumn = 8,
+                    });
+                }
+                Assert.That(ObservableObjectILPostProcessor.ProcessAssembly(assembly), Is.True);
+                Assert.That(setter.DebugInformation.SequencePoints.All(point => point.IsHidden
+                    || point.EndLine > point.StartLine || point.EndColumn > point.StartColumn), Is.True,
+                    "Portable PDB visible sequence points must have a nonzero source span");
+                using (var dll = new MemoryStream())
+                using (var pdb = new MemoryStream())
+                {
+                    assembly.Write(dll, new WriterParameters
+                    {
+                        WriteSymbols = true,
+                        SymbolWriterProvider = new PortablePdbWriterProvider(),
+                        SymbolStream = pdb,
+                    });
+                    var offsets = setter.DebugInformation.SequencePoints.Select(point => point.Offset).ToArray();
+                    Assert.That(offsets.Distinct().Count(), Is.EqualTo(offsets.Length),
+                        "Repeated IL offsets are encoded as document-switch markers");
+                    dll.Position = 0;
+                    pdb.Position = 0;
+                    using (var reloaded = AssemblyDefinition.ReadAssembly(dll, new ReaderParameters
+                    {
+                        ReadSymbols = true,
+                        SymbolReaderProvider = new PortablePdbReaderProvider(),
+                        SymbolStream = pdb,
+                    }))
+                    {
+                        var points = FindSetter(reloaded).DebugInformation.SequencePoints;
+                        Assert.That(points.Any(point => !point.IsHidden && point.StartLine == 10 && point.StartColumn == 1), Is.True);
+                        Assert.That(points.All(point => point.Document.Url == "PortableSetter.cs"), Is.True);
+                    }
+                }
             }
         }
 

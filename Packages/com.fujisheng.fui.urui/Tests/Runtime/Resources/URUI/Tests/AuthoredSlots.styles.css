@@ -1,0 +1,6 @@
+body { margin:0; }
+#slots { position:absolute; left:0; top:0; width:400px; height:200px; }
+.decoration { position:absolute; width:1px; height:1px; }
+.slot { position:absolute; }
+#first { left:20px; top:30px; width:80px; height:24px; transform:rotate(20deg); }
+#second { left:210px; top:80px; width:120px; height:50px; }

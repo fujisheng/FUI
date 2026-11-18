@@ -18,8 +18,7 @@ namespace FUI.Infrastructure
             Func<TViewModel> viewModelFactory,
             Func<IView, TViewModel, object> bindingContextFactory,
             Func<object> presenterFactory,
-            FUI.Navigation.RoutePolicy policy,
-            bool supportsSynchronousOpen = true)
+            FUI.Navigation.RoutePolicy policy)
             where TViewModel : ObservableObject
         {
             return new FUI.Navigation.Route<TViewModel>(
@@ -28,8 +27,7 @@ namespace FUI.Infrastructure
                 viewModelFactory,
                 bindingContextFactory,
                 presenterFactory,
-                policy,
-                supportsSynchronousOpen);
+                policy);
         }
     }
 }

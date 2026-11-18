@@ -1,0 +1,2 @@
+.custom-number { position:absolute; left:0; top:0; --extent:20px; width:var(--extent); height:20px; }
+.custom-inherited { display:block; width:var(--extent); height:10px; }

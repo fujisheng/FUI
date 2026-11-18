@@ -1,0 +1,7 @@
+body { margin:0; }
+#scope { width:200px; height:100px; }
+#first, #last { position:absolute; top:0; width:40px; height:40px; }
+#last { left:50px; }
+@keyframes target-clock { from { opacity:.5; } to { opacity:1; } }
+#scope.running #first { animation:.05s linear target-clock; }
+#scope.running #last { animation:.15s linear .15s target-clock; }

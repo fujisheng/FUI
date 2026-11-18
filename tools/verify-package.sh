@@ -92,7 +92,7 @@ if ! file_has_pattern "\[$version\]|## +$version|## +\[$version\]" "$package_dir
 fi
 
 if [[ "$package_id" == "com.fujisheng.fui" ]]; then
-    required_core_paths=(FUI.Generators~ Roslyn~/FUI.Generators.dll Samples~/"Settings Sample")
+    required_core_paths=(FUI.Generators~ Roslyn~/FUI.Generators.dll)
     for required_path in "${required_core_paths[@]}"; do
         if [[ ! -e "$package_dir/$required_path" ]]; then
             echo "Missing Core path: $required_path" >&2
@@ -103,8 +103,30 @@ if [[ "$package_id" == "com.fujisheng.fui" ]]; then
         echo "Core must not depend on an FUI extension." >&2
         exit 1
     fi
-    cmp "$package_dir/Roslyn~/FUI.Generators.dll" \
+fi
+if [[ "$package_id" == "com.fujisheng.fui.ugui" ]]; then
+    required_ugui_paths=(Samples~/"Settings Sample")
+    for required_path in "${required_ugui_paths[@]}"; do
+        if [[ ! -e "$package_dir/$required_path" ]]; then
+            echo "Missing UGUI path: $required_path" >&2
+            exit 1
+        fi
+    done
+    cmp "$repo_root/Packages/com.fujisheng.fui/Roslyn~/FUI.Generators.dll" \
         "$package_dir/Samples~/Settings Sample/FUI.Generators.dll"
+fi
+if [[ "$package_id" == "com.fujisheng.fui.reddot" ]]; then
+    required_reddot_paths=(FUI.RedDot.Generators~ Roslyn~/FUI.RedDot.Generators.dll Samples~/"RedDot Sample")
+    for required_path in "${required_reddot_paths[@]}"; do
+        if [[ ! -e "$package_dir/$required_path" ]]; then
+            echo "Missing Red Dot path: $required_path" >&2
+            exit 1
+        fi
+    done
+    cmp "$package_dir/Roslyn~/FUI.RedDot.Generators.dll" \
+        "$package_dir/Samples~/RedDot Sample/FUI.RedDot.Generators.dll"
+    cmp "$repo_root/Packages/com.fujisheng.fui/Roslyn~/FUI.Generators.dll" \
+        "$package_dir/Samples~/RedDot Sample/FUI.Generators.dll"
 fi
 
 if [[ "$mode" == "--structure-only" ]]; then
@@ -114,6 +136,9 @@ fi
 
 if [[ "$package_id" == "com.fujisheng.fui" ]]; then
     "$package_dir/FUI.Generators~/verify.sh"
+fi
+if [[ "$package_id" == "com.fujisheng.fui.reddot" ]]; then
+    "$package_dir/FUI.RedDot.Generators~/verify.sh"
 fi
 
 unity_path="${FUI_UNITY_PATH:-/Applications/Unity/Hub/Editor/6000.3.22f1/Unity.app/Contents/MacOS/Unity}"
@@ -148,6 +173,15 @@ run_tests() {
         echo "Unity reported compiler or unhandled errors during $platform tests." >&2
         exit 1
     fi
+    python3 - "$result_file" "$platform" <<'PY'
+import sys
+import xml.etree.ElementTree as ET
+
+result_file, platform = sys.argv[1:]
+root = ET.parse(result_file).getroot()
+if root.attrib.get("result") != "Passed" or int(root.attrib.get("failed", "0")) != 0:
+    raise SystemExit(f"{platform} tests failed: " + ET.tostring(root, encoding="unicode")[:500])
+PY
 }
 
 run_tests EditMode
@@ -162,7 +196,15 @@ report_file="$report_dir/$package_id.md"
     echo "- EditMode: passed"
     echo "- PlayMode: passed"
     if [[ "$package_id" == "com.fujisheng.fui" ]]; then
-        echo "- Generator build, tests and packaged DLL hash: passed"
+        if [[ "${FUI_VERIFY_PACKAGED_DLL:-1}" == "1" ]]; then
+            echo "- Generator build, tests and packaged DLL hash: passed"
+        else
+            echo "- Generator build and tests: passed"
+            echo "- Packaged DLL hash: skipped by FUI_VERIFY_PACKAGED_DLL=0"
+        fi
+    fi
+    if [[ "$package_id" == "com.fujisheng.fui.reddot" ]]; then
+        echo "- Red Dot Generator build, tests and packaged/sample DLL hashes: passed"
     fi
 } > "$report_file"
 

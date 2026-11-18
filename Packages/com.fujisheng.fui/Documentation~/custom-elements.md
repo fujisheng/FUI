@@ -1,5 +1,7 @@
 # Custom Elements
 
+> The base Element types and View integration in this chapter ship in the separately installed [`com.fujisheng.fui.ugui`](../../com.fujisheng.fui.ugui/README.md) package.
+
 Derive from `ComponentElement<TComponent>` when adapting a Unity component. Create bindable state in `OnInitialize`, register event cleanup with `TrackCleanup`, and let the base lifetime release tracked objects in reverse order.
 
 ```csharp

@@ -1,0 +1,21 @@
+{
+  "name": "FUI.Rendering.UGUI.Editor",
+  "rootNamespace": "FUI.Editor",
+  "references": [
+    "FUI.Core",
+    "FUI.Navigation",
+    "FUI.Editor",
+    "FUI.Rendering.UGUI",
+    "Unity.ugui",
+    "Unity.TextMeshPro"
+  ],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

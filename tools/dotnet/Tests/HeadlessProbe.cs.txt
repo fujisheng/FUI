@@ -1,0 +1,138 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using FUI.Binding;
+using FUI.Presentation;
+using FUI.Rendering;
+
+[assembly: ViewModule("PortableProbe.Generated", PropertyMode = PropertyGenerationMode.Pure)]
+
+namespace PortableProbe
+{
+    [ViewContract("Probe")]
+    public partial class ProbeViewModel : ViewModel
+    {
+        [ObservableProperty]
+        [Bind("Label", nameof(ITextElement.Text))]
+        string message = "initial";
+
+        public int ClickCount { get; private set; }
+        public int AsyncCompletions { get; private set; }
+        public int FloatCommands { get; private set; }
+        public int BoolCommands { get; private set; }
+        public float LastFloat { get; private set; }
+        public bool LastBool { get; private set; }
+        public List<CancellationToken> Tokens { get; } = new List<CancellationToken>();
+        public List<TaskCompletionSource<bool>> PendingCommands { get; } = new List<TaskCompletionSource<bool>>();
+        public List<TaskCompletionSource<bool>> EndedCommands { get; } = new List<TaskCompletionSource<bool>>();
+
+        [Command("Float", nameof(IFloatValueElement.ValueChanged))]
+        public void ReceiveFloat(float value) { FloatCommands++; LastFloat = value; }
+
+        [Command("Bool", nameof(IBoolValueElement.ValueChanged))]
+        public void ReceiveBool(bool value) { BoolCommands++; LastBool = value; }
+
+        [Command("Button", nameof(IClickElement.Click))]
+        public void Click()
+        {
+            ClickCount++;
+            Message = "clicked";
+        }
+
+        [Command("AsyncButton", nameof(IClickElement.Click))]
+        public async ValueTask CompleteLater(CancellationToken token)
+        {
+            var pending = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            var ended = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            Tokens.Add(token);
+            PendingCommands.Add(pending);
+            EndedCommands.Add(ended);
+            try
+            {
+                await pending.Task.ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                AsyncCompletions++;
+                Message = "async-complete";
+            }
+            finally { ended.SetResult(true); }
+        }
+    }
+
+    public sealed class ProbeText : ITextElement
+    {
+        public string Name => "Label";
+        public IElement Parent => null;
+        public BindableProperty<float> FontSize { get; } = new BindableProperty<float>(16);
+        public BindableProperty<bool> RichText { get; } = new BindableProperty<bool>(true);
+        public BindableProperty<bool> Visible { get; } = new BindableProperty<bool>(true);
+        public BindableProperty<Rgba> Tint { get; } = new BindableProperty<Rgba>();
+        public BindableProperty<TextAlignment> TextAlignment { get; } = new BindableProperty<TextAlignment>();
+        public BindableProperty<IFormattedTextValue> FormattedTextValue { get; } = new BindableProperty<IFormattedTextValue>();
+        public BindableProperty<string> Text { get; } = new BindableProperty<string>("");
+    }
+
+    public sealed class ProbeButton : IClickElement
+    {
+        public string Name => "Button";
+        public IElement Parent => null;
+        public Command Click { get; } = new Command();
+    }
+
+    public sealed class ProbeView : IView
+    {
+        readonly string missing;
+        public ProbeView(string missing = null) { this.missing = missing; }
+        public string Name => "Probe";
+        public int Layer { get; set; }
+        public int Order { get; set; }
+        public bool Visible { get; set; }
+        public bool Interactable { get; set; }
+        public bool Destroyed { get; private set; }
+        public ProbeText Label { get; } = new ProbeText();
+        public ProbeButton Button { get; } = new ProbeButton();
+        public ProbeButton AsyncButton { get; } = new ProbeButton();
+        public ProbeFloat Float { get; } = new ProbeFloat();
+        public ProbeBool Bool { get; } = new ProbeBool();
+        public IReadOnlyList<IElement> Elements => new IElement[] { Label, Button, AsyncButton, Float, Bool };
+
+        public T GetElement<T>(string path) where T : IElement => (T)GetElement(path, typeof(T));
+        public IElement GetElement(string path, Type type)
+        {
+            IElement element = path == "Label" ? (IElement)Label : path == "Button" ? Button : path == "AsyncButton" ? AsyncButton : path == "Float" ? (IElement)Float : path == "Bool" ? Bool : null;
+            if (path == missing) element = null;
+            if (element == null || !type.IsInstanceOfType(element))
+            {
+                throw new InvalidOperationException("Missing required element: " + path);
+            }
+            return element;
+        }
+
+        public void Initialize() { }
+        public void Destroy() => Destroyed = true;
+    }
+
+    public sealed class ProbeFloat : IFloatValueElement
+    {
+        public string Name => "Float";
+        public IElement Parent => null;
+        public BindableProperty<float> Value { get; } = new BindableProperty<float>(0F);
+        public Command<float> ValueChanged { get; } = new Command<float>();
+    }
+    public sealed class ProbeBool : IBoolValueElement
+    {
+        public string Name => "Bool";
+        public IElement Parent => null;
+        public BindableProperty<bool> Value { get; } = new BindableProperty<bool>(false);
+        public Command<bool> ValueChanged { get; } = new Command<bool>();
+    }
+
+    public static class Scenario
+    {
+        public static string[] Run()
+        {
+            Generated.Routes.Initialize();
+            /* SCENARIO */
+        }
+    }
+}

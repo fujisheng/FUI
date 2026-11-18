@@ -1,0 +1,22 @@
+{
+  "name": "FUI.Rendering.URUI.Editor",
+  "rootNamespace": "FUI.Rendering.URUI.Editor",
+  "references": [
+    "FUI.Core",
+    "FUI.Navigation",
+    "FUI.Rendering.URUI",
+    "URUI.Runtime",
+    "URUI.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

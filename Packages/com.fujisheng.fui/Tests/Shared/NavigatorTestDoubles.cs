@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using UnityEngine;
 
 namespace FUI.Tests
 {
@@ -84,6 +83,9 @@ namespace FUI.Tests
 
     public sealed class TestPresenter : Presenter<TestViewModel>
     {
+        public Action OpenAction { get; set; }
+        public Action FocusAction { get; set; }
+        public Action CoveredAction { get; set; }
         public int CreateCount { get; private set; }
         public int OpenCount { get; private set; }
         public int FocusCount { get; private set; }
@@ -95,10 +97,22 @@ namespace FUI.Tests
         public int SynchronizeCount { get; set; }
 
         protected override void OnCreate() => CreateCount++;
-        protected override void OnOpen(object param) => OpenCount++;
-        protected override void OnFocus() => FocusCount++;
+        protected override void OnOpen(object param)
+        {
+            OpenCount++;
+            OpenAction?.Invoke();
+        }
+        protected override void OnFocus()
+        {
+            FocusCount++;
+            FocusAction?.Invoke();
+        }
         protected override void OnUnfocus() => UnfocusCount++;
-        protected override void OnCovered() => CoveredCount++;
+        protected override void OnCovered()
+        {
+            CoveredCount++;
+            CoveredAction?.Invoke();
+        }
         protected override void OnRevealed() => RevealedCount++;
         protected override void OnClose() => CloseCount++;
         protected override void OnDestroy() => DestroyCount++;
@@ -168,6 +182,7 @@ namespace FUI.Tests
         public RouteDescriptor Route { get; }
         public bool Disposed { get; private set; }
         public bool Transferred { get; private set; }
+        public int DisposeCount { get; private set; }
 
         public TestPreloadLease(RouteDescriptor route)
         {
@@ -180,12 +195,19 @@ namespace FUI.Tests
             Disposed = true;
         }
 
-        public void Dispose() => Disposed = true;
+        public void Dispose()
+        {
+            DisposeCount++;
+            Disposed = true;
+        }
     }
 
     public sealed class TestViewProvider : IViewProvider
     {
         public int CreateCount { get; private set; }
+        public bool ControlPreloads { get; set; }
+        public bool RequirePrepared { get; set; }
+        public List<PendingPreload> Pending { get; } = new List<PendingPreload>();
         public int CreateAsyncCount { get; private set; }
         public int PreloadCount { get; private set; }
         public IPreloadLease LastCreatePreload { get; private set; }
@@ -195,6 +217,10 @@ namespace FUI.Tests
 
         public IViewLease Create(RouteDescriptor route, IPreloadLease preload = null)
         {
+            if (RequirePrepared && (preload is not TestPreloadLease ready || ready.Disposed || !ready.Route.Equals(route)))
+            {
+                throw new InvalidOperationException("异步呈现必须消费已准备好的资源。");
+            }
             CreateCount++;
             LastCreatePreload = preload;
             var lease = CreateLease(route);
@@ -217,7 +243,23 @@ namespace FUI.Tests
             token.ThrowIfCancellationRequested();
             PreloadCount++;
             LastPreloadLease = new TestPreloadLease(route);
+            if (ControlPreloads)
+            {
+                var pending = new PendingPreload(LastPreloadLease);
+                Pending.Add(pending);
+                return new ValueTask<IPreloadLease>(pending.Completion.Task);
+            }
             return new ValueTask<IPreloadLease>(LastPreloadLease);
+        }
+
+        public sealed class PendingPreload
+        {
+            public TestPreloadLease Lease { get; }
+            public TaskCompletionSource<IPreloadLease> Completion { get; } = new TaskCompletionSource<IPreloadLease>();
+            public PendingPreload(TestPreloadLease lease) { Lease = lease; }
+            // 故意忽略取消，验证不可取消的底层请求迟到时仍能释放资源。
+            public void Complete() => Completion.SetResult(Lease);
+            public void Fail() => Completion.SetException(new InvalidOperationException("测试资源加载失败"));
         }
 
         TestViewLease CreateLease(RouteDescriptor route)
@@ -313,7 +355,7 @@ namespace FUI.Tests
     {
         public List<TestPresenter> Presenters { get; } = new List<TestPresenter>();
 
-        public Route<TestViewModel> Create(string assetKey, RoutePolicy settings = null)
+        public Route<TestViewModel> Create(string assetKey, RoutePolicy settings = null, Action onOpen = null)
         {
             return GeneratedRouteFactory.Create<TestViewModel>(
                 assetKey,
@@ -322,7 +364,7 @@ namespace FUI.Tests
                 (view, viewModel) => new TestBindingContext(view, viewModel),
                 () =>
                 {
-                    var presenter = new TestPresenter();
+                    var presenter = new TestPresenter { OpenAction = onOpen };
                     Presenters.Add(presenter);
                     return presenter;
                 },

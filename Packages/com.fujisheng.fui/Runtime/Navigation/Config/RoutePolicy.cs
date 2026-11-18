@@ -66,6 +66,9 @@ namespace FUI.Navigation
     {
         public static RoutePolicy Default { get; } = new RoutePolicy();
 
+        /// <summary>是否参与导航焦点及 Back 历史；提示等非模态覆盖层可关闭。</summary>
+        public bool TakeFocus { get; private set; } = true;
+
         public Layer Layer { get; }
         public HistoryMode HistoryMode { get; }
         public CoverageMode CoverageMode { get; }
@@ -76,6 +79,14 @@ namespace FUI.Navigation
         public ITransitionProvider EnterTransitionProvider { get; }
         public ITransitionProvider ExitTransitionProvider { get; }
         public RouteDependency[] Dependencies { get; }
+
+        /// <summary>返回独立配置副本，原路由配置保持不变。</summary>
+        public RoutePolicy WithFocus(bool takeFocus)
+        {
+            return new RoutePolicy(Layer, HistoryMode, CoverageMode, CacheMode, AllowMultiple,
+                CacheCapacity, CacheDuration, EnterTransitionProvider, ExitTransitionProvider, Dependencies)
+                { TakeFocus = takeFocus };
+        }
 
         public RoutePolicy(
             Layer layer = Layer.Panel,

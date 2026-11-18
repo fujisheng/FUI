@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="22" result="Passed" total="22" passed="22" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.0684035">
+  <test-suite type="TestSuite" id="1046" name="FUITestProject" fullname="FUITestProject" runstate="Runnable" testcasecount="22" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.068404" total="22" passed="22" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1071" name="FUI.RedDot.Tests.Editor.dll" fullname="/Volumes/FData/ArtOfTD/FUI/Library/FUITestProject/Library/ScriptAssemblies/FUI.RedDot.Tests.Editor.dll" runstate="Runnable" testcasecount="22" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.068204" total="22" passed="22" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="96022" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1072" name="FUI" fullname="FUI" runstate="Runnable" testcasecount="22" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.068159" total="22" passed="22" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1073" name="RedDot" fullname="FUI.RedDot" runstate="Runnable" testcasecount="22" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.068114" total="22" passed="22" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1074" name="Tests" fullname="FUI.RedDot.Tests" runstate="Runnable" testcasecount="22" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.068051" total="22" passed="22" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestFixture" id="1047" name="PerformanceTests" fullname="FUI.RedDot.Tests.PerformanceTests" classname="FUI.RedDot.Tests.PerformanceTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.038441" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1048" name="TenThousandNodesAndOneThousandInvalidationsAllocateNothingAfterWarmup" fullname="FUI.RedDot.Tests.PerformanceTests.TenThousandNodesAndOneThousandInvalidationsAllocateNothingAfterWarmup" methodname="TenThousandNodesAndOneThousandInvalidationsAllocateNothingAfterWarmup" classname="FUI.RedDot.Tests.PerformanceTests" runstate="Runnable" seed="215127953" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.036983" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="TestFixture" id="1049" name="RedDotCenterTests" fullname="FUI.RedDot.Tests.RedDotCenterTests" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" testcasecount="21" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.029358" total="21" passed="21" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1054" name="AggregatorFailureKeepsLastCommittedState" fullname="FUI.RedDot.Tests.RedDotCenterTests.AggregatorFailureKeepsLastCommittedState" methodname="AggregatorFailureKeepsLastCommittedState" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="755319882" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000385" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1062" name="CatalogCopiesCallerOwnedArrays" fullname="FUI.RedDot.Tests.RedDotCenterTests.CatalogCopiesCallerOwnedArrays" methodname="CatalogCopiesCallerOwnedArrays" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="616279458" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000371" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1060" name="CatalogRejectsCycles" fullname="FUI.RedDot.Tests.RedDotCenterTests.CatalogRejectsCycles" methodname="CatalogRejectsCycles" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="834811754" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000467" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1063" name="ChangedNodesInOneFlushShareBatchVersion" fullname="FUI.RedDot.Tests.RedDotCenterTests.ChangedNodesInOneFlushShareBatchVersion" methodname="ChangedNodesInOneFlushShareBatchVersion" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="1475735672" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000364" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1055" name="CustomAggregatorCanIgnoreChildInputs" fullname="FUI.RedDot.Tests.RedDotCenterTests.CustomAggregatorCanIgnoreChildInputs" methodname="CustomAggregatorCanIgnoreChildInputs" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="60550080" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000208" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1064" name="DiagnosticsPreserveFailuresAcrossOtherSuccessfulRules" fullname="FUI.RedDot.Tests.RedDotCenterTests.DiagnosticsPreserveFailuresAcrossOtherSuccessfulRules" methodname="DiagnosticsPreserveFailuresAcrossOtherSuccessfulRules" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="1671306828" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000299" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1066" name="DiagnosticsVersionChangesOnlyWhenObservableSnapshotDataChanges" fullname="FUI.RedDot.Tests.RedDotCenterTests.DiagnosticsVersionChangesOnlyWhenObservableSnapshotDataChanges" methodname="DiagnosticsVersionChangesOnlyWhenObservableSnapshotDataChanges" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="185275256" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000116" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1065" name="DirtySnapshotCoversRulesSourcesAndNodes" fullname="FUI.RedDot.Tests.RedDotCenterTests.DirtySnapshotCoversRulesSourcesAndNodes" methodname="DirtySnapshotCoversRulesSourcesAndNodes" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="480959903" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000191" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1070" name="DynamicCleanupInspectsOnlyCandidates" fullname="FUI.RedDot.Tests.RedDotCenterTests.DynamicCleanupInspectsOnlyCandidates" methodname="DynamicCleanupInspectsOnlyCandidates" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="739799384" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.019167" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1059" name="DynamicNodeIsCreatedOnSubscriptionAndPrunedAfterRelease" fullname="FUI.RedDot.Tests.RedDotCenterTests.DynamicNodeIsCreatedOnSubscriptionAndPrunedAfterRelease" methodname="DynamicNodeIsCreatedOnSubscriptionAndPrunedAfterRelease" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="2075258111" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000269" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1061" name="FailedPortStartRollsBackRegistrationsAndDynamicNodes" fullname="FUI.RedDot.Tests.RedDotCenterTests.FailedPortStartRollsBackRegistrationsAndDynamicNodes" methodname="FailedPortStartRollsBackRegistrationsAndDynamicNodes" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="1367874996" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000447" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1052" name="FlushVisitsOnlyDirtyNodeAndItsAncestors" fullname="FUI.RedDot.Tests.RedDotCenterTests.FlushVisitsOnlyDirtyNodeAndItsAncestors" methodname="FlushVisitsOnlyDirtyNodeAndItsAncestors" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="1204599897" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000267" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1068" name="PublicAccessIsRestrictedToCreatingThread" fullname="FUI.RedDot.Tests.RedDotCenterTests.PublicAccessIsRestrictedToCreatingThread" methodname="PublicAccessIsRestrictedToCreatingThread" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="910493253" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.002432" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1057" name="ReentrantInvalidationRunsInNextBatch" fullname="FUI.RedDot.Tests.RedDotCenterTests.ReentrantInvalidationRunsInNextBatch" methodname="ReentrantInvalidationRunsInNextBatch" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="1843949091" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000208" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1069" name="RegistrationDisposeCanRetryOnOwnerThreadAfterWrongThreadFailure" fullname="FUI.RedDot.Tests.RedDotCenterTests.RegistrationDisposeCanRetryOnOwnerThreadAfterWrongThreadFailure" methodname="RegistrationDisposeCanRetryOnOwnerThreadAfterWrongThreadFailure" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="1614472222" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000415" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1053" name="RuleAndSourceContributionsAreIndependent" fullname="FUI.RedDot.Tests.RedDotCenterTests.RuleAndSourceContributionsAreIndependent" methodname="RuleAndSourceContributionsAreIndependent" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="366048569" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000134" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1056" name="RuleAndSubscriberFailuresAreIsolated" fullname="FUI.RedDot.Tests.RedDotCenterTests.RuleAndSubscriberFailuresAreIsolated" methodname="RuleAndSubscriberFailuresAreIsolated" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="2131209375" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000238" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1050" name="SharedDescendantIsCountedOncePerIncomingPath" fullname="FUI.RedDot.Tests.RedDotCenterTests.SharedDescendantIsCountedOncePerIncomingPath" methodname="SharedDescendantIsCountedOncePerIncomingPath" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="394620462" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000192" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1067" name="SourceStopCannotPublishReentrantly" fullname="FUI.RedDot.Tests.RedDotCenterTests.SourceStopCannotPublishReentrantly" methodname="SourceStopCannotPublishReentrantly" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="1606443986" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000177" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1058" name="SubscriptionIsImmediatePreciseAndIdempotentlyDisposable" fullname="FUI.RedDot.Tests.RedDotCenterTests.SubscriptionIsImmediatePreciseAndIdempotentlyDisposable" methodname="SubscriptionIsImmediatePreciseAndIdempotentlyDisposable" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="1921991487" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000324" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1051" name="SumSaturatesAtMaximumInteger" fullname="FUI.RedDot.Tests.RedDotCenterTests.SumSaturatesAtMaximumInteger" methodname="SumSaturatesAtMaximumInteger" classname="FUI.RedDot.Tests.RedDotCenterTests" runstate="Runnable" seed="685529518" result="Passed" start-time="2026-09-05 05:32:44Z" end-time="2026-09-05 05:32:44Z" duration="0.000099" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+                <output><![CDATA[Saving results to: /Users/yefanhua/Library/Application Support/DefaultCompany/FUITestProject/TestResults.xml
+]]></output>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

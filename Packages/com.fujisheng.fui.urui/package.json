@@ -1,0 +1,33 @@
+{
+  "name": "com.fujisheng.fui.urui",
+  "displayName": "FUI URUI",
+  "version": "0.2.1-preview.1",
+  "unity": "6000.3",
+  "keywords": [
+    "unity",
+    "framework",
+    "mvvm",
+    "fui",
+    "urui",
+    "html",
+    "css"
+  ],
+  "description": "URUI HTML/CSS rendering backend for FUI.",
+  "author": {
+    "name": "Fujisheng",
+    "url": "https://github.com/fujisheng"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fujisheng/FUI.git",
+    "directory": "Packages/com.fujisheng.fui.urui"
+  },
+  "documentationUrl": "https://github.com/fujisheng/FUI/tree/main/Packages/com.fujisheng.fui.urui/Documentation~",
+  "changelogUrl": "https://github.com/fujisheng/FUI/blob/main/Packages/com.fujisheng.fui.urui/CHANGELOG.md",
+  "licensesUrl": "https://github.com/fujisheng/FUI/blob/main/Packages/com.fujisheng.fui.urui/LICENSE.md",
+  "dependencies": {
+    "com.fujisheng.fui": "2.0.0",
+    "com.fujisheng.urui": "0.8.0-preview.1",
+    "com.unity.render-pipelines.universal": "17.3.0"
+  }
+}

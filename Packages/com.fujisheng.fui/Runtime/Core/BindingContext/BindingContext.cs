@@ -78,6 +78,60 @@ namespace FUI.Infrastructure.Binding
 
         BindingState state;
         CancellationTokenSource commandCancellation;
+        IViewContentLifecycle contentLifecycle;
+        bool resumeAfterContentRestore;
+        bool suspendingContent;
+
+        void ObserveContent()
+        {
+            if (contentLifecycle != null || View is not IViewContentLifecycle lifecycle) return;
+            contentLifecycle = lifecycle;
+            lifecycle.ContentUnavailable += SuspendContent;
+            lifecycle.ContentAvailable += RestoreContent;
+        }
+
+        void ForgetContent()
+        {
+            resumeAfterContentRestore = false;
+            if (contentLifecycle == null) return;
+            contentLifecycle.ContentUnavailable -= SuspendContent;
+            contentLifecycle.ContentAvailable -= RestoreContent;
+            contentLifecycle = null;
+        }
+
+        void SuspendContent()
+        {
+            if (state != BindingState.Bound) return;
+            resumeAfterContentRestore = true;
+            suspendingContent = true;
+            try { ((IBindingContext)this).Unbinding(); }
+            finally { suspendingContent = false; }
+        }
+
+        void RestoreContent()
+        {
+            if (!resumeAfterContentRestore) return;
+            resumeAfterContentRestore = false;
+            var context = (IBindingContext)this;
+            try
+            {
+                context.Binding();
+                context.Synchronize();
+            }
+            catch (Exception restoreFailure)
+            {
+                suspendingContent = true;
+                try { context.Unbinding(); }
+                catch (Exception cleanupFailure) { throw new AggregateException(restoreFailure, cleanupFailure); }
+                finally
+                {
+                    suspendingContent = false;
+                    ObserveContent();
+                    resumeAfterContentRestore = true;
+                }
+                throw;
+            }
+        }
 
         protected void RunAsyncCommand(Func<CancellationToken, ValueTask> command)
         {
@@ -179,7 +233,7 @@ namespace FUI.Infrastructure.Binding
 
             var context = this as IBindingContext;
             var previous = ViewModel;
-            var wasBound = state == BindingState.Bound;
+            var wasBound = state == BindingState.Bound || resumeAfterContentRestore;
             context.Unbinding();
             ViewModel = (TObservableObject)viewModel;
             try
@@ -225,6 +279,13 @@ namespace FUI.Infrastructure.Binding
                 return;
             }
 
+            ObserveContent();
+            if (contentLifecycle != null && !contentLifecycle.IsContentAvailable)
+            {
+                resumeAfterContentRestore = true;
+                return;
+            }
+
             // 只有 OnBinding 全部成功后才进入 Bound；中途异常必须撤销已经建立的监听。
             state = BindingState.Binding;
             commandCancellation?.Dispose();
@@ -248,6 +309,7 @@ namespace FUI.Infrastructure.Binding
                     commandCancellation.Dispose();
                     commandCancellation = null;
                     state = BindingState.Unbound;
+                    ForgetContent();
                 }
 
                 throw;
@@ -269,6 +331,8 @@ namespace FUI.Infrastructure.Binding
         /// </summary>
         void IBindingContext.Unbinding()
         {
+            // 外部关闭即使发生在内容暂停期间，也必须撤销后续自动恢复。
+            if (!suspendingContent) ForgetContent();
             if (state == BindingState.Unbound || state == BindingState.Unbinding)
             {
                 return;

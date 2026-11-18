@@ -11,4 +11,4 @@ FUI Core 在没有任何可选 Package 时保持完整功能。
 
 两个工具使用独立仓库。发布完成后，安装 FUI CLI 会自动先安装 UnityCli，并在 Core 的 Patch 版本中启用对应安装项。
 
-未来直接实现 FUI Provider、Transition、Element 或 Validator 的第一方扩展可以进入 FUI Monorepo，并使用独立 SemVer。
+直接实现 FUI Provider、Transition、Element 或 Validator 的第一方扩展可以进入 FUI Monorepo，并使用独立 SemVer。实验性的 [`com.fujisheng.fui.reddot`](../../../com.fujisheng.fui.reddot/README.zh-CN.md) 就采用该方式开发；在正式发布并完成兼容性验证前，不加入 FUI Setup 安装列表。

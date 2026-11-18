@@ -18,9 +18,124 @@ namespace FUI.Navigation
     /// </summary>
     public sealed partial class Navigator
     {
+        /// <summary>已有页面复用前的导航快照，用于把失败提交恢复为原状态。</summary>
+        sealed class NavigationSnapshot
+        {
+            public readonly Dictionary<ViewHandle, EntrySnapshot> Entries = new Dictionary<ViewHandle, EntrySnapshot>();
+            public readonly List<ViewHandle> ActiveOrder = new List<ViewHandle>();
+            public readonly List<ViewHandle> History = new List<ViewHandle>();
+            public ViewHandle FocusedHandle;
+        }
+
+        /// <summary>记录单个导航条目在事务回滚时需要恢复的状态。</summary>
+        sealed class EntrySnapshot
+        {
+            public NavigationEntry Entry;
+            public ObservableObject ViewModel;
+            public ViewState State;
+            public bool EnterTransitionPending;
+            public bool HiddenByCoverage;
+            public bool ExplicitOwner;
+            public bool Visible;
+            public bool Interactable;
+            public readonly HashSet<ViewHandle> Owners = new HashSet<ViewHandle>();
+        }
+
+        NavigationSnapshot CaptureNavigationSnapshot()
+        {
+            var snapshot = new NavigationSnapshot { FocusedHandle = focusedHandle };
+            snapshot.ActiveOrder.AddRange(activeOrder);
+            snapshot.History.AddRange(history);
+            foreach (var pair in entries)
+            {
+                var instance = pair.Value;
+                var entry = new EntrySnapshot
+                {
+                    Entry = instance,
+                    ViewModel = instance.Instance?.ViewModel,
+                    State = instance.State,
+                    EnterTransitionPending = instance.EnterTransitionPending,
+                    HiddenByCoverage = instance.HiddenByCoverage,
+                    ExplicitOwner = instance.ExplicitOwner,
+                    Visible = instance.Instance?.View.Visible ?? false,
+                    Interactable = instance.Instance?.Interactable ?? false,
+                };
+                entry.Owners.UnionWith(instance.Owners);
+                snapshot.Entries.Add(pair.Key, entry);
+            }
+            return snapshot;
+        }
+
+        void RestoreNavigationSnapshot(NavigationSnapshot snapshot, Exception originalException)
+        {
+            foreach (var pair in entries.ToArray())
+            {
+                if (!snapshot.Entries.ContainsKey(pair.Key))
+                {
+                    DestroyInstance(pair.Value, "ExistingOpenRollback");
+                }
+            }
+
+            foreach (var pair in snapshot.Entries)
+            {
+                if (!entries.TryGetValue(pair.Key, out var current)
+                    || !ReferenceEquals(current, pair.Value.Entry)
+                    || current.Instance == null)
+                {
+                    continue;
+                }
+
+                var saved = pair.Value;
+                try
+                {
+                    if (saved.ViewModel != null && !ReferenceEquals(current.Instance.ViewModel, saved.ViewModel))
+                    {
+                        current.Instance.UpdateViewModel(saved.ViewModel);
+                    }
+                    current.State = saved.State;
+                    current.EnterTransitionPending = saved.EnterTransitionPending;
+                    current.HiddenByCoverage = saved.HiddenByCoverage;
+                    current.ExplicitOwner = saved.ExplicitOwner;
+                    current.Owners.Clear();
+                    current.Owners.UnionWith(saved.Owners);
+                    current.Instance.View.Visible = saved.Visible;
+                    current.Instance.Interactable = saved.Interactable;
+                }
+                catch (Exception rollbackException)
+                {
+                    LogFailure(current, "ExistingOpenRollback", new AggregateException(originalException, rollbackException),
+                        "Continue restoring navigation snapshot");
+                }
+            }
+
+            activeOrder.Clear();
+            activeOrder.AddRange(snapshot.ActiveOrder.Where(entries.ContainsKey));
+            history.Clear();
+            history.AddRange(snapshot.History.Where(entries.ContainsKey));
+            focusedHandle = snapshot.FocusedHandle.IsValid && entries.ContainsKey(snapshot.FocusedHandle)
+                ? snapshot.FocusedHandle
+                : ViewHandle.Invalid;
+
+            foreach (var layer in entries.Values
+                .Where(instance => CanNavigate(instance.State))
+                .Select(instance => instance.Route.Descriptor.Settings.Layer)
+                .Distinct())
+            {
+                try
+                {
+                    ReorderLayer(layer);
+                }
+                catch (Exception rollbackException)
+                {
+                    LogFailure(null, "ExistingOpenOrderRollback", new AggregateException(originalException, rollbackException),
+                        "Navigation state restored; layer order may require refresh");
+                }
+            }
+        }
+
         void Focus(NavigationEntry target)
         {
-            if (focusedHandle == target.Handle)
+            if (!target.Route.Descriptor.Settings.TakeFocus || focusedHandle == target.Handle)
             {
                 return;
             }
@@ -28,6 +143,7 @@ namespace FUI.Navigation
             if (focusedHandle.IsValid && entries.TryGetValue(focusedHandle, out var previous) && CanNavigate(previous.State))
             {
                 var hide = target.Route.Descriptor.Settings.CoverageMode == CoverageMode.Hide;
+                previous.Instance.Interactable = false;
                 previous.HiddenByCoverage = hide;
                 previous.State = ViewState.Covered;
                 previous.Instance.Covered(hide);
@@ -38,6 +154,7 @@ namespace FUI.Navigation
                 target.Instance.Revealed(target.HiddenByCoverage);
                 target.HiddenByCoverage = false;
                 target.State = ViewState.Open;
+                target.Instance.Interactable = !target.EnterTransitionPending;
             }
             else
             {
@@ -59,6 +176,7 @@ namespace FUI.Navigation
             {
                 if (!entries.TryGetValue(activeOrder[index], out var candidate)
                     || !candidate.ExplicitOwner
+                    || !candidate.Route.Descriptor.Settings.TakeFocus
                     || !CanNavigate(candidate.State))
                 {
                     continue;
@@ -67,6 +185,7 @@ namespace FUI.Navigation
                 candidate.Instance.Revealed(candidate.HiddenByCoverage);
                 candidate.HiddenByCoverage = false;
                 candidate.State = ViewState.Open;
+                candidate.Instance.Interactable = !candidate.EnterTransitionPending;
                 focusedHandle = candidate.Handle;
                 break;
             }
@@ -230,31 +349,8 @@ namespace FUI.Navigation
             DependencyTiming timing,
             ViewHandle owner,
             HashSet<Route> routePath,
-            List<ViewHandle> opened)
-        {
-            foreach (var dependency in parent.Descriptor.Settings.Dependencies)
-            {
-                if (dependency.Timing != timing)
-                {
-                    continue;
-                }
-
-                var dependencyOwner = owner.IsValid ? owner : ViewHandle.Invalid;
-                var origin = timing == DependencyTiming.RequiredBefore
-                    ? OpenOrigin.RequiredDependency
-                    : OpenOrigin.AttachedDependency;
-                var handle = OpenSync(dependency.Route, null, null, OpenOptions.Push, origin, dependencyOwner, routePath);
-                opened.Add(handle);
-            }
-        }
-
-        async ValueTask OpenDependenciesAsync(
-            Route parent,
-            DependencyTiming timing,
-            ViewHandle owner,
-            HashSet<Route> routePath,
             List<ViewHandle> opened,
-            CancellationToken cancellationToken)
+            OpenRequest request = null)
         {
             foreach (var dependency in parent.Descriptor.Settings.Dependencies)
             {
@@ -267,7 +363,9 @@ namespace FUI.Navigation
                 var origin = timing == DependencyTiming.RequiredBefore
                     ? OpenOrigin.RequiredDependency
                     : OpenOrigin.AttachedDependency;
-                var handle = await OpenAsyncCore(dependency.Route, null, null, OpenOptions.Push, origin, dependencyOwner, routePath, cancellationToken);
+                var dependencyRoute = dependency.Route;
+
+                var handle = OpenSync(dependencyRoute, null, null, OpenOptions.Push, origin, dependencyOwner, routePath, request);
                 opened.Add(handle);
             }
         }
@@ -298,7 +396,7 @@ namespace FUI.Navigation
             // 依赖实例被用户显式打开时升级为导航页面；已是显式页面则不重复写入历史。
             if (origin == OpenOrigin.Explicit)
             {
-                if (!wasExplicit && instance.Route.Descriptor.Settings.HistoryMode == HistoryMode.Stack)
+                if (!wasExplicit && instance.Route.Descriptor.Settings.TakeFocus && instance.Route.Descriptor.Settings.HistoryMode == HistoryMode.Stack)
                 {
                     history.Add(instance.Handle);
                 }

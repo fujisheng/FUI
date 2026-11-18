@@ -1,5 +1,7 @@
 # Editor Setup
 
+> `FUI/Setup`、Source Generator 安装与 Core 编辑器 Setup 属于 Core；Binding Inspector 与 uGUI 创作门禁需额外安装 [`com.fujisheng.fui.ugui`](../../../com.fujisheng.fui.ugui/README.md) 包。
+
 ## Setup
 
 `FUI/Setup` 为目标程序集安装 Source Generator，按需安装 Mixed 模式 Cecil，并显示可从 OpenUPM 安装的可选生态 Package。

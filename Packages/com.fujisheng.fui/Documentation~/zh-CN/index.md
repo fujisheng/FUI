@@ -1,5 +1,7 @@
 # FUI Core 中文文档
 
+> 章节 7、8、10、11 中的 uGUI 专用内容需额外安装 [`com.fujisheng.fui.ugui`](../../../com.fujisheng.fui.ugui/README.md) 包。
+
 1. [安装](installation.md)
 2. [五分钟快速开始](quick-start.md)
 3. [ViewModel 与生成绑定](binding.md)

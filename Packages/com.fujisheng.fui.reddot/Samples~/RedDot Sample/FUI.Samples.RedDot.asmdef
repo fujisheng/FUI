@@ -1,0 +1,22 @@
+{
+  "name": "FUI.Samples.RedDot",
+  "rootNamespace": "FUI.Samples.RedDot",
+  "references": [
+    "FUI.Core",
+    "FUI.Navigation",
+    "FUI.Rendering.UGUI",
+    "FUI.RedDot",
+    "FUI.RedDot.UGUI",
+    "Unity.ugui",
+    "Unity.TextMeshPro"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

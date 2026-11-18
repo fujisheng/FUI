@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <Deterministic>true</Deterministic>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <BaseIntermediateOutputPath>obj/$(MSBuildProjectName)/</BaseIntermediateOutputPath>
+    <BaseOutputPath>bin/$(MSBuildProjectName)/</BaseOutputPath>
+    <NuGetAudit>false</NuGetAudit>
+    <FuiPackageRoot>$(MSBuildThisFileDirectory)../../Packages/com.fujisheng.fui/</FuiPackageRoot>
+  </PropertyGroup>
+</Project>

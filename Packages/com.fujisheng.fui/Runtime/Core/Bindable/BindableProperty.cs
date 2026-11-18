@@ -48,6 +48,7 @@ namespace FUI.Binding
     public class BindableProperty<T> : IBindableProperty<T>, IDisposable
     {
         T value;
+        Func<T, T> normalize;
 
         /// <summary>
         /// 这个属性的值
@@ -66,23 +67,30 @@ namespace FUI.Binding
         public BindableProperty() { }
 
         public BindableProperty(T value, ValueChangedHandler<T> onValueChanged = null)
+            : this(value, onValueChanged, null)
         {
-            this.value = value;
+        }
 
-            if(onValueChanged != null)
+        /// <summary>在存储与事件派发前统一规范值；保留原构造签名供现有调用者使用。</summary>
+        public BindableProperty(T value, ValueChangedHandler<T> onValueChanged, Func<T, T> normalize)
+        {
+            this.normalize = normalize;
+            this.value = normalize != null ? normalize(value) : value;
+            if (onValueChanged != null)
             {
-                this.OnValueChanged += onValueChanged;
+                OnValueChanged += onValueChanged;
             }
         }
 
-        public T GetValue()
+        public virtual T GetValue()
         {
             return this.value;
         }
 
         public void SetValue(T value)
         {
-            var oldValue = GetValue();
+            value = normalize != null ? normalize(value) : value;
+            var oldValue = this.value;
 
             if (!EqualityComparer<T>.Default.Equals(oldValue, value))
             {
@@ -110,6 +118,7 @@ namespace FUI.Binding
         public void Dispose()
         {
             this.OnValueChanged = null;
+            normalize = null;
             this.value = default;
         }
 

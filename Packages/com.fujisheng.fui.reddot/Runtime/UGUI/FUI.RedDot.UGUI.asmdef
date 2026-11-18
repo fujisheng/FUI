@@ -1,0 +1,20 @@
+{
+  "name": "FUI.RedDot.UGUI",
+  "rootNamespace": "FUI.RedDot.UGUI",
+  "references": [
+    "FUI.RedDot",
+    "FUI.Core",
+    "FUI.Rendering.UGUI",
+    "Unity.ugui",
+    "Unity.TextMeshPro"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

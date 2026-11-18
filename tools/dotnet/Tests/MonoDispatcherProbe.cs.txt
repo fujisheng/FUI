@@ -1,0 +1,65 @@
+// Compile this probe with the unchanged package dispatcher source and Unity's bundled Mono mcs.
+// Runs only managed code: no Unity editor, project, licence session or UnityEngine dependency.
+using System;
+using System.Collections.Concurrent;
+using System.Threading;
+using FUI.Navigation;
+
+public static class MonoDispatcherProbe
+{
+    sealed class Pump : SynchronizationContext
+    {
+        readonly ConcurrentQueue<Action> queue = new ConcurrentQueue<Action>();
+        public override void Post(SendOrPostCallback callback, object state) => queue.Enqueue(() => callback(state));
+        public void Drain() { while (queue.TryDequeue(out var callback)) callback(); }
+    }
+    sealed class WorkerContext : SynchronizationContext
+    {
+        public override void Post(SendOrPostCallback callback, object state)
+            => throw new Exception("Unexpected worker scheduling");
+    }
+    static void Require(bool condition, string message) { if (!condition) throw new Exception(message); }
+    public static int Main()
+    {
+        try
+        {
+            var context = new Pump();
+            SynchronizationContext.SetSynchronizationContext(context);
+            var dispatcher = new UnityMainThreadDispatcher();
+            var ownerThread = Environment.CurrentManagedThreadId;
+            var local = new AsyncLocal<string>();
+            local.Value = "owner";
+            int callbacks = 0;
+            Exception workerFailure = null;
+            var worker = new Thread(() =>
+            {
+                try
+                {
+                    SynchronizationContext.SetSynchronizationContext(new WorkerContext());
+                    local.Value = "worker";
+                    var awaiter = dispatcher.SwitchToMainThreadAsync().GetAwaiter();
+                    awaiter.OnCompleted(() =>
+                    {
+                        awaiter.GetResult();
+                        Require(Environment.CurrentManagedThreadId == ownerThread, "Wrong physical thread");
+                        Require(ReferenceEquals(SynchronizationContext.Current, context), "Wrong callback SynchronizationContext: " + SynchronizationContext.Current?.GetType().Name);
+                        Require(local.Value == "worker", "AsyncLocal did not flow");
+                        callbacks++;
+                    });
+                }
+                catch (Exception failure) { workerFailure = failure; }
+            });
+            worker.Start();
+            Require(worker.Join(5000), "Worker timed out");
+            if (workerFailure != null) throw workerFailure;
+            Require(callbacks == 0, "Callback ran before pump");
+            context.Drain();
+            Require(callbacks == 1, "Callback count is not one");
+            Require(local.Value == "owner", "Owner AsyncLocal was not restored");
+            Require(ReferenceEquals(SynchronizationContext.Current, context), "Owner context was not restored");
+            Console.WriteLine("PASS: safe OnCompleted preserves worker AsyncLocal, owner thread/context and outer restoration.");
+            return 0;
+        }
+        catch (Exception failure) { Console.WriteLine("FAIL: " + failure); return 1; }
+    }
+}

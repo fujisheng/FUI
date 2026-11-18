@@ -1,0 +1,19 @@
+{
+  "name": "FUI.Rendering.URUI.URP",
+  "rootNamespace": "FUI.Rendering.URUI.URP",
+  "references": [
+    "FUI.Rendering.URUI",
+    "Unity.RenderPipelines.Universal.Runtime",
+    "Unity.RenderPipelines.Core.Runtime",
+    "URUI.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

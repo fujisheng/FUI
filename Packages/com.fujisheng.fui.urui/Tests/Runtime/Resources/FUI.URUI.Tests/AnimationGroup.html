@@ -1,0 +1,8 @@
+<!doctype html>
+<html><head><link rel="stylesheet" href="/urui/base.css"><style>
+body {margin:0;}
+#box {display:block;width:80px;height:40px;}
+.running #box {animation:probe-short .03s linear,probe-long .25s linear;}
+@keyframes probe-short {from{transform:translate(0px,0px);}to{transform:translate(10px,0px);}}
+@keyframes probe-long {from{opacity:.1;}to{opacity:1;}}
+</style></head><body><div id="box"></div></body></html>

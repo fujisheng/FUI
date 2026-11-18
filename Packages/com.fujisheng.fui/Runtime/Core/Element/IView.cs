@@ -65,6 +65,12 @@ namespace FUI.Rendering
         void Destroy();
     }
 
+    /// <summary>由导航当前页请求键盘输入焦点；渲染后端负责等待页面可交互后恢复。</summary>
+    public interface IViewInputFocus
+    {
+        void FocusInput();
+    }
+
     /// <summary>
     /// 无法通过事件通知变化、需要在渲染前主动同步的外部值源。
     /// </summary>

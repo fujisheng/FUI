@@ -42,6 +42,8 @@ namespace FUI.Navigation
             public ViewState State;
             // 每次打开或关闭都会递增版本，防止较早完成的异步结果覆盖当前状态。
             public int OperationVersion;
+            // 进入动画与导航状态正交；Covered 页面可能仍有旧动画尚未结束。
+            public bool EnterTransitionPending;
             public bool HiddenByCoverage;
             // 显式所有权表示该实例可以进入历史、获得焦点并被 BringToFront。
             public bool ExplicitOwner;
@@ -70,6 +72,7 @@ namespace FUI.Navigation
         readonly List<ViewHandle> history = new List<ViewHandle>();
         readonly List<CachedEntry> cache = new List<CachedEntry>();
         readonly Dictionary<Route, IPreloadLease> preloads = new Dictionary<Route, IPreloadLease>();
+        readonly HashSet<PreloadOperation> pendingPreloadOperations = new HashSet<PreloadOperation>();
 
         IViewProvider viewProvider;
         IMainThreadDispatcher executionContext;
@@ -77,6 +80,7 @@ namespace FUI.Navigation
         ViewHandle focusedHandle;
         long nextHandle;
         long cacheClock;
+        int preloadGeneration;
         bool initialized;
         bool shuttingDown;
 
@@ -116,7 +120,17 @@ namespace FUI.Navigation
         public void SetViewProvider(IViewProvider provider)
         {
             AssertReady();
-            viewProvider = provider ?? throw new ArgumentNullException(nameof(provider));
+            if (provider == null)
+            {
+                throw new ArgumentNullException(nameof(provider));
+            }
+            InvalidatePendingPreloads();
+            foreach (var preload in preloads.Values)
+            {
+                DisposePreparedResource(preload);
+            }
+            preloads.Clear();
+            viewProvider = provider;
         }
 
         /// <summary>
