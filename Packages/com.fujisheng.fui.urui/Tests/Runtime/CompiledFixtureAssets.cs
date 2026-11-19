@@ -20,15 +20,28 @@ namespace FUI.Rendering.URUI.Tests
             [MarshalAs(UnmanagedType.LPUTF8Str)] string uri, int fragment, [In] Resource[] files, int count,
             [Out] byte[] output, int capacity, out int required);
         [StructLayout(LayoutKind.Sequential)]
-        struct Resource { public IntPtr Uri, Bytes; public int Length; }
+        struct Resource
+        {
+            public IntPtr Uri;
+            public IntPtr Bytes;
+            public int Length;
+        }
         [DllImport(Library, CallingConvention = CallingConvention.Cdecl)]
         static extern int urui_compile_template([In] byte[] parent, int parentLength,
             [MarshalAs(UnmanagedType.LPUTF8Str)] string html, [MarshalAs(UnmanagedType.LPUTF8Str)] string uri,
             [Out] byte[] output, int capacity, out int required);
-        [Serializable] sealed class TemplatePacket { public string sourceUrl, parentFingerprint; public byte[] data; }
-        [Serializable] sealed class Packet
+        [Serializable]
+        sealed class TemplatePacket
         {
-            public string sourceUrl, fingerprint;
+            public string sourceUrl;
+            public string parentFingerprint;
+            public byte[] data;
+        }
+        [Serializable]
+        sealed class Packet
+        {
+            public string sourceUrl;
+            public string fingerprint;
             public int compilerVersion;
             public byte[] data;
             public TextResource[] dependencies;
@@ -37,7 +50,10 @@ namespace FUI.Rendering.URUI.Tests
         static readonly List<CompiledDocumentAsset> owned = new List<CompiledDocumentAsset>();
         internal static CompiledDocumentAsset Create(TextAsset source, string uri, TextResource[] files = null)
         {
-            if (!source) return null;
+            if (!source)
+            {
+                return null;
+            }
             files ??= Array.Empty<TextResource>();
             var resources = new Resource[files.Length];
             var pins = new GCHandle[files.Length];
@@ -47,7 +63,12 @@ namespace FUI.Rendering.URUI.Tests
                 {
                     var data = files[i].Asset.bytes;
                     pins[i] = GCHandle.Alloc(data, GCHandleType.Pinned);
-                    resources[i] = new Resource { Uri = Marshal.StringToCoTaskMemUTF8(files[i].Source), Bytes = pins[i].AddrOfPinnedObject(), Length = data.Length };
+                    resources[i] = new Resource
+                    {
+                        Uri = Marshal.StringToCoTaskMemUTF8(files[i].Source),
+                        Bytes = pins[i].AddrOfPinnedObject(),
+                        Length = data.Length
+                    };
                 }
                 var bytes = new byte[65536];
                 var result = urui_compile_document(source.text, uri, 0, resources, resources.Length, bytes, bytes.Length, out var count);
@@ -62,15 +83,31 @@ namespace FUI.Rendering.URUI.Tests
                 foreach (var path in new[] { "URUI/Templates/ReviewDynamic", "URUI/Tests/AuthoredDynamic" })
                 {
                     var text = UnityEngine.Resources.Load<TextAsset>(path);
-                    if (!text) continue;
+                    if (!text)
+                    {
+                        continue;
+                    }
                     var encoded = new byte[65536];
                     result = urui_compile_template(bytes, bytes.Length, text.text, "/" + path + ".html", encoded, encoded.Length, out count);
-                    Assert.AreEqual(1, result); Array.Resize(ref encoded, count);
-                    templates.Add(new TemplatePacket { sourceUrl = "/" + path + ".html", parentFingerprint = uri, data = encoded });
+                    Assert.AreEqual(1, result);
+                    Array.Resize(ref encoded, count);
+                    templates.Add(new TemplatePacket
+                    {
+                        sourceUrl = "/" + path + ".html",
+                        parentFingerprint = uri,
+                        data = encoded
+                    });
                 }
                 var asset = ScriptableObject.CreateInstance<CompiledDocumentAsset>();
-                JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(new Packet { sourceUrl = uri, fingerprint = uri,
-                    compilerVersion = CompiledDocumentAsset.CompilerVersion, data = bytes, dependencies = files, templates = templates.ToArray() }), asset);
+                JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(new Packet
+                {
+                    sourceUrl = uri,
+                    fingerprint = uri,
+                    compilerVersion = CompiledDocumentAsset.CompilerVersion,
+                    data = bytes,
+                    dependencies = files,
+                    templates = templates.ToArray()
+                }), asset);
                 owned.Add(asset);
                 return asset;
             }
@@ -78,20 +115,33 @@ namespace FUI.Rendering.URUI.Tests
             {
                 for (var i = 0; i < files.Length; i++)
                 {
-                    if (pins[i].IsAllocated) pins[i].Free();
-                    if (resources[i].Uri != IntPtr.Zero) Marshal.FreeCoTaskMem(resources[i].Uri);
+                    if (pins[i].IsAllocated)
+                    {
+                        pins[i].Free();
+                    }
+                    if (resources[i].Uri != IntPtr.Zero)
+                    {
+                        Marshal.FreeCoTaskMem(resources[i].Uri);
+                    }
                 }
             }
         }
         internal static void Release()
         {
-            foreach (var asset in owned) if (asset) UnityEngine.Object.DestroyImmediate(asset);
+            foreach (var asset in owned)
+            {
+                if (asset)
+                {
+                    UnityEngine.Object.DestroyImmediate(asset);
+                }
+            }
             owned.Clear();
         }
     }
     [SetUpFixture]
     sealed class CompiledFixtureCleanup
     {
-        [OneTimeTearDown] public void Release() => CompiledFixtureAssets.Release();
+        [OneTimeTearDown]
+        public void Release() => CompiledFixtureAssets.Release();
     }
 }
