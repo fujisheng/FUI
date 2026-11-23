@@ -47,7 +47,7 @@ namespace FUI.Rendering.URUI
             View view = null;
             try
             {
-                view = new View(Name, scope);
+                view = View.CreateForBinding(Name, scope);
                 view.ConfigureGeneration(current =>
                 {
                     var context = new ViewContext(scope, this, assets, clock);
@@ -75,7 +75,7 @@ namespace FUI.Rendering.URUI
             }
         }
         public ViewDefinition(string name, string htmlUri,
-            Func<ViewContext, IReadOnlyList<ElementBinding>> createBindings,
+            Func<ViewContext, IReadOnlyList<ElementBinding>> createBindings = null,
             IEnumerable<string> imageGroupKeys = null,
             IEnumerable<IViewBehavior> behaviors = null, Action<ViewContext, View> configure = null)
         {
@@ -89,10 +89,30 @@ namespace FUI.Rendering.URUI
             }
             Name = name;
             HtmlUri = htmlUri;
-            CreateBindings = createBindings ?? throw new ArgumentNullException(nameof(createBindings));
-            ImageGroupKeys = Array.AsReadOnly(new List<string>(imageGroupKeys ?? Array.Empty<string>()).ToArray());
-            Behaviors = Array.AsReadOnly(new List<IViewBehavior>(behaviors ?? Array.Empty<IViewBehavior>()).ToArray());
+            CreateBindings = createBindings ?? (_ => Array.Empty<ElementBinding>());
+            ImageGroupKeys = CopyReadOnly(imageGroupKeys);
+            Behaviors = CopyReadOnly(behaviors);
             Configure = configure;
+        }
+
+        static IReadOnlyList<T> CopyReadOnly<T>(IEnumerable<T> source)
+        {
+            if (source == null)
+            {
+                return Array.Empty<T>();
+            }
+            if (source is ICollection<T> collection)
+            {
+                if (collection.Count == 0)
+                {
+                    return Array.Empty<T>();
+                }
+                var copy = new T[collection.Count];
+                collection.CopyTo(copy, 0);
+                return Array.AsReadOnly(copy);
+            }
+            var list = new List<T>(source);
+            return list.Count == 0 ? Array.Empty<T>() : Array.AsReadOnly(list.ToArray());
         }
     }
 }

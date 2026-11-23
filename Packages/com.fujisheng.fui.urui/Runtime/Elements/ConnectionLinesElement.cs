@@ -13,6 +13,7 @@ namespace FUI.Rendering.URUI
     public sealed class ConnectionLinesElement : ElementAdapter, IConnectionLinesElement
     {
         readonly Action<IReadOnlyList<LineSegment>> render;
+        LineSegment[] localBuffer = Array.Empty<LineSegment>();
         bool subscribed;
         bool dirty;
         bool disposed;
@@ -109,16 +110,19 @@ namespace FUI.Rendering.URUI
         void UpdateStrokes()
         {
             var values = LineSegments.Value;
-            var local = new LineSegment[values.Count];
+            if (localBuffer.Length != values.Count)
+            {
+                localBuffer = new LineSegment[values.Count];
+            }
             for (var i = 0; i < values.Count; i++)
             {
                 var segment = values[i];
                 var from = Element.WorldToLocal(new Vector2(segment.from.x, Screen.height - segment.from.y));
                 var to = Element.WorldToLocal(new Vector2(segment.to.x, Screen.height - segment.to.y));
-                local[i] = new LineSegment(new SpatialValue(from.x, from.y, 0),
+                localBuffer[i] = new LineSegment(new SpatialValue(from.x, from.y, 0),
                     new SpatialValue(to.x, to.y, 0), segment.color);
             }
-            render(local);
+            render(localBuffer);
         }
 
         void Unsubscribe()

@@ -8,15 +8,17 @@ namespace FUI.Rendering.URUI
     /// <summary>
     /// 一个 FUI 页面/弹窗的 URUI 视图。元素名在 Scope 内解析，不依赖全局 id。
     /// </summary>
-    public sealed class View : IView, IViewPreparation, IViewUpdate, IViewInputFocus, IViewContentLifecycle, IExternalValueSynchronizationHost, FUI.Transitions.IViewTransitionSource
+    public sealed class View : IView, IViewPreparation, IViewUpdate, IViewInputFocus, IViewInputScope, IViewContentLifecycle, IExternalValueSynchronizationHost, FUI.Transitions.IViewTransitionSource
     {
         readonly ViewScope scope;
+        readonly bool bindsById;
         bool ownsRoot;
         bool ownsPresentation = true;
         readonly List<IElement> elements = new List<IElement>();
         readonly List<IDisposable> owned = new List<IDisposable>();
         IReadOnlyList<ElementBinding> declaredBindings = Array.Empty<ElementBinding>();
-        readonly Dictionary<string, List<IElement>> index = new Dictionary<string, List<IElement>>();
+        // Stores a single IElement directly in the common 1:1 case; promotes to List<IElement> only on duplicate names.
+        readonly Dictionary<string, object> index = new Dictionary<string, object>();
         bool initialized;
         bool initializing;
         bool generationPrepared = true;
@@ -27,6 +29,7 @@ namespace FUI.Rendering.URUI
         bool pendingInputFocus;
         Element previousInputFocus;
         Action<View> configureGeneration;
+        global::URUI.Documents.CompiledQuerySnapshot bindingSnapshot;
         public bool IsContentAvailable => initialized && !destroyed && scope.Document.IsLoaded;
         public event Action ContentUnavailable;
         public event Action ContentAvailable;
@@ -42,6 +45,17 @@ namespace FUI.Rendering.URUI
         public View(string name, ViewScope scope, IReadOnlyList<ElementBinding> bindings) : this(name, scope, true)
         {
             declaredBindings = bindings ?? throw new ArgumentNullException(nameof(bindings));
+        }
+
+        /// <summary>
+        /// 创建由渲染后端持有的绑定视图。显式映射优先，普通控件按 HTML ID 解析。
+        /// </summary>
+        public static View CreateForBinding(string name, ViewScope scope, IReadOnlyList<ElementBinding> bindings = null)
+        {
+            return new View(name, scope, true, bindsById: true)
+            {
+                declaredBindings = bindings ?? Array.Empty<ElementBinding>()
+            };
         }
 
         public Element Root => scope.Root;
@@ -80,11 +94,13 @@ namespace FUI.Rendering.URUI
             owned.Add(controller ?? throw new ArgumentNullException(nameof(controller)));
         }
 
-        internal View(string name, ViewScope scope, bool ownsRoot)
+        internal View(string name, ViewScope scope, bool ownsRoot, bool bindsById = false)
         {
             Name = name;
             this.scope = scope ?? throw new ArgumentNullException(nameof(scope));
             this.ownsRoot = ownsRoot;
+            this.bindsById = bindsById;
+            scope.RegisterBindingRoot();
             if (scope.OwnsDocument)
             {
                 scope.Document.Unloaded += SuspendDocument;
@@ -256,6 +272,14 @@ namespace FUI.Rendering.URUI
             }
         }
 
+        void IViewInputScope.SetBlocksInputBehind(bool blocksInputBehind)
+        {
+            if (ownsPresentation && scope.OwnsDocument)
+            {
+                scope.ConfigureInput(blocksInputBehind, interactable);
+            }
+        }
+
         public void FocusInput()
         {
             if (destroyed || !scope.OwnsDocument)
@@ -290,7 +314,7 @@ namespace FUI.Rendering.URUI
             {
                 return;
             }
-            // 覆盖页面会禁用原节点并释放原生焦点；在解除交互门之后恢复原节点。
+            // 页面恢复交互时优先恢复本页上一次的原生焦点。
             if (previousInputFocus != null && previousInputFocus.IsValid && previousInputFocus.EnabledInHierarchy && previousInputFocus.Focus()
                 || scope.Document.Focus())
             {
@@ -327,6 +351,7 @@ namespace FUI.Rendering.URUI
                     }
                     finally
                     {
+                        bindingSnapshot = null;
                         initializing = false;
                     }
                 }
@@ -337,7 +362,34 @@ namespace FUI.Rendering.URUI
         }
 
         void IViewPreparation.PrepareForBinding() => PrepareProjection();
-        IDisposable IViewUpdate.BeginUpdate() => scope.Document.BeginUpdate();
+        IDisposable IViewUpdate.BeginUpdate()
+        {
+            var update = scope.Document.BeginUpdate();
+            return bindingSnapshot != null ? new BindingUpdate(this, update) : update;
+        }
+
+        sealed class BindingUpdate : IDisposable
+        {
+            View view;
+            readonly IDisposable update;
+
+            internal BindingUpdate(View view, IDisposable update)
+            {
+                this.view = view;
+                this.update = update;
+            }
+
+            public void Dispose()
+            {
+                if (view == null)
+                {
+                    return;
+                }
+                view.bindingSnapshot = null;
+                view = null;
+                update.Dispose();
+            }
+        }
         internal void PrepareProjection()
         {
             using var sample = initializeMarker.Auto();
@@ -394,9 +446,13 @@ namespace FUI.Rendering.URUI
                 {
                     return;
                 }
-                var snapshot = scope.Document.CreateCompiledQuerySnapshot(scope.Root);
-                foreach (var binding in declaredBindings)
+                var snapshot = bindsById && preparedForBinding || declaredBindings.Count != 0
+                    ? scope.Document.CreateCompiledQuerySnapshot(scope.Root)
+                    : null;
+                bindingSnapshot = bindsById && preparedForBinding ? snapshot : null;
+                for (var bi = 0; bi < declaredBindings.Count; bi++)
                 {
+                    var binding = declaredBindings[bi];
                     if (snapshot != null && snapshot.TryQuery(binding.Selector, out var compiledNodes))
                     {
                         if (compiledNodes.Count == 0)
@@ -418,9 +474,9 @@ namespace FUI.Rendering.URUI
                         {
                             throw new InvalidOperationException($"URUI binding '{binding.Name}' has no authored {binding.Selector} node.");
                         }
-                        foreach (var node in nodes)
+                        for (var ni = 0; ni < nodes.Count; ni++)
                         {
-                            if (!AddAdapter(binding, node))
+                            if (!AddAdapter(binding, nodes[ni]))
                             {
                                 return;
                             }
@@ -458,18 +514,29 @@ namespace FUI.Rendering.URUI
         {
             using var sample = adapterMarker.Auto();
             var adapter = binding.Create(node, binding.Name) ?? throw new InvalidOperationException($"URUI binding '{binding.Name}' has no adapter.");
+            return RegisterAdapter(binding.Name, adapter);
+        }
+
+        bool RegisterAdapter(string name, IElement adapter)
+        {
             if (destroyed)
             {
                 (adapter as IDisposable)?.Dispose();
                 return false;
             }
             elements.Add(adapter);
-            if (!index.TryGetValue(binding.Name, out var list))
+            if (!index.TryGetValue(name, out var existing))
             {
-                list = new List<IElement>();
-                index.Add(binding.Name, list);
+                index.Add(name, adapter);
             }
-            list.Add(adapter);
+            else if (existing is List<IElement> list)
+            {
+                list.Add(adapter);
+            }
+            else
+            {
+                index[name] = new List<IElement>(2) { (IElement)existing, adapter };
+            }
             return true;
         }
 
@@ -485,20 +552,70 @@ namespace FUI.Rendering.URUI
                 return null;
             }
 
-            if (!index.TryGetValue(path, out var list))
+            if (index.TryGetValue(path, out var entry))
+            {
+                if (entry is List<IElement> list)
+                {
+                    for (var i = 0; i < list.Count; i++)
+                    {
+                        var element = list[i];
+                        if (elementType.IsAssignableFrom(element.GetType()))
+                        {
+                            return element;
+                        }
+                    }
+                    return null;
+                }
+                return elementType.IsAssignableFrom(entry.GetType()) ? (IElement)entry : null;
+            }
+
+            if (!bindsById || !initialized || destroyed)
             {
                 return null;
             }
 
-            foreach (var element in list)
+            var node = FindBindingTarget(path);
+            if (node == null)
             {
-                if (elementType.IsAssignableFrom(element.GetType()))
-                {
-                    return element;
-                }
+                return null;
             }
 
-            return null;
+            using var sample = adapterMarker.Auto();
+            var adapter = StandardElementAdapters.Create(node, path, elementType);
+            return adapter != null && RegisterAdapter(path, adapter) ? adapter : null;
+        }
+
+        Element FindBindingTarget(string name)
+        {
+            Element match = null;
+            if (bindingSnapshot != null && bindingSnapshot.TryQueryById(name, out var compiledNodes))
+            {
+                foreach (var node in compiledNodes)
+                {
+                    ConsiderBindingTarget(name, node, ref match);
+                }
+            }
+            else
+            {
+                foreach (var node in scope.FindAll(name))
+                {
+                    ConsiderBindingTarget(name, node, ref match);
+                }
+            }
+            return match;
+        }
+
+        void ConsiderBindingTarget(string name, Element node, ref Element match)
+        {
+            if (!scope.ContainsBindingCandidate(node))
+            {
+                return;
+            }
+            if (match != null)
+            {
+                throw new InvalidOperationException($"URUI view '{Name}' contains more than one binding target with id '{name}'.");
+            }
+            match = node;
         }
 
         readonly List<IExternalValueSource> externalSources = new List<IExternalValueSource>();
@@ -567,6 +684,7 @@ namespace FUI.Rendering.URUI
                 return;
             }
             destroyed = true;
+            scope.UnregisterBindingRoot();
             scope.Document.Unloaded -= SuspendDocument;
             scope.Document.Loaded -= RestoreDocument;
             var failure = ReleaseGeneration(null);
@@ -610,6 +728,7 @@ namespace FUI.Rendering.URUI
 
         Exception ReleaseElements(Exception failure)
         {
+            bindingSnapshot = null;
             foreach (var element in elements)
             {
                 try

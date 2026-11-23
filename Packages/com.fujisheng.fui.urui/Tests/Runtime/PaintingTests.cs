@@ -83,9 +83,9 @@ namespace FUI.Rendering.URUI.Tests
                 Assert.Greater(front.b, .9f);
                 Assert.Less(front.g, .1f);
                 var painted = Sample(45, 50);
-                if (QualitySettings.activeColorSpace == ColorSpace.Linear && !output.sRGB)
+                if (QualitySettings.activeColorSpace == ColorSpace.Linear && output.sRGB)
                 {
-                    painted = painted.gamma;
+                    painted = painted.linear;
                 }
                 Assert.That(painted.g, Is.EqualTo(.5f).Within(.025f));
                 Assert.That(painted.r, Is.EqualTo(.5f).Within(.025f));
@@ -97,9 +97,9 @@ namespace FUI.Rendering.URUI.Tests
                 yield return null;
                 camera.Render();
                 var faded = Sample(45, 50);
-                if (QualitySettings.activeColorSpace == ColorSpace.Linear && !output.sRGB)
+                if (QualitySettings.activeColorSpace == ColorSpace.Linear && output.sRGB)
                 {
-                    faded = faded.gamma;
+                    faded = faded.linear;
                 }
                 Assert.That(faded.r, Is.EqualTo(.75f).Within(.025f));
                 Assert.That(faded.g, Is.EqualTo(.25f).Within(.025f));

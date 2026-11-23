@@ -34,12 +34,12 @@ namespace FUI.Rendering
         bool Interactable { get; set; }
 
         /// <summary>
-        /// 所有子节点
+        /// 当前 View 已装配的绑定目标。
         /// </summary>
         IReadOnlyList<IElement> Elements { get; }
 
         /// <summary>
-        /// 获取一个子节点
+        /// 查找可提供给定能力的绑定目标。找不到目标时返回 null。
         /// </summary>
         /// <typeparam name="T">子节点的类型</typeparam>
         /// <param name="path">子节点的路径</param>
@@ -63,6 +63,12 @@ namespace FUI.Rendering
         /// 销毁
         /// </summary>
         void Destroy();
+    }
+
+    /// <summary>由导航设置顶层页面的指针范围；可见期间持续生效。</summary>
+    public interface IViewInputScope
+    {
+        void SetBlocksInputBehind(bool blocksInputBehind);
     }
 
     /// <summary>由导航当前页请求键盘输入焦点；渲染后端负责等待页面可交互后恢复。</summary>

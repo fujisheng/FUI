@@ -51,10 +51,10 @@ namespace FUI.Testing
         {
             this.createRow = createRow ?? throw new ArgumentNullException(nameof(createRow));
             Rows = rows.AsReadOnly();
-            Items.OnValueChanged += OnItemsChanged;
+            ItemsSource.OnValueChanged += OnItemsChanged;
             Visible.OnValueChanged += (oldValue,newValue) => SetVisibility(ownerVisible);
         }
-        public BindableProperty<IReadOnlyObservableList<ObservableObject>> Items { get; }
+        public BindableProperty<IReadOnlyObservableList<ObservableObject>> ItemsSource { get; }
             = new BindableProperty<IReadOnlyObservableList<ObservableObject>>();
         public IReadOnlyList<HeadlessListRow> Rows { get; }
         public BindableProperty<bool> Visible { get; } = new BindableProperty<bool>(true);
@@ -71,9 +71,9 @@ namespace FUI.Testing
             var used = new bool[rows.Count];
             try
             {
-                if (Items.Value != null)
+                if (ItemsSource.Value != null)
                 {
-                    foreach (var item in Items.Value)
+                    foreach (var item in ItemsSource.Value)
                     {
                         if (item == null) { throw new InvalidOperationException("Null list item."); }
                         HeadlessListRow match = null;
@@ -133,7 +133,7 @@ namespace FUI.Testing
             var owned = rows.ToArray();
             rows.Clear();
             RowsChanged = null;
-            Items.Dispose();
+            ItemsSource.Dispose();
             Visible.Dispose();
             NormalizedScroll.Dispose();
             var failure = DisposeRows(owned);

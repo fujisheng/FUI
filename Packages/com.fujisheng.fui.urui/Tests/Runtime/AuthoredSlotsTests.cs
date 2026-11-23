@@ -58,7 +58,7 @@ namespace FUI.Rendering.URUI.Tests
                     return new View("Slot" + index, scope, new[] { ElementBinding.For("Label", ".caption", (element, name) => new TextElement(element, name)) });
                 });
                 Assert.AreEqual(2, list.Capacity, "装饰节点不应占用显式容量，普通节点不需要 data-fui-slot。");
-                list.Items.Value = new ObservableList<Model> { new() { Caption = "first" }, new() { Caption = "second" } };
+                list.ItemsSource.Value = new ObservableList<Model> { new() { Caption = "first" }, new() { Caption = "second" } };
                 yield return null;
                 yield return null;
                 Assert.AreEqual(2, factoryCalls);
@@ -66,13 +66,13 @@ namespace FUI.Rendering.URUI.Tests
                 Assert.AreEqual("second", second.Q(className: "caption").Text);
                 Assert.That(first.Layout.x, Is.EqualTo(20).Within(.1));
                 Assert.That(second.Layout.width, Is.EqualTo(120).Within(.1));
-                list.Items.Value = new ObservableList<Model> { new() { Caption = "replacement" } };
+                list.ItemsSource.Value = new ObservableList<Model> { new() { Caption = "replacement" } };
                 Assert.AreEqual("replacement", first.Q(className: "caption").Text);
                 Assert.AreEqual("none", second.ResolvedStyle.Get("display"));
-                list.Items.Value = null;
+                list.ItemsSource.Value = null;
                 Assert.IsTrue(first.IsValid);
                 Assert.IsTrue(second.IsValid);
-                list.Items.Value = new ObservableList<Model> { new() { Caption = "restored" }, new() { Caption = "again" } };
+                list.ItemsSource.Value = new ObservableList<Model> { new() { Caption = "restored" }, new() { Caption = "again" } };
                 Assert.AreEqual("restored", first.Q(className: "caption").Text);
                 list.Dispose();
                 list = null;
@@ -113,7 +113,7 @@ namespace FUI.Rendering.URUI.Tests
                 Assert.Throws<System.ArgumentException>(() => new SlotListElement(hostNode, "Invalid", new[] { first, first }, factory));
                 Assert.That(first.Style.Get("display"), Is.Null, "无效构造不能隐藏已有作者节点。");
                 list = new SlotListElement(hostNode, "Slots", new[] { first }, factory);
-                list.Items.Value = new ObservableList<Model> { new() { Caption = "must not bind" } };
+                list.ItemsSource.Value = new ObservableList<Model> { new() { Caption = "must not bind" } };
                 Assert.AreEqual(1, retired);
                 Assert.IsTrue(first.IsValid);
                 Assert.AreEqual(authoredChildCount, hostNode.ChildCount);

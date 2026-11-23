@@ -84,6 +84,12 @@ navigator.Close(handle);
 
 Start with the [five-minute guide](Documentation~/quick-start.md) and import the Settings Sample from the UGUI package in Package Manager.
 
+## Binding independently positioned items
+
+Bind an `ObservableList<T>` through `IListView.ItemsSource`. URUI's `ProjectionTemplateElement` and UGUI's `ViewPrototypeElement` create template instances as items enter the collection, retain unchanged instances, and reuse idle instances within the owning view's lifetime. Item models can bind local or screen coordinates. Read template and container geometry through the `IProjectionLayoutElement.LayoutValue` snapshot.
+
+Use data properties, collections, and commands in business ViewModels and Presenters. FUI0301 reports access to projection templates and handles in that code.
+
 ## Assemblies
 
 | Assembly | Responsibility |

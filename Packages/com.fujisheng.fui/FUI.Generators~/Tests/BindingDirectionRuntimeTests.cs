@@ -83,7 +83,7 @@ namespace DirectionProbe
         [Bind("Root", nameof(ProbeElement.WorldPositionValue), bindingMode: BindingMode.MODE)]
         int position;
     }
-    public sealed class ProbeContext : Vm.Vm_Probe_BindingContext
+    internal sealed class ProbeContext : Vm.Vm_Probe_BindingContext
     {
         public ProbeContext(IView view, Vm model) : base(view, model) { }
         public void Start() { base.OnBinding(); base.OnSynchronize(); }

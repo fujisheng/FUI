@@ -145,6 +145,7 @@ namespace FUI.Generators
                 || propertyName == "LocalPositionValue"
                 || propertyName == "LocalScaleValue"
                 || propertyName == "AnchoredPositionValue"
+                || propertyName == "LayoutValue"
                 || propertyName == "Position"
                 || propertyName == "LocalPosition"
                 || propertyName == "Rotation"

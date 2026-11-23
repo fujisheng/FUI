@@ -11,7 +11,7 @@ namespace FUI.Rendering.UGUI
     /// 适用于UGUI的view基类
     /// </summary>
     [DisallowMultipleComponent]
-    public partial class View : MonoBehaviour, IView, IExternalValueSynchronizationHost
+    public partial class View : MonoBehaviour, IView, IViewInputScope, IExternalValueSynchronizationHost
     {
         /// <summary>
         /// 资源加载器
@@ -22,6 +22,7 @@ namespace FUI.Rendering.UGUI
         readonly List<IExternalValueSource> externalValueSources = new List<IExternalValueSource>();
         bool externalSyncSubscribed;
         bool initialized;
+        PageInputRaycaster pageInput;
 
         public bool ExternalValueSynchronizationEnabled { get; set; }
 
@@ -122,6 +123,10 @@ namespace FUI.Rendering.UGUI
             }
 
             this.gameObject.SetActive(visible);
+            if (visible)
+            {
+                pageInput?.CancelCoveredInput();
+            }
         }
 
         /// <summary>
@@ -164,6 +169,7 @@ namespace FUI.Rendering.UGUI
                 // Layer 是层基准，Order 是层内顺序；独立 Canvas 不依赖 Transform 兄弟顺序。
                 canvas.overrideSorting = true;
                 canvas.sortingOrder = Layer.Value + Order.Value;
+                pageInput?.CancelCoveredInput();
             }
         }
 
@@ -179,9 +185,24 @@ namespace FUI.Rendering.UGUI
                 return;
             }
 
-            if (gameObject.TryGetComponent<CanvasGroup>(out var canvasGroup))
+            if (pageInput)
+            {
+                pageInput.SetInputEnabled(interactable);
+            }
+            else if (gameObject.TryGetComponent<CanvasGroup>(out var canvasGroup))
             {
                 canvasGroup.blocksRaycasts = interactable;
+            }
+        }
+
+        void IViewInputScope.SetBlocksInputBehind(bool blocksInputBehind)
+        {
+            if (!pageInput)
+            {
+                var input = new GameObject("Page Input");
+                input.transform.SetParent(transform, false);
+                pageInput = input.AddComponent<PageInputRaycaster>();
+                pageInput.Configure(this, blocksInputBehind);
             }
         }
 
@@ -241,6 +262,10 @@ namespace FUI.Rendering.UGUI
         /// </summary>
         internal virtual void Release()
         {
+            if (pageInput)
+            {
+                pageInput.SetInputEnabled(false);
+            }
             ClearExternalValueSources();
             RemoveAllElements();
 

@@ -41,6 +41,28 @@ namespace FUI.Tests
         }
 
         [Test]
+        public void EnteringViewAcceptsBackOnceItsBindingsAreReady()
+        {
+            var transition = new TestTransitionProvider();
+            var routes = new RouteHarness();
+            var home = manager.Open(routes.Create("Home"));
+            var page = routes.Create("Page", new RoutePolicy(
+                coverageMode: CoverageMode.Hide, enterTransitionProvider: transition));
+            var handle = manager.Open(page);
+
+            Assert.That(manager.GetState(handle), Is.EqualTo(ViewState.Opening));
+            Assert.That(transition.Transition.IsPlaying, Is.True);
+            Assert.That(provider.Leases.Single(item => item.View.Name == "Page").View.Interactable, Is.True);
+            Assert.That(manager.Back(), Is.True);
+            Assert.That(manager.GetState(handle), Is.EqualTo(ViewState.Destroyed));
+            Assert.That(transition.Transition.StopCount, Is.EqualTo(1));
+            transition.Transition.Complete();
+            Assert.That(manager.GetState(handle), Is.EqualTo(ViewState.Destroyed));
+            Assert.That(manager.GetState(home), Is.EqualTo(ViewState.Open));
+            Assert.That(provider.Leases.Single(item => item.View.Name == "Home").View.Interactable, Is.True);
+        }
+
+        [Test]
         public void NonFocusingOverlayLeavesPageInteractiveOnFirstAndRepeatedOpen()
         {
             var pageHarness = new RouteHarness();

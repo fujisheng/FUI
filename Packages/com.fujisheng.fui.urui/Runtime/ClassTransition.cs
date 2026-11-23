@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using FUI.Transitions;
@@ -18,16 +19,12 @@ namespace FUI.Rendering.URUI
         readonly string prepareClassName;
         readonly string completionClassName;
         readonly Document document;
-        readonly SynchronizationContext context;
         readonly int thread;
         readonly Func<Element> completionTargetResolver;
-        TaskCompletionSource<bool> completion;
+        readonly Func<IReadOnlyList<Element>> targetGroupResolver;
         AnimationPlayback playback;
-        CancellationTokenRegistration cancellation;
-        CancellationToken token;
-        int version;
-        bool preparedLayout;
         bool disposed;
+
         public ClassTransition(Element root, string className, Element completionElement, string prepareClassName = null, string completionClassName = null, Func<Element> completionTargetResolver = null)
         {
             this.root = root ?? throw new ArgumentNullException(nameof(root));
@@ -41,11 +38,17 @@ namespace FUI.Rendering.URUI
             this.completionClassName = completionClassName;
             this.completionTargetResolver = completionTargetResolver;
             document = root.Document;
-            context = SynchronizationContext.Current ?? throw new InvalidOperationException("过渡需要 Unity 主线程上下文。");
+            if (SynchronizationContext.Current == null)
+            {
+                throw new InvalidOperationException("过渡需要 Unity 主线程上下文。");
+            }
             thread = Thread.CurrentThread.ManagedThreadId;
+            targetGroupResolver = ResolveTargets;
             document.Unloaded += Unloaded;
         }
-        public bool IsPlaying => completion != null;
+
+        public bool IsPlaying => playback != null && playback.IsPlaying;
+
         public ValueTask PlayAsync(CancellationToken cancellationToken)
         {
             CheckThread();
@@ -55,129 +58,47 @@ namespace FUI.Rendering.URUI
             }
             cancellationToken.ThrowIfCancellationRequested();
             Stop();
-            token = cancellationToken;
-            var pending = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
-            completion = pending;
-            var identity = ++version;
-            cancellation = token.Register(() =>
+            if (string.IsNullOrEmpty(prepareClassName) && completionTargetResolver != null)
             {
-                void Cancel()
+                var immediateTarget = ResolveSingleTarget();
+                if (immediateTarget == null)
                 {
-                    if (version == identity && completion == pending)
+                    if (root.IsValid && !string.IsNullOrEmpty(completionClassName))
                     {
-                        Clear();
-                        pending.TrySetCanceled(cancellationToken);
+                        root.AddToClassList(completionClassName);
                     }
+                    return default;
                 }
-                if (Thread.CurrentThread.ManagedThreadId == thread)
-                {
-                    Cancel();
-                }
-                else
-                {
-                    context.Post(_ => Cancel(), null);
-                }
-            });
-            if (completion == pending)
-            {
-                if (string.IsNullOrEmpty(prepareClassName))
-                {
-                    Start();
-                }
-                else
-                {
-                    root.AddToClassList(prepareClassName);
-                    document.LayoutUpdated += Begin;
-                }
+                playback = document.Animations.Play(root, className, AnimationGroup.FromAuthorTargets(() => new[] { immediateTarget }), cancellationToken, completionClassName);
+                return new ValueTask(playback.Finished);
             }
-            return new ValueTask(pending.Task);
+            playback = document.Animations.Play(root, className, AnimationGroup.FromAuthorTargets(targetGroupResolver), cancellationToken, completionClassName, prepareClassName);
+            return new ValueTask(playback.Finished);
         }
-        void Begin(Document owner)
+
+        Element ResolveSingleTarget()
         {
-            if (!preparedLayout)
+            var target = completionTargetResolver != null ? completionTargetResolver() : clock;
+            if (target == null)
             {
-                preparedLayout = true;
-                return;
+                return null;
             }
-            document.LayoutUpdated -= Begin;
-            if (completion == null)
+            if (!target.IsValid || !ReferenceEquals(target.Document, document) || (!ReferenceEquals(target, clock) && !clock.Contains(target)))
             {
-                return;
+                throw new InvalidOperationException("作者完成目标必须位于声明范围内。");
             }
-            root.RemoveFromClassList(prepareClassName);
-            Start();
+            return target;
         }
-        void Start()
+
+        IReadOnlyList<Element> ResolveTargets()
         {
-            var pending = completion;
-            var identity = version;
-            try
-            {
-                var target = completionTargetResolver != null ? completionTargetResolver() : clock;
-                if (target == null)
-                {
-                    Complete(pending, identity);
-                    return;
-                }
-                if (!target.IsValid || !ReferenceEquals(target.Document, document) || !ReferenceEquals(target, clock) && !clock.Contains(target))
-                {
-                    throw new InvalidOperationException("作者完成目标必须位于声明范围内。");
-                }
-                playback = document.Animations.Play(root, className, AnimationGroup.FromAuthorTargets(() => new[] { target }), token);
-                Observe(playback, pending, identity);
-            }
-            catch (Exception error)
-            {
-                Clear();
-                pending?.TrySetException(error);
-            }
+            var target = ResolveSingleTarget();
+            return target == null ? Array.Empty<Element>() : new[] { target };
         }
-        async void Observe(AnimationPlayback current, TaskCompletionSource<bool> pending, int identity)
+
+        public void Stop()
         {
-            try
-            {
-                await current.Finished;
-                if (version == identity && completion == pending)
-                {
-                    Complete(pending, identity);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                if (version == identity && completion == pending)
-                {
-                    Clear();
-                    pending.TrySetCanceled();
-                }
-            }
-            catch (Exception error)
-            {
-                if (version == identity && completion == pending)
-                {
-                    Clear();
-                    pending.TrySetException(error);
-                }
-            }
-        }
-        void Complete(TaskCompletionSource<bool> pending, int identity)
-        {
-            if (version != identity || completion != pending)
-            {
-                return;
-            }
-            Clear();
-            if (root.IsValid && !string.IsNullOrEmpty(completionClassName))
-            {
-                root.AddToClassList(completionClassName);
-            }
-            pending.TrySetResult(true);
-        }
-        void Clear()
-        {
-            completion = null;
-            preparedLayout = false;
-            version++;
-            document.LayoutUpdated -= Begin;
+            CheckThread();
             var previous = playback;
             playback = null;
             previous?.Cancel();
@@ -189,17 +110,10 @@ namespace FUI.Rendering.URUI
             {
                 root.RemoveFromClassList(completionClassName);
             }
-            cancellation.Dispose();
-            cancellation = default;
         }
-        public void Stop()
-        {
-            CheckThread();
-            var pending = completion;
-            Clear();
-            pending?.TrySetCanceled();
-        }
+
         void Unloaded(Document owner) => Stop();
+
         void CheckThread()
         {
             if (Thread.CurrentThread.ManagedThreadId != thread)
@@ -207,6 +121,7 @@ namespace FUI.Rendering.URUI
                 throw new InvalidOperationException("过渡只能在 Unity 主线程操作。");
             }
         }
+
         public void Dispose()
         {
             if (disposed)

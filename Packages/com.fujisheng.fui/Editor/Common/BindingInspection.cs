@@ -110,6 +110,53 @@ namespace FUI.Editor
             }
         }
 
+        /// <summary>读取指定 ViewModel 的生成绑定要求，供资源导出验证作者目标。</summary>
+        public static IReadOnlyList<(string Path, Type Capability, string Source)> DescribeTargets(Type model, string contract)
+        {
+            if (model == null)
+            {
+                throw new ArgumentNullException(nameof(model));
+            }
+
+            var manifest = BindingCatalog.Instance.GetManifest(model, contract)
+                ?? throw new InvalidOperationException($"Missing binding manifest for {model.FullName} and {contract}.");
+            var context = model.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
+                .SingleOrDefault(type => type.GetCustomAttribute<ViewModelAttribute>(false)?.Type == model &&
+                    type.GetCustomAttribute<ViewAttribute>(false)?.ViewName == manifest.viewName)
+                ?? throw new InvalidOperationException($"Missing generated binding context for {model.FullName} and {manifest.viewName}.");
+            var requirements = new List<(string Path, Type Capability, string Source)>();
+            for (var current = context; current != null; current = current.BaseType)
+            {
+                var sourceModel = current.GetCustomAttribute<ViewModelAttribute>(false)?.Type;
+                var sourceContract = current.GetCustomAttribute<ViewAttribute>(false)?.ViewName;
+                if (sourceModel == null)
+                {
+                    break;
+                }
+                var source = BindingCatalog.Instance.GetManifest(sourceModel, sourceContract)
+                    ?? throw new InvalidOperationException($"Missing inherited binding manifest for {sourceModel.FullName}.");
+                foreach (var property in source.properties)
+                {
+                    Add(property.targetInfo.path, property.targetInfo.type, property.propertyInfo.name);
+                }
+                foreach (var command in source.commands)
+                {
+                    Add(command.targetInfo.path, command.targetInfo.type, command.commandInfo.name);
+                }
+            }
+            return requirements.AsReadOnly();
+
+            void Add(string path, string capability, string member)
+            {
+                var type = ResolveType(capability);
+                if (type == null)
+                {
+                    throw new InvalidOperationException($"Cannot resolve {capability} for {model.FullName}.{member}.");
+                }
+                requirements.Add((path, type, member));
+            }
+        }
+
         static Type ResolveType(string name)
         {
             if (string.IsNullOrEmpty(name)) { return null; }

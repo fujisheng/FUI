@@ -43,7 +43,6 @@ namespace FUI.Navigation
             // 每次打开或关闭都会递增版本，防止较早完成的异步结果覆盖当前状态。
             public int OperationVersion;
             // 进入动画与导航状态正交；Covered 页面可能仍有旧动画尚未结束。
-            public bool EnterTransitionPending;
             public bool HiddenByCoverage;
             // 显式所有权表示该实例可以进入历史、获得焦点并被 BringToFront。
             public bool ExplicitOwner;

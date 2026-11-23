@@ -16,7 +16,7 @@ namespace FUI.Rendering.URUI
     [UnityEngine.Scripting.APIUpdating.MovedFrom(true, sourceNamespace: "FUI.Rendering.URUI", sourceClassName: "UruiStage")]
     public sealed class Stage : MonoBehaviour
     {
-        static Stage current;
+        static readonly List<Stage> activeStages = new();
         readonly HashSet<ViewScope> pages = new();
         Surface surface;
         IUIClock uiClock = UnityUIClock.Unscaled;
@@ -25,7 +25,14 @@ namespace FUI.Rendering.URUI
         ImageAsset[] images = Array.Empty<ImageAsset>();
         [SerializeField]
         TextResource[] textResources = Array.Empty<TextResource>();
-        public static Stage Current => current;
+        public static Stage Current => activeStages.Count > 0 ? activeStages[activeStages.Count - 1] : null;
+        public static IReadOnlyList<Stage> ActiveStages => activeStages;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetActiveStages()
+        {
+            activeStages.Clear();
+        }
         public Surface Surface
         {
             get
@@ -93,11 +100,10 @@ namespace FUI.Rendering.URUI
         }
         void Awake()
         {
-            if (current && current != this)
+            if (!activeStages.Contains(this))
             {
-                throw new InvalidOperationException("当前原生桥接只支持一个活动 URUI Stage。");
+                activeStages.Add(this);
             }
-            current = this;
             EnsureSurface();
         }
         void EnsureSurface()
@@ -135,12 +141,11 @@ namespace FUI.Rendering.URUI
                 pageImages.AddRange(group);
             }
             // 清单由作者依赖闭包生成，运行时不另写 HTML/CSS 解析器。
-            // 导航焦点不等于模态阻断，附着的普通覆盖页也可能沿用 TakeFocus 默认值。
-            return OpenDocument(null, definition.HtmlUri, policy.Layer, policy.Layer == FUI.Navigation.Layer.Popup && policy.TakeFocus,
-                assets.LoadDependencies(definition.HtmlUri), pageImages, assets.AcquireImage, compiled);
+            return OpenDocument(null, definition.HtmlUri, policy.Layer, false,
+                assets.LoadDependencies(definition.HtmlUri), pageImages, assets.AcquireImage, compiled, visible: false);
         }
         ViewScope OpenDocument(string html, string sourceUrl, FUI.Navigation.Layer layer, bool modal,
-            IReadOnlyList<TextResource> dependencies, IReadOnlyList<ImageAsset> pageImages, Func<string, ImageLease> resolver, CompiledDocumentAsset compiled = null)
+            IReadOnlyList<TextResource> dependencies, IReadOnlyList<ImageAsset> pageImages, Func<string, ImageLease> resolver, CompiledDocumentAsset compiled = null, bool visible = true)
         {
             EnsureSurface();
             if (surface.IsExecutingCallback)
@@ -175,7 +180,7 @@ namespace FUI.Rendering.URUI
                 document.TextResources = files.ToArray();
                 document.Images = textures.ToArray();
                 document.ImageResolver = resolver ?? ImageResolver;
-                document.SetPresentation((int)layer, order, true, modal);
+                document.SetPresentation((int)layer, order, visible, modal);
                 configuration = ConfigureDocument?.Invoke(document);
                 node.SetActive(true);
                 if (compiled)
@@ -186,7 +191,7 @@ namespace FUI.Rendering.URUI
                 {
                     document.LoadHtml(html, sourceUrl);
                 }
-                scope = new ViewScope(document, (int)layer, order, modal, () => ReleasePage(scope, document, configuration));
+                scope = new ViewScope(document, (int)layer, order, modal, visible, () => ReleasePage(scope, document, configuration));
                 pages.Add(scope);
                 return scope;
             }
@@ -271,10 +276,7 @@ namespace FUI.Rendering.URUI
                     failure = failure == null ? error : new AggregateException(failure, error);
                 }
             }
-            if (ReferenceEquals(current, this))
-            {
-                current = null;
-            }
+            activeStages.Remove(this);
             if (failure != null)
             {
                 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();

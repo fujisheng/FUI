@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using FUI.Binding;
 using FUI.Infrastructure;
 using FUI.Presentation;
@@ -10,24 +11,70 @@ namespace FUI.Rendering.UGUI.Elements
     /// </summary>
     [DisallowMultipleComponent]
     [AddComponentMenu("FUI/Elements/View Prototype")]
-    public class ViewPrototypeElement : RectTransformElement, IContainerElement, IProjectionTemplateElement
+    public class ViewPrototypeElement : RectTransformElement, IContainerElement, IProjectionTemplateElement, IListView, IProjectionLayoutElement, IExternalValueSource
     {
+        ProjectionCollection collection;
+        BindableProperty<ProjectionLayout> layoutValue;
+
         /// <summary>用于创建受控投影的只读模板。</summary>
         public BindableProperty<ProjectionTemplate> Template { get; private set; }
 
         protected override void OnInitialize()
         {
             base.OnInitialize();
+            Template = CreateProperty(new ProjectionTemplate(CreateProjection, ReadLayout, TryScreenToLocal));
+            gameObject.SetActive(false);
+        }
+
+        ProjectionCollection Collection => collection ??= Track(new ProjectionCollection(CreateProjection, PlaceBefore));
+
+        public BindableProperty<IReadOnlyObservableList<ObservableObject>> ItemsSource => Collection.ItemsSource;
+
+        public BindableProperty<ProjectionLayout> LayoutValue => layoutValue ??= CreateProperty(ReadLayout());
+
+        void IListView.OnAdd(object sender, int? index, object itemData) => collection?.Notify(sender, index, 1);
+        void IListView.OnRemove(object sender, int? index, object item) => collection?.Notify(sender, index, -1);
+        void IListView.OnReplace(object sender, int? index, object oldItem, object newItem) => collection?.Notify(sender, index);
+        void IListView.OnUpdate(object sender) => collection?.Notify(sender);
+
+        void IExternalValueSource.SynchronizeExternalValues()
+        {
+            if (layoutValue != null)
+            {
+                layoutValue.Value = ReadLayout();
+            }
+        }
+
+        protected override void OnRelease()
+        {
+            collection = null;
+            layoutValue = null;
+            base.OnRelease();
+        }
+
+        static void PlaceBefore(ViewInstance instance, ViewInstance next)
+        {
+            var item = ((View)instance.View).transform;
+            if (next == null)
+            {
+                item.SetAsLastSibling();
+                return;
+            }
+
+            var index = ((View)next.View).transform.GetSiblingIndex();
+            item.SetSiblingIndex(item.GetSiblingIndex() < index ? index - 1 : index);
+        }
+
+        ProjectionLayout ReadLayout()
+        {
             var parent = transform.parent as RectTransform;
-            var layout = new ProjectionLayout(
+            return new ProjectionLayout(
                 RectTransform.rect.width,
                 RectTransform.rect.height,
                 parent?.rect.width ?? 0f,
                 parent?.rect.height ?? 0f,
                 parent?.pivot.x ?? 0.5f,
                 parent?.pivot.y ?? 0.5f);
-            Template = CreateProperty(new ProjectionTemplate(CreateProjection, layout, TryScreenToLocal));
-            gameObject.SetActive(false);
         }
 
         bool TryScreenToLocal(float screenX, float screenY, out float localX, out float localY)

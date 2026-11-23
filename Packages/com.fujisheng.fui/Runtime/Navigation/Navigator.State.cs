@@ -33,7 +33,6 @@ namespace FUI.Navigation
             public NavigationEntry Entry;
             public ObservableObject ViewModel;
             public ViewState State;
-            public bool EnterTransitionPending;
             public bool HiddenByCoverage;
             public bool ExplicitOwner;
             public bool Visible;
@@ -54,7 +53,6 @@ namespace FUI.Navigation
                     Entry = instance,
                     ViewModel = instance.Instance?.ViewModel,
                     State = instance.State,
-                    EnterTransitionPending = instance.EnterTransitionPending,
                     HiddenByCoverage = instance.HiddenByCoverage,
                     ExplicitOwner = instance.ExplicitOwner,
                     Visible = instance.Instance?.View.Visible ?? false,
@@ -93,7 +91,6 @@ namespace FUI.Navigation
                         current.Instance.UpdateViewModel(saved.ViewModel);
                     }
                     current.State = saved.State;
-                    current.EnterTransitionPending = saved.EnterTransitionPending;
                     current.HiddenByCoverage = saved.HiddenByCoverage;
                     current.ExplicitOwner = saved.ExplicitOwner;
                     current.Owners.Clear();
@@ -154,7 +151,7 @@ namespace FUI.Navigation
                 target.Instance.Revealed(target.HiddenByCoverage);
                 target.HiddenByCoverage = false;
                 target.State = ViewState.Open;
-                target.Instance.Interactable = !target.EnterTransitionPending;
+                target.Instance.Interactable = true;
             }
             else
             {
@@ -185,7 +182,7 @@ namespace FUI.Navigation
                 candidate.Instance.Revealed(candidate.HiddenByCoverage);
                 candidate.HiddenByCoverage = false;
                 candidate.State = ViewState.Open;
-                candidate.Instance.Interactable = !candidate.EnterTransitionPending;
+                candidate.Instance.Interactable = true;
                 focusedHandle = candidate.Handle;
                 break;
             }
@@ -329,7 +326,7 @@ namespace FUI.Navigation
             {
                 if (!entries.TryGetValue(handle, out var instance)
                     || instance.Route.Descriptor.Settings.Layer != layer
-                    || !CanNavigate(instance.State))
+                    || (!CanNavigate(instance.State) && instance.State != ViewState.Closing))
                 {
                     continue;
                 }
@@ -457,6 +454,10 @@ namespace FUI.Navigation
             try
             {
                 await transition.PlayAsync(cancellationToken);
+            }
+            catch (OperationCanceledException) when (instance.OperationVersion != version)
+            {
+                // 返回或关闭已经替换了这次导航，旧动画按预期取消。
             }
             catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
             {

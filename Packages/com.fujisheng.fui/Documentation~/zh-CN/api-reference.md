@@ -18,7 +18,7 @@
 
 - `Navigator`、`Route<TViewModel>`、`ViewHandle`、`OpenOptions`
 - `RoutePolicy`、`RoutePolicyAttribute`、`Layer`
-- `HistoryMode`、`CoverageMode`、`CacheMode`、`ViewState`
+- `HistoryMode`、`CoverageMode`、`InputCoverageMode`、`CacheMode`、`ViewState`
 - `IMainThreadDispatcher`
 
 ## Ownership 与 Transition

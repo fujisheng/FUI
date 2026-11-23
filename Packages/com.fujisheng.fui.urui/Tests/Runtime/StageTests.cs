@@ -537,6 +537,36 @@ namespace FUI.Rendering.URUI.Tests
         }
 
         [UnityTest]
+        public IEnumerator WorldPositionIsDeferredUntilAHiddenElementParticipatesInLayout()
+        {
+            root = new GameObject("URUI Hidden Spatial Stage");
+            var stage = root.AddComponent<Stage>();
+            var scope = OpenPage(stage, "<div style='position:absolute;left:40px;top:60px;width:100px;height:100px;' id='parent'><div id='child' hidden style='position:absolute;left:0;top:0;width:40px;height:20px;'></div></div>", Layer.Panel);
+            var view = View.CreateForBinding("hidden-spatial", scope);
+            view.Initialize();
+            var child = scope.Find("child");
+            var position = view.GetElement<IWorldPositionElement>("child");
+            var visibility = view.GetElement<IVisibilityElement>("child");
+            scope.Find("parent").SetTransform(Vector2.zero, new Vector2(.5f, .5f));
+            position.WorldPositionValue.Value = new SpatialValue(240, Screen.height - 220, 0);
+
+            yield return null;
+            yield return null;
+            yield return null;
+            Assert.That(child.Style.Get("margin-left"), Is.Null.Or.Empty);
+            Assert.That(child.Style.Get("margin-top"), Is.Null.Or.Empty);
+
+            visibility.Visible.Value = true;
+            yield return null;
+            yield return null;
+            yield return null;
+            var pivot = child.LocalToWorld(child.Layout.size * .5f);
+            Assert.That(pivot.x, Is.EqualTo(240).Within(.1));
+            Assert.That(pivot.y, Is.EqualTo(220).Within(.1));
+            view.Destroy();
+        }
+
+        [UnityTest]
         public IEnumerator LayoutCallbackUnloadStopsLaterCallbacksSafely()
         {
             root = new GameObject("URUI Layout Unload Stage");

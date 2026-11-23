@@ -66,13 +66,13 @@ namespace FUI.Rendering.UGUI.Elements
         {
             for (int index = 0; index < items.Count; index++)
             {
-                if (Items.Value.Count <= index)
+                if (ItemsSource.Value.Count <= index)
                 {
                     items[index].SetActive(false);
                     continue;
                 }
 
-                var data = Items.Value[index];
+                var data = ItemsSource.Value[index];
                 if(index < ItemInstances.Count)
                 {
                     var instance = ItemInstances[index];
@@ -97,16 +97,16 @@ namespace FUI.Rendering.UGUI.Elements
                 }
             }
 
-            for(int index = Items.Value.Count; index < ItemInstances.Count; index++)
+            for(int index = ItemsSource.Value.Count; index < ItemInstances.Count; index++)
             {
                 ItemInstances[index].Disable();
             }
 
-            if (Items.Value.Count > items.Count && !overflowWarningLogged)
+            if (ItemsSource.Value.Count > items.Count && !overflowWarningLogged)
             {
                 overflowWarningLogged = true;
                 Log.Instance.LogWarning(
-                    $"Element '{Name}' contains {Items.Value.Count} items but only {items.Count} slots. Extra items are hidden.");
+                    $"Element '{Name}' contains {ItemsSource.Value.Count} items but only {items.Count} slots. Extra items are hidden.");
             }
         }
 

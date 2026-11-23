@@ -29,6 +29,11 @@ namespace FUI.Rendering.URUI.Tests
             return target.Invoke(registry, args);
         }
 
+        static ulong RegisterResolved(object registry, object lease)
+        {
+            return (ulong)Call(registry, "RegisterResolved", lease, 0UL);
+        }
+
         static object Pin(object registry, ulong id, out Texture texture)
         {
             var type = registry.GetType().GetNestedType("SubmissionPins", BindingFlags.NonPublic);
@@ -49,7 +54,7 @@ namespace FUI.Rendering.URUI.Tests
             {
                 var registry = Registry();
                 var lease = Lease(texture, () => released++);
-                var id = (ulong)Call(registry, "RegisterResolved", lease);
+                var id = RegisterResolved(registry, lease);
                 var first = Pin(registry, id, out var borrowed);
                 Assert.AreSame(texture, borrowed);
                 var second = Pin(registry, id, out _);
@@ -80,8 +85,8 @@ namespace FUI.Rendering.URUI.Tests
             try
             {
                 var registry = Registry();
-                var first = (ulong)Call(registry, "RegisterResolved", Lease(texture, () => released++));
-                var second = (ulong)Call(registry, "RegisterResolved", Lease(texture, () => released++));
+                var first = RegisterResolved(registry, Lease(texture, () => released++));
+                var second = RegisterResolved(registry, Lease(texture, () => released++));
                 Assert.AreNotEqual(first, second);
                 Call(registry, "ReleaseResolved", first);
                 Assert.AreEqual(1, released);
@@ -106,7 +111,7 @@ namespace FUI.Rendering.URUI.Tests
             {
                 var registry = Registry();
                 var lease = Lease(texture, () => released++);
-                var id = (ulong)Call(registry, "RegisterResolved", lease);
+                var id = RegisterResolved(registry, lease);
                 var pin = Pin(registry, id, out var borrowed);
                 Assert.AreSame(texture, borrowed, "视频输出必须保持同一 GPU 纹理，不能复制成 Texture2D");
                 Call(registry, "ReleaseResolved", id);

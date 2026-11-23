@@ -85,6 +85,98 @@ namespace FUI.Rendering.URUI.Tests
             }
         }
 
+        [Test]
+        public void NamedControlsResolveById()
+        {
+            var scope = stage.OpenPage(Html, "/composition.html", Layer.Panel);
+            var definition = new ViewDefinition("standard", "/composition.html", _ => Array.Empty<ElementBinding>());
+            var view = definition.Compose(scope, new Assets(), UnityUIClock.Unscaled);
+            try
+            {
+                view.Initialize();
+                var button = view.GetElement<IButtonElement>("open");
+                Assert.That(button, Is.Not.Null);
+                Assert.That(view.GetElement<IElement>("open"), Is.SameAs(button));
+                Assert.That(view.GetElement<ITextElement>("open"), Is.Null);
+                Assert.That(view.GetElement<ITextElement>("title").Text.Value, Is.EqualTo("first"));
+                Assert.That(view.GetElement<IElement>("Open"), Is.Null);
+            }
+            finally
+            {
+                view.Destroy();
+            }
+        }
+
+        [Test]
+        public void ExplicitBindingOwnsItsName()
+        {
+            var scope = stage.OpenPage(Html, "/composition.html", Layer.Panel);
+            var definition = new ViewDefinition("explicit", "/composition.html", _ => new[]
+            {
+                ElementBinding.For("open", "#title", (element, name) => new TextElement(element, name))
+            });
+            var view = definition.Compose(scope, new Assets(), UnityUIClock.Unscaled);
+            try
+            {
+                view.Initialize();
+                Assert.That(view.GetElement<ITextElement>("open").Text.Value, Is.EqualTo("first"));
+                Assert.That(view.GetElement<IButtonElement>("open"), Is.Null);
+            }
+            finally
+            {
+                view.Destroy();
+            }
+        }
+
+        [Test]
+        public void ItemScopesDoNotShareBindings()
+        {
+            var scope = stage.OpenPage(Html, "/composition.html", Layer.Panel);
+            var definition = new ViewDefinition("scoped", "/composition.html", _ => Array.Empty<ElementBinding>());
+            var parent = definition.Compose(scope, new Assets(), UnityUIClock.Unscaled);
+            var child = definition.Compose(new ViewScope(scope.Root.Q(className: "composition")), new Assets(), UnityUIClock.Unscaled);
+            try
+            {
+                parent.Initialize();
+                child.Initialize();
+                Assert.That(child.GetElement<ITextElement>("title"), Is.Not.Null);
+                Assert.That(parent.GetElement<ITextElement>("title"), Is.Null);
+                Assert.That(child.GetElement<IButtonElement>("open"), Is.Null);
+                Assert.That(parent.GetElement<IButtonElement>("open"), Is.Not.Null);
+            }
+            finally
+            {
+                child.Destroy();
+                parent.Destroy();
+            }
+        }
+
+        [Test]
+        public void ReloadClearsCachedAdapters()
+        {
+            var scope = stage.OpenPage(Html, "/composition.html", Layer.Panel);
+            var definition = new ViewDefinition("reload", "/composition.html", _ => Array.Empty<ElementBinding>());
+            var view = definition.Compose(scope, new Assets(), UnityUIClock.Unscaled);
+            try
+            {
+                view.Initialize();
+                var oldNode = scope.Find("title");
+                var oldAdapter = view.GetElement<ITextElement>("title");
+                Assert.That(oldAdapter, Is.Not.Null);
+
+                scope.Document.LoadHtml(Html.Replace(">first<", ">reloaded<"), "/composition.html");
+
+                Assert.That(oldNode.IsValid, Is.False);
+                var current = view.GetElement<ITextElement>("title");
+                Assert.That(current, Is.Not.Null.And.Not.SameAs(oldAdapter));
+                Assert.That(current.Text.Value, Is.EqualTo("reloaded"));
+            }
+            finally
+            {
+                view.Destroy();
+            }
+        }
+
         sealed class Model : ObservableObject
         {
         }
@@ -120,10 +212,13 @@ namespace FUI.Rendering.URUI.Tests
             {
             }
         }
+        static Route<Model> CreateRoute(RoutePolicy policy = null)
+            => GeneratedRouteFactory.Create("composition-page", typeof(Presenter), () => new Model(),
+                (v, m) => new Context(v, m), () => new Presenter(), policy ?? RoutePolicy.Default);
+
         internal static RouteDescriptor Route(RoutePolicy policy = null)
         {
-            var route = GeneratedRouteFactory.Create("composition-page", typeof(Presenter), () => new Model(),
-                (v, m) => new Context(v, m), () => new Presenter(), policy ?? RoutePolicy.Default);
+            var route = CreateRoute(policy);
             return (RouteDescriptor)typeof(FUI.Navigation.Route).GetProperty("Descriptor",
                 System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(route);
         }
@@ -160,7 +255,7 @@ namespace FUI.Rendering.URUI.Tests
         [TestCase(Layer.Panel, false, false)]
         [TestCase(Layer.Popup, true, true)]
         [TestCase(Layer.Popup, false, false)]
-        public void ProviderFocusPolicyDoesNotMakeEveryDocumentModal(Layer layer, bool takeFocus, bool blocked)
+        public void NavigationFocusPolicyDoesNotMakeEveryDocumentModal(Layer layer, bool takeFocus, bool blocked)
         {
             stage.Surface.Input.UseUnityInput = false;
             stage.Surface.Viewport = new Vector2Int(400, 300);
@@ -168,14 +263,15 @@ namespace FUI.Rendering.URUI.Tests
             var text = new TextAsset("<!doctype html><html><head><style>html,body{margin:0;width:100%;height:100%;pointer-events:none;}button{position:absolute;left:300px;top:20px;width:60px;height:40px;pointer-events:auto;}</style></head><body><button id='upper'></button></body></html>");
             try
             {
-                var route = Route(new RoutePolicy(layer).WithFocus(takeFocus));
+                var policy = new RoutePolicy(layer).WithFocus(takeFocus);
                 var definition = new ViewDefinition("overlay", "/overlay.html", _ => Array.Empty<ElementBinding>());
-                var provider = new ViewProvider(stage, Catalog(route, definition), new Assets(text), UnityUIClock.Unscaled);
-                using var lease = provider.Create(route);
-                lease.View.Initialize();
-                var upper = (View)lease.View;
+                var provider = new ViewProvider(stage, Catalog(Route(policy), definition), new Assets(text), UnityUIClock.Unscaled);
+                var navigator = new Navigator(provider);
+                navigator.Initialize();
+                var handle = navigator.Open(CreateRoute(policy));
+                var upper = stage.Pages.Single(page => page != home);
                 home.Document.SynchronizeLayout();
-                upper.Root.Document.SynchronizeLayout();
+                upper.Document.SynchronizeLayout();
                 var lowerClicks = 0;
                 var upperClicks = 0;
                 home.Find("under").RegisterCallback<ClickEvent>(_ => lowerClicks++);
@@ -189,6 +285,7 @@ namespace FUI.Rendering.URUI.Tests
                 stage.Surface.Input.SendPointer(PointerPhase.Up, point);
                 Assert.AreEqual(blocked ? 0 : 1, lowerClicks);
                 Assert.AreEqual(1, upperClicks);
+                Assert.IsTrue(navigator.Close(handle));
             }
             finally
             {

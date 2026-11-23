@@ -38,9 +38,19 @@ namespace FUI.Rendering.URUI
             {
                 throw new ArgumentNullException(nameof(route));
             }
-            if (!definitions.TryGetValue(route.ViewModelType, out var definition))
+            return Get(route.ViewModelType);
+        }
+
+        /// <summary>查找给定路由 ViewModel 的页面定义。</summary>
+        public ViewDefinition Get(Type viewModelType)
+        {
+            if (viewModelType == null)
             {
-                throw new InvalidOperationException("缺少 URUI 页面定义：" + route.ViewModelType.FullName);
+                throw new ArgumentNullException(nameof(viewModelType));
+            }
+            if (!definitions.TryGetValue(viewModelType, out var definition))
+            {
+                throw new InvalidOperationException("缺少 URUI 页面定义：" + viewModelType.FullName);
             }
             return definition;
         }

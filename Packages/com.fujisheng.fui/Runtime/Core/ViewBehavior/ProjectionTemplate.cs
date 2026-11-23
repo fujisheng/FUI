@@ -67,7 +67,7 @@ namespace FUI.Presentation
     }
 
     /// <summary>不依赖渲染后端的投影布局尺寸和枢轴信息。</summary>
-    public readonly struct ProjectionLayout
+    public readonly struct ProjectionLayout : IEquatable<ProjectionLayout>
     {
         /// <summary>创建模板和父容器的布局快照。</summary>
         public ProjectionLayout(
@@ -109,6 +109,17 @@ namespace FUI.Presentation
 
         /// <summary>父容器本地坐标的最小 Y。</summary>
         public float ParentYMin => -ParentHeight * ParentPivotY;
+
+        public bool Equals(ProjectionLayout other)
+        {
+            return Width.Equals(other.Width) && Height.Equals(other.Height)
+                && ParentWidth.Equals(other.ParentWidth) && ParentHeight.Equals(other.ParentHeight)
+                && ParentPivotX.Equals(other.ParentPivotX) && ParentPivotY.Equals(other.ParentPivotY);
+        }
+
+        public override bool Equals(object value) => value is ProjectionLayout other && Equals(other);
+
+        public override int GetHashCode() => HashCode.Combine(Width, Height, ParentWidth, ParentHeight, ParentPivotX, ParentPivotY);
     }
 
     /// <summary>尝试把屏幕坐标转换为投影父容器的局部坐标。</summary>

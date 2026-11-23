@@ -21,6 +21,14 @@ namespace FUI.Navigation
         Hide,
     }
 
+    /// <summary>页面空白区域如何参与指针命中。</summary>
+    public enum InputCoverageMode
+    {
+        Default,
+        BlockBehind,
+        HitTest,
+    }
+
     /// <summary>
     /// 页面关闭后的实例与资源保留策略。
     /// </summary>
@@ -72,6 +80,10 @@ namespace FUI.Navigation
         public Layer Layer { get; }
         public HistoryMode HistoryMode { get; }
         public CoverageMode CoverageMode { get; }
+        public InputCoverageMode InputCoverage { get; private set; }
+        internal bool BlocksInputBehind => InputCoverage == InputCoverageMode.BlockBehind
+            || InputCoverage == InputCoverageMode.Default && TakeFocus
+            && (Layer == Layer.Popup || CoverageMode == CoverageMode.Hide);
         public CacheMode CacheMode { get; }
         public bool AllowMultiple { get; }
         public int CacheCapacity { get; }
@@ -83,9 +95,17 @@ namespace FUI.Navigation
         /// <summary>返回独立配置副本，原路由配置保持不变。</summary>
         public RoutePolicy WithFocus(bool takeFocus)
         {
-            return new RoutePolicy(Layer, HistoryMode, CoverageMode, CacheMode, AllowMultiple,
-                CacheCapacity, CacheDuration, EnterTransitionProvider, ExitTransitionProvider, Dependencies)
-                { TakeFocus = takeFocus };
+            var copy = (RoutePolicy)MemberwiseClone();
+            copy.TakeFocus = takeFocus;
+            return copy;
+        }
+
+        /// <summary>返回使用指定指针覆盖策略的配置副本。</summary>
+        public RoutePolicy WithInputCoverage(InputCoverageMode inputCoverage)
+        {
+            var copy = (RoutePolicy)MemberwiseClone();
+            copy.InputCoverage = inputCoverage;
+            return copy;
         }
 
         public RoutePolicy(

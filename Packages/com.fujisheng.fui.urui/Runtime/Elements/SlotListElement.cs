@@ -20,9 +20,12 @@ namespace FUI.Rendering.URUI
             internal ViewInstance Instance;
         }
         readonly Projection[] projections;
+        readonly List<ObservableObject> desired = new List<ObservableObject>();
+        readonly Action applyRebuild;
         readonly Func<ViewScope, int, View> viewFactory;
         bool rebuilding;
         bool rebuildAgain;
+        bool rebuildQueued;
         bool overflowReported;
         bool disposed;
 
@@ -37,12 +40,13 @@ namespace FUI.Rendering.URUI
             Func<ViewScope, int, View> viewFactory, IReadOnlyList<global::URUI.Elements.Element> authoredSlots) : base(element, name)
         {
             this.viewFactory = viewFactory;
+            applyRebuild = ApplyRebuild;
             foreach (var node in authoredSlots)
             {
                 slots.Add(new ViewScope(node));
             }
             projections = new Projection[slots.Count];
-            Items = new BindableProperty<IReadOnlyObservableList<ObservableObject>>(null, (_, __) => Rebuild());
+            ItemsSource = new BindableProperty<IReadOnlyObservableList<ObservableObject>>(null, (_, __) => Rebuild());
             foreach (var slot in slots)
             {
                 slot.SetVisible(false);
@@ -83,7 +87,7 @@ namespace FUI.Rendering.URUI
         /// <summary>
         /// 按作者槽位顺序显示的数据，多余项隐藏并报告一次警告。
         /// </summary>
-        public BindableProperty<IReadOnlyObservableList<ObservableObject>> Items
+        public BindableProperty<IReadOnlyObservableList<ObservableObject>> ItemsSource
         {
             get;
         }
@@ -115,6 +119,20 @@ namespace FUI.Rendering.URUI
                 rebuildAgain = true;
                 return;
             }
+            if (!rebuildQueued)
+            {
+                rebuildQueued = true;
+                Element.Document.RunAfterEvent(applyRebuild);
+            }
+        }
+
+        void ApplyRebuild()
+        {
+            rebuildQueued = false;
+            if (disposed || Element == null || !Element.IsValid)
+            {
+                return;
+            }
             rebuilding = true;
             try
             {
@@ -122,12 +140,12 @@ namespace FUI.Rendering.URUI
                 {
                     using var update = Element.Document.BeginUpdate();
                     rebuildAgain = false;
-                    var values = Items.Value;
+                    var values = ItemsSource.Value;
                     var count = Math.Min(values?.Count ?? 0, Capacity);
-                    var desired = new ObservableObject[count];
+                    desired.Clear();
                     for (var index = 0; index < count; index++)
                     {
-                        desired[index] = values[index];
+                        desired.Add(values[index]);
                     }
                     if (values != null && values.Count > Capacity && !overflowReported)
                     {
@@ -141,10 +159,19 @@ namespace FUI.Rendering.URUI
                             break;
                         }
                         var previous = projections[index];
-                        if (index < desired.Length && previous?.Instance != null &&
-                            ReferenceEquals(previous.Model, desired[index]))
+                        if (index < desired.Count && previous?.Instance != null)
                         {
-                            continue;
+                            var nextModel = desired[index];
+                            if (ReferenceEquals(previous.Model, nextModel))
+                            {
+                                continue;
+                            }
+                            if (previous.Model != null && nextModel != null && previous.Model.GetType() == nextModel.GetType())
+                            {
+                                previous.Model = nextModel;
+                                previous.Instance.UpdateViewModel(nextModel);
+                                continue;
+                            }
                         }
                         if (previous != null)
                         {
@@ -154,7 +181,7 @@ namespace FUI.Rendering.URUI
                         {
                             break;
                         }
-                        if (index >= desired.Length)
+                        if (index >= desired.Count)
                         {
                             continue;
                         }
@@ -210,6 +237,7 @@ namespace FUI.Rendering.URUI
             }
             finally
             {
+                desired.Clear();
                 rebuilding = false;
             }
         }
@@ -292,7 +320,7 @@ namespace FUI.Rendering.URUI
             }
             finally
             {
-                Items.Dispose();
+                ItemsSource.Dispose();
                 base.Dispose();
             }
         }

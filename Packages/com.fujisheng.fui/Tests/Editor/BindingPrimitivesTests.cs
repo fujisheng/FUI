@@ -29,7 +29,7 @@ namespace FUI.Tests
         {
             public string Name => "Probe";
             public IElement Parent => null;
-            public BindableProperty<IReadOnlyObservableList<ObservableObject>> Items { get; }
+            public BindableProperty<IReadOnlyObservableList<ObservableObject>> ItemsSource { get; }
                 = new BindableProperty<IReadOnlyObservableList<ObservableObject>>();
             public int AddCount { get; private set; }
             public int RemoveCount { get; private set; }

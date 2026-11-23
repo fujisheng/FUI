@@ -4,6 +4,7 @@ using FUI.Presentation;
 using FUI.Rendering;
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -624,6 +625,16 @@ namespace FUI.Infrastructure
             {
                 this.view.Interactable = interactable;
             }
+        }
+
+        /// <summary>按实例身份索引所有权，换绑和销毁均不影响键。</summary>
+        internal sealed class IdentityComparer : IEqualityComparer<ViewInstance>
+        {
+            internal static readonly IdentityComparer Instance = new();
+
+            public bool Equals(ViewInstance left, ViewInstance right) => ReferenceEquals(left, right);
+
+            public int GetHashCode(ViewInstance instance) => RuntimeHelpers.GetHashCode(instance);
         }
 
         #region override and overload

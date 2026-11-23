@@ -161,13 +161,46 @@ namespace FUI.Rendering.URUI.Tests
         }
 
         [Test]
+        public void AuthoredProjectionsFollowCollectionOrderAndReuseRemovedInstances()
+        {
+            scope.LoadFragment("<div id='template' class='fixture-slot'><span class='fixture-label'></span></div>");
+            var template = scope.Root.Q("template");
+            using var adapter = new ProjectionTemplateElement(template, "rows", child => FixtureItem(child));
+            Assert.That((IElement)adapter, Is.InstanceOf<IListView>());
+            var list = (IListView)(IElement)adapter;
+            var first = new FirstModel();
+            var second = new SecondModel();
+            var items = new ObservableList<ObservableObject> { first, second };
+            BindingContextUtility.BindingList(list, null, items);
+            list.ItemsSource.Value = items;
+            var firstRoot = scope.Root[1];
+            var secondRoot = scope.Root[2];
+            Assert.AreEqual("FirstModel", firstRoot[0].Text);
+            Assert.AreEqual("SecondModel", secondRoot[0].Text);
+
+            items.RemoveAt(0);
+            Assert.AreEqual("none", firstRoot.Style.Get("display"));
+            Assert.AreNotEqual("none", secondRoot.Style.Get("display"));
+            items.Add(new FirstModel());
+            Assert.AreSame(firstRoot, scope.Root[2]);
+            Assert.AreNotEqual("none", firstRoot.Style.Get("display"));
+
+            items.Reverse();
+            Assert.AreSame(firstRoot, scope.Root[1]);
+            Assert.AreSame(secondRoot, scope.Root[2]);
+            BindingContextUtility.UnbindingList(list, items);
+            list.ItemsSource.Value = null;
+            Assert.AreEqual(1, scope.Root.ChildCount, "清空数据源应释放活动和闲置投影。");
+        }
+
+        [Test]
         public void ListChangesRetainUnchangedItemProjectionsAndAuthoredOrder()
         {
             using var list = FixtureList(scope.Root, "rows");
             var first = new FirstModel();
             var second = new SecondModel();
             var items = new ObservableList<ObservableObject> { first, second };
-            list.Items.Value = items;
+            list.ItemsSource.Value = items;
             var firstView = list.GetItemView(0);
             var secondView = list.GetItemView(1);
             items.Insert(0, new FirstModel());
@@ -221,7 +254,7 @@ namespace FUI.Rendering.URUI.Tests
             using var list = FixtureSlots(scope.Root, "slots");
             var first = new FirstModel();
             var items = new ObservableList<ObservableObject> { first };
-            list.Items.Value = items;
+            list.ItemsSource.Value = items;
             var original = list.GetItemView(0);
             items.Add(new SecondModel());
             list.OnAdd(items, 1, items[1]);
@@ -241,7 +274,7 @@ namespace FUI.Rendering.URUI.Tests
             using var list = FixtureSlots(scope.Root, "slots");
             var model = new FirstModel();
             var items = new ObservableList<ObservableObject> { model, model };
-            list.Items.Value = items;
+            list.ItemsSource.Value = items;
             var first = list.GetItemView(0);
             var second = list.GetItemView(1);
             Assert.AreNotSame(first, second);
@@ -332,7 +365,7 @@ namespace FUI.Rendering.URUI.Tests
             {
                 var list = view.GetElement<IListView>("rows");
                 var items = new ObservableList<ObservableObject>();
-                list.Items.Value = items;
+                list.ItemsSource.Value = items;
                 for (var index = 0; index < 3; index++)
                 {
                     items.Add(new FirstModel());
@@ -523,7 +556,7 @@ namespace FUI.Rendering.URUI.Tests
         {
             RegisterFailingBatchElement();
             using var list = new FailingLayoutList(scope.Root);
-            Assert.Throws<System.InvalidOperationException>(() => list.Items.Value = new ObservableList<ObservableObject> { new FirstModel() });
+            Assert.Throws<System.InvalidOperationException>(() => list.ItemsSource.Value = new ObservableList<ObservableObject> { new FirstModel() });
             Assert.IsNull(list.GetItemView(0));
             Assert.Zero(scope.Root.ChildCount);
         }
@@ -564,7 +597,7 @@ namespace FUI.Rendering.URUI.Tests
                 child.Root.Add(probe);
                 return FixtureItem(child);
             });
-            Assert.Throws<System.InvalidOperationException>(() => list.Items.Value = new ObservableList<ObservableObject> { new FirstModel() });
+            Assert.Throws<System.InvalidOperationException>(() => list.ItemsSource.Value = new ObservableList<ObservableObject> { new FirstModel() });
             Assert.IsNull(list.GetItemView(0));
         }
 
@@ -601,7 +634,7 @@ namespace FUI.Rendering.URUI.Tests
                 list.OnAdd(items, 1, items[1]);
             }))
             {
-                list.Items.Value = items;
+                list.ItemsSource.Value = items;
                 Assert.IsTrue(changed);
                 Assert.IsNotNull(list.GetItemView(1));
                 Assert.AreEqual(2, scope.Root.ChildCount);
@@ -633,7 +666,7 @@ namespace FUI.Rendering.URUI.Tests
                 return FixtureItem(child);
             }))
             {
-                list.Items.Value = items;
+                list.ItemsSource.Value = items;
                 Assert.IsTrue(changed);
                 Assert.IsNotNull(list.GetItemView(1));
             }
@@ -822,7 +855,7 @@ namespace FUI.Rendering.URUI.Tests
             var host = scope.Find("slots");
             var first = host[0];
             var second = host[1];
-            list.Items.Value = new ObservableList<ObservableObject> { new FirstModel(), new SecondModel() };
+            list.ItemsSource.Value = new ObservableList<ObservableObject> { new FirstModel(), new SecondModel() };
             yield return null;
             yield return null;
             Assert.AreEqual("FirstModel", first[0].Text);
@@ -830,14 +863,14 @@ namespace FUI.Rendering.URUI.Tests
             Assert.That(first.Layout.x, Is.EqualTo(20).Within(.1));
             Assert.That(second.Layout.width, Is.EqualTo(120).Within(.1));
             Assert.AreEqual("rotate(20deg)", first.Style.Get("transform"));
-            list.Items.Value = new ObservableList<ObservableObject> { new SecondModel() };
+            list.ItemsSource.Value = new ObservableList<ObservableObject> { new SecondModel() };
             Assert.AreEqual("SecondModel", first[0].Text);
             Assert.AreEqual(global::URUI.Elements.DisplayStyle.None, second.Style.Display);
-            list.Items.Value = null;
+            list.ItemsSource.Value = null;
             Assert.AreEqual(2, host.ChildCount);
             Assert.IsTrue(first.IsValid);
             Assert.IsTrue(second.IsValid);
-            list.Items.Value = new ObservableList<ObservableObject> { new FirstModel(), new FirstModel() };
+            list.ItemsSource.Value = new ObservableList<ObservableObject> { new FirstModel(), new FirstModel() };
             Assert.AreEqual("FirstModel", first[0].Text);
             Assert.AreEqual("FirstModel", second[0].Text);
             Assert.AreNotEqual(global::URUI.Elements.DisplayStyle.None, second.Style.Display);
@@ -854,12 +887,12 @@ namespace FUI.Rendering.URUI.Tests
             var host = scope.Find("slots");
             var first = host[0];
             var second = host[1];
-            Assert.Catch<System.Exception>(() => list.Items.Value = new ObservableList<ObservableObject> { new FirstModel(), new UnregisteredModel() });
+            Assert.Catch<System.Exception>(() => list.ItemsSource.Value = new ObservableList<ObservableObject> { new FirstModel(), new UnregisteredModel() });
             Assert.AreEqual(2, host.ChildCount);
             Assert.IsTrue(first.IsValid);
             Assert.IsTrue(second.IsValid);
             Assert.AreEqual(global::URUI.Elements.DisplayStyle.None, first.Style.Display);
-            list.Items.Value = new ObservableList<ObservableObject> { new SecondModel(), new FirstModel() };
+            list.ItemsSource.Value = new ObservableList<ObservableObject> { new SecondModel(), new FirstModel() };
             Assert.AreEqual("SecondModel", first[0].Text);
             Assert.AreEqual("FirstModel", second[0].Text);
             ((System.IDisposable)list).Dispose();
@@ -881,7 +914,7 @@ namespace FUI.Rendering.URUI.Tests
             var destroyed = 0;
             GeneratedBindingRegistry.Register<FirstModel>((v, m) => new EmptyProbeContext(v, m, () => bindings++),
                 () => new CallbackPresenter(() => ((System.IDisposable)list).Dispose(), () => destroyed++));
-            list.Items.Value = new ObservableList<ObservableObject> { new FirstModel() };
+            list.ItemsSource.Value = new ObservableList<ObservableObject> { new FirstModel() };
             Assert.AreEqual(0, bindings);
             Assert.AreEqual(1, destroyed);
             Assert.AreEqual(global::URUI.Elements.DisplayStyle.None, scope.Find("slots")[0].Style.Display);
@@ -913,7 +946,7 @@ namespace FUI.Rendering.URUI.Tests
             create = factory;
             try
             {
-                list.Items.Value = new ObservableList<ObservableObject> { new FirstModel() };
+                list.ItemsSource.Value = new ObservableList<ObservableObject> { new FirstModel() };
                 Assert.AreEqual(1, disposedAdapters);
                 Assert.AreEqual(0, bindings);
                 Assert.IsTrue(scope.Find("slots")[0].IsValid);
@@ -1572,7 +1605,7 @@ view.Destroy();
             var panel = FuiHtmlFixtureAssets.OpenPage(stage, "<div style='position:absolute;left:10px;top:10px;width:200px;height:100px;' id='panels' class='fixture-1'></div>", Layer.Panel);
             var view = new View("overlay-list", panel, new ElementBinding[] { ElementBinding.For("panels", ".fixture-1", (e, k) => FixtureList(e, k)) });
             view.Initialize();
-            view.GetElement<IListView>("panels").Items.Value = new ObservableList<ObservableObject> { new FirstModel(), new SecondModel() };
+            view.GetElement<IListView>("panels").ItemsSource.Value = new ObservableList<ObservableObject> { new FirstModel(), new SecondModel() };
             yield return null;
             yield return null;
             var host = panel.Find("panels");
@@ -1595,7 +1628,7 @@ view.Destroy();
         {
             var panel = FuiHtmlFixtureAssets.OpenPage(root.GetComponent<Stage>(), "<div id='list' class='fixture-1'></div>", Layer.Panel);
             var list = new PerItemTemplateList(panel.Find("list"), "list");
-            list.Items.Value = new ObservableList<ObservableObject> { new FirstModel(), new SecondModel() };
+            list.ItemsSource.Value = new ObservableList<ObservableObject> { new FirstModel(), new SecondModel() };
             Assert.AreEqual("FirstModel", list.Element[0].GetAttribute("data-owner"));
             Assert.AreEqual("SecondModel", list.Element[1].GetAttribute("data-owner"));
             list.Dispose();
@@ -1807,7 +1840,7 @@ view.Destroy();
             {
                 items.Add(new FirstModel());
             }
-            list.Items.Value = items;
+            list.ItemsSource.Value = items;
             var scroll = view.GetElement<IScrollViewElement>("scroll");
             for (var i = 0; i < 3; i++)
             {
@@ -1821,7 +1854,7 @@ view.Destroy();
             Assert.That(page.Find("scroll").ScrollOffset.y, Is.EqualTo(100).Within(2));
             var userEvents = 0;
             scroll.ScrollChanged.AddListener(_ => userEvents++);
-            list.Items.Value = new ObservableList<ObservableObject> { new FirstModel(), new FirstModel() };
+            list.ItemsSource.Value = new ObservableList<ObservableObject> { new FirstModel(), new FirstModel() };
             for (var i = 0; i < 3; i++)
             {
                 yield return null;
@@ -1841,7 +1874,7 @@ view.Destroy();
             var element = page.Find("rows");
             var list = FixtureList(element, "rows", factory);
             {
-                list.Items.Value = new ObservableList<ObservableObject> { new FirstModel(), new FirstModel() };
+                list.ItemsSource.Value = new ObservableList<ObservableObject> { new FirstModel(), new FirstModel() };
                 Assert.Catch<System.Exception>(() => list.Dispose());
                 Assert.AreEqual(0, element.ChildCount);
                 Assert.IsNull(list.Element);
@@ -1859,7 +1892,7 @@ view.Destroy();
             var page = FuiHtmlFixtureAssets.OpenPage(root.GetComponent<Stage>(), "<div id='rows' class='fixture-1'></div>", Layer.Panel);
             var element = page.Find("rows");
             var list = FixtureList(element, "rows");
-            Assert.Catch<System.Exception>(() => list.Items.Value = new ObservableList<ObservableObject> { new FirstModel(), new UnregisteredModel() });
+            Assert.Catch<System.Exception>(() => list.ItemsSource.Value = new ObservableList<ObservableObject> { new FirstModel(), new UnregisteredModel() });
             Assert.AreEqual(0, element.ChildCount);
             list.Dispose();
             yield return null;

@@ -114,6 +114,40 @@ namespace FUI.Tests
         }
 
         [Test]
+        public void AuthoredTemplateCollectionPreservesRowOrderAndReleasesClones()
+        {
+            root = new GameObject("Overlay", typeof(RectTransform));
+            var view = (IView)root.AddComponent<View>();
+            var template = new GameObject("Marker", typeof(RectTransform));
+            template.transform.SetParent(root.transform, false);
+            var prototype = template.AddComponent<ViewPrototypeElement>();
+            view.Initialize();
+
+            var items = new ObservableList<ItemViewModel> { new("first"), new("second") };
+            BindingContextUtility.BindingList(prototype, null, items);
+            prototype.ItemsSource.Value = items;
+            var first = root.transform.GetChild(1);
+            var second = root.transform.GetChild(2);
+            Assert.IsFalse(template.activeSelf);
+            Assert.IsTrue(first.gameObject.activeSelf);
+            Assert.IsTrue(second.gameObject.activeSelf);
+
+            items.RemoveAt(0);
+            Assert.IsFalse(first.gameObject.activeSelf);
+            items.Add(new ItemViewModel("replacement"));
+            Assert.AreSame(first, root.transform.GetChild(2));
+            Assert.IsTrue(first.gameObject.activeSelf);
+
+            items.Reverse();
+            Assert.AreSame(first, root.transform.GetChild(1));
+            Assert.AreSame(second, root.transform.GetChild(2));
+            BindingContextUtility.UnbindingList(prototype, items);
+            prototype.ItemsSource.Value = null;
+            Assert.That(root.transform.childCount, Is.EqualTo(1));
+            view.Destroy();
+        }
+
+        [Test]
         public void ListElementKeepsIndexAndItemSelectionConsistentAcrossMutations()
         {
             root = new GameObject("ListProbeView", typeof(RectTransform));
@@ -129,7 +163,7 @@ namespace FUI.Tests
             runtimeView.Initialize();
             Assert.That(element.AnchorMin, Is.Not.Null);
             Assert.That(element.SizeDelta, Is.Not.Null);
-            element.Items.Value = list;
+            element.ItemsSource.Value = list;
             BindingContextUtility.BindingList(element, null, list);
 
             element.SelectedIndex.Value = 1;
@@ -164,7 +198,7 @@ namespace FUI.Tests
             var list = new ObservableList<ObservableObject>();
             var runtimeView = (IView)view;
             runtimeView.Initialize();
-            element.Items.Value = list;
+            element.ItemsSource.Value = list;
             BindingContextUtility.BindingList(element, null, list);
 
             list.Add(new ItemViewModel("one"));
@@ -186,7 +220,7 @@ namespace FUI.Tests
         {
             root = new GameObject("InventoryView", typeof(RectTransform));
             var view = root.AddComponent<View>();
-            var listObject = new GameObject("Items", typeof(RectTransform));
+            var listObject = new GameObject("ItemsSource", typeof(RectTransform));
             listObject.transform.SetParent(root.transform, false);
             var element = listObject.AddComponent<RecyclingListElement>();
             var template = new GameObject("ItemTemplate", typeof(RectTransform));
@@ -198,7 +232,7 @@ namespace FUI.Tests
             var second = new ItemViewModel("second");
             var inserted = new ItemViewModel("inserted");
             var list = new ObservableList<ObservableObject>(new ObservableObject[] { first, second });
-            element.Items.Value = list;
+            element.ItemsSource.Value = list;
             BindingContextUtility.BindingList(element, null, list);
 
             AssertBoundItem(element, 0, first);
@@ -228,7 +262,7 @@ namespace FUI.Tests
         {
             root = new GameObject("TypedInventoryView", typeof(RectTransform));
             var view = root.AddComponent<View>();
-            var listObject = new GameObject("Items", typeof(RectTransform));
+            var listObject = new GameObject("ItemsSource", typeof(RectTransform));
             listObject.transform.SetParent(root.transform, false);
             var element = listObject.AddComponent<RecyclingListElement>();
             var template = new GameObject("ItemTemplate", typeof(RectTransform));
@@ -239,7 +273,7 @@ namespace FUI.Tests
             var first = new ItemViewModel("first");
             var replacement = new AlternateItemViewModel("replacement");
             var list = new ObservableList<ObservableObject>(new ObservableObject[] { first });
-            element.Items.Value = list;
+            element.ItemsSource.Value = list;
             BindingContextUtility.BindingList(element, null, list);
 
             list[0] = replacement;
@@ -275,7 +309,7 @@ namespace FUI.Tests
             var second = new ItemViewModel("second");
             var inserted = new ItemViewModel("inserted");
             var list = new ObservableList<ObservableObject>(new ObservableObject[] { first, second });
-            element.Items.Value = list;
+            element.ItemsSource.Value = list;
             BindingContextUtility.BindingList(element, null, list);
 
             list.RemoveAt(0);
@@ -291,7 +325,7 @@ namespace FUI.Tests
 
             BindingContextUtility.UnbindingList(element, list);
             runtimeView.Destroy();
-            Assert.That(element.Items.Value, Is.Null);
+            Assert.That(element.ItemsSource.Value, Is.Null);
         }
 
         [Test]
@@ -323,7 +357,7 @@ namespace FUI.Tests
             var second = new ItemViewModel("second");
             var hidden = new ItemViewModel("hidden");
             var list = new ObservableList<ObservableObject>(new ObservableObject[] { first, second, hidden });
-            element.Items.Value = list;
+            element.ItemsSource.Value = list;
             BindingContextUtility.BindingList(element, null, list);
 
             Assert.That(element.Capacity, Is.EqualTo(2));
@@ -335,6 +369,87 @@ namespace FUI.Tests
 
             BindingContextUtility.UnbindingList(element, list);
             runtimeView.Destroy();
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ScrollWindowKeepsItsCellsBoundedAndRevealsTheRequestedItem(bool horizontal)
+        {
+            root = new GameObject("ScrollGrid", typeof(RectTransform), typeof(ScrollRect));
+            var viewport = (RectTransform)root.transform;
+            viewport.sizeDelta = new Vector2(300, 100);
+            var content = new GameObject("Content", typeof(RectTransform),
+                horizontal ? typeof(HorizontalLayoutGroup) : typeof(GridLayoutGroup)).GetComponent<RectTransform>();
+            content.SetParent(viewport, false);
+            content.anchorMin = content.anchorMax = Vector2.up;
+            content.pivot = Vector2.up;
+            content.sizeDelta = new Vector2(300, 100);
+            var prototype = new GameObject("Item", typeof(RectTransform));
+            prototype.transform.SetParent(content, false);
+            ((RectTransform)prototype.transform).sizeDelta = new Vector2(100, 20);
+            if (horizontal)
+            {
+                var layout = content.GetComponent<HorizontalLayoutGroup>();
+                layout.childControlWidth = false;
+                layout.childControlHeight = false;
+                layout.childForceExpandWidth = false;
+                layout.childForceExpandHeight = false;
+                layout.spacing = 5;
+            }
+            else
+            {
+                var layout = content.GetComponent<GridLayoutGroup>();
+                layout.cellSize = new Vector2(100, 20);
+                layout.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+                layout.constraintCount = 3;
+            }
+            var scroll = root.GetComponent<ScrollRect>();
+            scroll.viewport = viewport;
+            scroll.content = content;
+            scroll.horizontal = horizontal;
+            scroll.vertical = !horizontal;
+
+            var view = root.AddComponent<View>();
+            var list = root.AddComponent<ScrollListElement>();
+            ((IView)view).Initialize();
+            var data = new ObservableList<ObservableObject>();
+            for (var index = 0; index < 1000; index++)
+            {
+                data.Add(new ItemViewModel(index.ToString()));
+            }
+            list.ItemsSource.Value = data;
+            Assert.That(content.childCount, Is.LessThanOrEqualTo(22));
+            Assert.That(list.TryGetBoundItemViewModel(999, out _), Is.False);
+
+            ((IScrollableListView)list).ScrollRequest.Value = new ItemScrollRequest(999, 1);
+
+            Assert.That(list.TryGetBoundItemViewModel(999, out var item), Is.True);
+            Assert.That(item, Is.SameAs(data[999]));
+            Assert.That(content.childCount, Is.LessThanOrEqualTo(22));
+            Assert.That(list.TryGetBoundItemViewModel(0, out _), Is.False);
+            Assert.That(list.TryGetRealizedItem(0, out _), Is.False);
+
+            list.ScrollRequest.Value = new ItemScrollRequest(0, 2);
+            Assert.That(list.TryGetRealizedItem(0, out _), Is.True);
+            Assert.That(list.TryGetRealizedItem(999, out _), Is.False);
+
+            list.ScrollRequest.Value = new ItemScrollRequest(500, 3);
+            var before = horizontal ? -content.anchoredPosition.x : content.anchoredPosition.y;
+            var unit = horizontal ? 105 : 20;
+            var across = horizontal ? 1 : 3;
+            var firstVisible = Mathf.FloorToInt(before / unit) * across;
+            Assert.That(list.TryGetRealizedItem(firstVisible, out var row), Is.True);
+            for (var index = 0; index < 6; index++)
+            {
+                var newItem = new ItemViewModel("Inserted");
+                data.Insert(0, newItem);
+                ((IListView)list).OnAdd(data, 0, newItem);
+            }
+            var after = horizontal ? -content.anchoredPosition.x : content.anchoredPosition.y;
+            Assert.That(after, Is.EqualTo(before + 6 / across * unit).Within(.1f));
+            Assert.That(list.TryGetRealizedItem(firstVisible + 6, out var shifted), Is.True);
+            Assert.That(shifted, Is.SameAs(row));
+            Assert.That(content.childCount, Is.LessThanOrEqualTo(22));
         }
 
         [Test]

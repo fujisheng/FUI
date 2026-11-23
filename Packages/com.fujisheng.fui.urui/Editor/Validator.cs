@@ -58,6 +58,7 @@ namespace FUI.Rendering.URUI.Editor
             public string Id;
             public string Classes;
             public string Source;
+            public string InputType;
             public int Line;
         }
         internal static List<Node> ReadNodes(string html, string uri, List<ValidationIssue> issues, bool isFragment = true)
@@ -86,6 +87,7 @@ namespace FUI.Rendering.URUI.Editor
                     Id = value.Id,
                     Classes = value.Classes,
                     Source = value.Source,
+                    InputType = value.InputType,
                     Line = value.Line
                 });
                 if (!string.IsNullOrEmpty(value.Id) && !ids.Add(value.Id))

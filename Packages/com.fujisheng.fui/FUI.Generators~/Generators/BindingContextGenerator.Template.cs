@@ -31,14 +31,14 @@ public partial class {{viewModelTypeName}}
 {
     [FUI.Infrastructure.Binding.ViewModelAttribute(typeof({{contextInfo.viewModelType}}))]
     [FUI.Infrastructure.Binding.ViewAttribute("{{contextInfo.viewName}}")]
-    public class {{viewModelTypeName}}_{{contextInfo.viewName}}_BindingContext : {{baseContextType}}
+    protected internal class {{viewModelTypeName}}_{{contextInfo.viewName}}_BindingContext : {{baseContextType}}
     {
 {{converters}}
 {{elementFields}}
 
         {{contextInfo.viewModelType}} vm => this.ViewModel as {{contextInfo.viewModelType}};
 
-        public {{viewModelTypeName}}_{{contextInfo.viewName}}_BindingContext(FUI.Rendering.IView view, {{contextInfo.viewModelType}} viewModel) : base(view, viewModel) { }
+        protected internal {{viewModelTypeName}}_{{contextInfo.viewName}}_BindingContext(FUI.Rendering.IView view, {{contextInfo.viewModelType}} viewModel) : base(view, viewModel) { }
 
         protected override void OnBinding()
         {

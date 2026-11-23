@@ -80,6 +80,31 @@ return new TextElement(e, n);
             Assert.IsTrue(result.IsValid);
             Assert.AreEqual(0, created);
         }
+        [TestCase("<input id='volume' type='range'>", null)]
+        [TestCase("<input id='volume' type='checkbox'>", "binding-capability")]
+        [TestCase("<template id='row'><input id='volume' type='range'></template>", "binding-missing")]
+        [TestCase("<input id='volume' type='range'><input id='volume' type='range'>", "binding-ambiguous")]
+        public void StandardIdsValidateAgainstTheAuthoredControl(string body, string error)
+        {
+            using var assets = new Assets();
+            assets.SetPage(body);
+            var definition = new ViewDefinition("page", "page.html");
+            var required = new ViewValidationCapabilities(new Dictionary<string, Type>
+            {
+                ["volume"] = typeof(ISliderElement)
+            });
+
+            var result = ViewDefinitionValidator.Validate(definition, assets, required);
+
+            if (error == null)
+            {
+                Assert.That(result.IsValid, Is.True);
+            }
+            else
+            {
+                Assert.That(result.Issues, Has.Some.Matches<ValidationIssue>(issue => issue.Code == error));
+            }
+        }
         [Test]
         public void ComposedCapabilitiesShareOneBusinessName()
         {

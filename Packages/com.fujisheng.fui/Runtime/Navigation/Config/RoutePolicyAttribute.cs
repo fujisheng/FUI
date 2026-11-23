@@ -18,6 +18,7 @@ namespace FUI.Navigation
         public bool AllowMultiple { get; set; }
         public HistoryMode HistoryMode { get; set; } = HistoryMode.Stack;
         public CoverageMode CoverageMode { get; set; } = CoverageMode.KeepVisible;
+        public InputCoverageMode InputCoverage { get; set; } = InputCoverageMode.Default;
         public CacheMode CacheMode { get; set; } = CacheMode.None;
         public int CacheCapacity { get; set; } = 1;
         public float CacheDuration { get; set; }

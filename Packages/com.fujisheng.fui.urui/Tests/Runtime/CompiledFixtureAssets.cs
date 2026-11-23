@@ -72,7 +72,7 @@ namespace FUI.Rendering.URUI.Tests
                 }
                 var bytes = new byte[65536];
                 var result = urui_compile_document(source.text, uri, 0, resources, resources.Length, bytes, bytes.Length, out var count);
-                if (result == -3 && count > bytes.Length)
+                if (result == -5 && count > bytes.Length)
                 {
                     bytes = new byte[count];
                     result = urui_compile_document(source.text, uri, 0, resources, resources.Length, bytes, bytes.Length, out count);

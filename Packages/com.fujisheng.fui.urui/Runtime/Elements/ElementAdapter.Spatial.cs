@@ -24,6 +24,7 @@ namespace FUI.Rendering.URUI
         bool pendingRotation;
         bool pendingLocalRotation;
         bool pendingScale;
+        bool positionAbsoluteSet;
         Quaternion requestedRotation;
         SpatialValue requestedScale;
         SpatialValue pendingValue;
@@ -95,12 +96,6 @@ namespace FUI.Rendering.URUI
             SubscribeSpatial();
         }
 
-        internal void SetLocalRotation(Quaternion value)
-        {
-            ApplyRotation(new RotationValue(value.x, value.y, value.z, value.w));
-            pendingLocalRotation = true;
-        }
-
         void ScheduleScale(SpatialValue value)
         {
             if (!float.IsFinite(value.x) || !float.IsFinite(value.y) || !float.IsFinite(value.z))
@@ -129,6 +124,26 @@ namespace FUI.Rendering.URUI
         {
             rotation = Quaternion.identity;
             for (var current = target; current != null; current = current.Parent)
+            {
+                if (!current.HasLayout || !current.TryGetLocalTransform(out _, out var local))
+                {
+                    return false;
+                }
+                rotation = ToSpatialRotation(local) * rotation;
+            }
+            return true;
+        }
+
+        static bool TryWorldRotationFromSnapshots(in global::URUI.Elements.ElementSpatialSnapshot childSnap,
+            in global::URUI.Elements.ElementSpatialSnapshot parentSnap, global::URUI.Elements.Element grandParent, out Quaternion rotation)
+        {
+            if (!childSnap.HasSeparateRotation || !parentSnap.HasSeparateRotation)
+            {
+                rotation = Quaternion.identity;
+                return false;
+            }
+            rotation = ToSpatialRotation(parentSnap.LogicalRotation) * ToSpatialRotation(childSnap.LogicalRotation);
+            for (var current = grandParent; current != null; current = current.Parent)
             {
                 if (!current.HasLayout || !current.TryGetLocalTransform(out _, out var local))
                 {
@@ -276,7 +291,11 @@ namespace FUI.Rendering.URUI
             pendingPosition = true;
             awaitingLayout = false;
             // Transform 位置独立于布局流，等新布局完成后换算边框和滚动偏移。
-            element.Style.Position = global::URUI.Elements.Position.Absolute;
+            if (!positionAbsoluteSet)
+            {
+                element.Style.Position = global::URUI.Elements.Position.Absolute;
+                positionAbsoluteSet = true;
+            }
             SubscribeSpatial();
         }
 
@@ -308,7 +327,9 @@ namespace FUI.Rendering.URUI
             {
                 return;
             }
-            if (!element.HasLayout || element.Parent == null || !element.Parent.HasLayout)
+            var parent = element.Parent;
+            // 隐藏的节点可能保留上次布局的标记，等它重新进入可见布局再换算坐标。
+            if (!element.HasLayout || parent == null || !parent.HasLayout || !element.IsVisibleInHierarchy)
             {
                 return;
             }
@@ -336,8 +357,9 @@ namespace FUI.Rendering.URUI
                 UnsubscribeSpatial(document);
                 return;
             }
-            var parent = element.Parent;
-            var size = element.Layout.size;
+            var snap = element.GetSpatialSnapshot();
+            var parentSnap = parent.GetSpatialSnapshot();
+            var size = snap.Layout.size;
             if (!parent.TryWorldToLocal(element.LocalToWorld(Vector2.Scale(size, Pivot)), out var current))
             {
                 return;
@@ -352,8 +374,8 @@ namespace FUI.Rendering.URUI
             }
             else
             {
-                target = new Vector2(parent.Layout.width * ReadPivot(parent, "x") + pendingValue.x,
-                    parent.Layout.height * (1 - ReadPivot(parent, "y")) - pendingValue.y) - parent.ScrollOffset;
+                target = new Vector2(parentSnap.Layout.width * ReadPivot(parent, "x") + pendingValue.x,
+                    parentSnap.Layout.height * (1 - ReadPivot(parent, "y")) - pendingValue.y) - parentSnap.ScrollOffset;
             }
             var delta = target - current;
             if (pendingWorld && delta.sqrMagnitude < .0001f)
@@ -377,27 +399,27 @@ namespace FUI.Rendering.URUI
             var bottom = HasOffset("bottom");
             if (left)
             {
-                element.Style.SetPixels("margin-left", ReadOffset("margin-left", parent.Layout.width, 0) + delta.x);
+                element.Style.SetPixels("margin-left", ReadOffset("margin-left", parentSnap.Layout.width, 0) + delta.x);
             }
             if (right)
             {
-                element.Style.SetPixels("margin-right", ReadOffset("margin-right", parent.Layout.width, 0) - delta.x);
+                element.Style.SetPixels("margin-right", ReadOffset("margin-right", parentSnap.Layout.width, 0) - delta.x);
             }
             if (!left && !right)
             {
-                element.Style.Left = element.Layout.x + delta.x;
+                element.Style.SetLeft(snap.Layout.x + delta.x);
             }
             if (top)
             {
-                element.Style.SetPixels("margin-top", ReadOffset("margin-top", parent.Layout.height, 0) + delta.y);
+                element.Style.SetPixels("margin-top", ReadOffset("margin-top", parentSnap.Layout.height, 0) + delta.y);
             }
             if (bottom)
             {
-                element.Style.SetPixels("margin-bottom", ReadOffset("margin-bottom", parent.Layout.height, 0) - delta.y);
+                element.Style.SetPixels("margin-bottom", ReadOffset("margin-bottom", parentSnap.Layout.height, 0) - delta.y);
             }
             if (!top && !bottom)
             {
-                element.Style.Top = element.Layout.y + delta.y;
+                element.Style.SetTop(snap.Layout.y + delta.y);
             }
             pendingPosition = pendingWorld;
             awaitingLayout = true;
@@ -444,20 +466,23 @@ namespace FUI.Rendering.URUI
             readingSpatial = true;
             try
             {
-                var size = element.Layout.size;
+                var snap = element.GetSpatialSnapshot();
+                var parentSnap = parent.GetSpatialSnapshot();
+                var size = snap.Layout.size;
                 var world = element.LocalToWorld(Vector2.Scale(size, Pivot));
                 if (!parent.TryWorldToLocal(world, out var projected))
                 {
                     return;
                 }
-                var local = projected + parent.ScrollOffset;
+                var local = projected + parentSnap.ScrollOffset;
                 // 在任何通知之前读完原生快照，监听者可同步销毁或改写布局。
                 var worldValue = new SpatialValue(world.x, Screen.height - world.y, WorldPositionValue.Value.z);
-                var localValue = new SpatialValue(local.x - parent.Layout.width * ReadPivot(parent, "x"),
-                    parent.Layout.height * (1 - ReadPivot(parent, "y")) - local.y, LocalPositionValue.Value.z);
+                var localValue = new SpatialValue(local.x - parentSnap.Layout.width * ReadPivot(parent, "x"),
+                    parentSnap.Layout.height * (1 - ReadPivot(parent, "y")) - local.y, LocalPositionValue.Value.z);
                 var sizeValue = new ScrollPoint(size.x, size.y);
-                var hasRotation = TryWorldRotation(element, out var worldRotation);
+                var hasRotation = TryWorldRotationFromSnapshots(in snap, in parentSnap, parent.Parent, out var worldRotation);
                 var rotationValue = new RotationValue(worldRotation.x, worldRotation.y, worldRotation.z, worldRotation.w);
+                var localRotation = ToSpatialRotation(snap.LogicalRotation);
                 var version = spatialWriteVersion;
                 spatialNeedsInitialRead = false;
                 PublishSpatial(WorldPositionValue, worldValue);
@@ -483,8 +508,6 @@ namespace FUI.Rendering.URUI
                 {
                     return;
                 }
-                element.TryGetLocalTransform(out _, out var nativeLocalRotation);
-                var localRotation = ToSpatialRotation(nativeLocalRotation);
                 PublishSpatial(LocalRotationValue, new RotationValue(localRotation.x, localRotation.y, localRotation.z, localRotation.w));
             }
             finally
@@ -546,6 +569,7 @@ namespace FUI.Rendering.URUI
                 ReleaseSpatialListener(element.Document);
             }
             spatialInitialized = false;
+            positionAbsoluteSet = false;
             worldPositionValue?.Dispose();
             rotationValue?.Dispose();
             localRotationValue?.Dispose();

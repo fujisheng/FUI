@@ -38,10 +38,10 @@ namespace FUI.Rendering.URUI
         {
             get;
         }
-        Vector2 Range => Vector2.Max(Vector2.zero, Element.ScrollSize - Element.ContentRect.size);
+        Vector2 Range => Vector2.Max(Vector2.zero, Element.ScrollSize - Element.ViewportRect.size);
         void Write()
         {
-            if (!pending || !Element.HasLayout)
+            if (!pending || Element == null || !Element.IsValid || !Element.HasLayout)
             {
                 return;
             }
@@ -52,16 +52,21 @@ namespace FUI.Rendering.URUI
         }
         void Read()
         {
-            if (!Element.HasLayout)
+            if (Element == null || !Element.IsValid || !Element.HasLayout)
             {
                 return;
             }
             var range = Range;
             var offset = Element.ScrollOffset;
+            var next = new ScrollPoint(range.x > 0 ? offset.x / range.x : 0, range.y > 0 ? 1 - offset.y / range.y : 1);
+            if (next.Equals(NormalizedScroll.Value))
+            {
+                return;
+            }
             reading = true;
             try
             {
-                NormalizedScroll.Value = new ScrollPoint(range.x > 0 ? offset.x / range.x : 0, range.y > 0 ? 1 - offset.y / range.y : 1);
+                NormalizedScroll.Value = next;
             }
             finally
             {
@@ -70,6 +75,10 @@ namespace FUI.Rendering.URUI
         }
         void Layout(global::URUI.Documents.Document owner)
         {
+            if (Element == null || !Element.IsValid)
+            {
+                return;
+            }
             if (pending)
             {
                 Write();
@@ -81,7 +90,10 @@ namespace FUI.Rendering.URUI
         }
         public override void Dispose()
         {
-            Element.Document.LayoutUpdated -= Layout;
+            if (Element != null)
+            {
+                Element.Document.LayoutUpdated -= Layout;
+            }
             subscription.Dispose();
             NormalizedScroll.Dispose();
             base.Dispose();

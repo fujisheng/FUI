@@ -8,6 +8,7 @@ namespace FUI.Rendering.URUI
     {
         readonly global::URUI.Controls.Slider slider;
         readonly float floatingStep;
+        readonly string continuousStep;
         readonly global::URUI.Controls.SliderVisual visual;
 
         public SliderElement(global::URUI.Elements.Element element, string name) : this(element, name, null) { }
@@ -20,11 +21,16 @@ namespace FUI.Rendering.URUI
             if (slider != null)
             {
                 var authored = element.GetAttribute("value");
+                var step = element.GetAttribute("step");
+                continuousStep = string.Equals(step, "any", StringComparison.OrdinalIgnoreCase) ? step : null;
                 floatingStep = slider.HasAttribute("step") ? slider.Step :
                     Math.Max(float.Epsilon, (float)(((double)slider.HighValue - slider.LowValue) / 1000000d));
                 Configure(() =>
                 {
-                    slider.Step = floatingStep;
+                    if (continuousStep == null)
+                    {
+                        slider.Step = floatingStep;
+                    }
                     if (float.TryParse(authored, System.Globalization.NumberStyles.Float,
                         System.Globalization.CultureInfo.InvariantCulture, out var initial))
                     {
@@ -84,7 +90,18 @@ namespace FUI.Rendering.URUI
                     slider.LowValue = low;
                     slider.HighValue = high;
                 }
-                slider.Step = integer ? 1 : floatingStep;
+                if (integer)
+                {
+                    slider.Step = 1;
+                }
+                else if (continuousStep != null)
+                {
+                    slider.SetAttribute("step", continuousStep);
+                }
+                else
+                {
+                    slider.Step = floatingStep;
+                }
             });
         }
 

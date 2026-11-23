@@ -183,6 +183,7 @@ namespace FUI.Generators
             string exitProvider = null;
             var history = "FUI.Navigation.HistoryMode.Stack";
             var coverage = "FUI.Navigation.CoverageMode.KeepVisible";
+            string inputCoverage = null;
             var cache = "FUI.Navigation.CacheMode.None";
             var cacheCapacity = 1;
             var cacheDuration = 0f;
@@ -202,6 +203,9 @@ namespace FUI.Generators
                         case "ExitTransitionProvider": exitProvider = (pair.Value.Value as INamedTypeSymbol)?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat); break;
                         case "HistoryMode": history = $"(FUI.Navigation.HistoryMode){Convert.ToInt32(pair.Value.Value)}"; break;
                         case "CoverageMode": coverage = $"(FUI.Navigation.CoverageMode){Convert.ToInt32(pair.Value.Value)}"; break;
+                        case "InputCoverage":
+                            inputCoverage = $"(FUI.Navigation.InputCoverageMode){Convert.ToInt32(pair.Value.Value)}";
+                            break;
                         case "CacheMode": cache = $"(FUI.Navigation.CacheMode){Convert.ToInt32(pair.Value.Value)}"; break;
                         case "CacheCapacity": cacheCapacity = (int)pair.Value.Value; break;
                         case "CacheDuration": cacheDuration = Convert.ToSingle(pair.Value.Value); break;
@@ -230,7 +234,7 @@ namespace FUI.Generators
                 cacheDuration: {cacheDuration.ToString(System.Globalization.CultureInfo.InvariantCulture)}f,
                 enterTransitionProvider: {(enterProvider == null ? "null" : $"new {enterProvider}()")},
                 exitTransitionProvider: {(exitProvider == null ? "null" : $"new {exitProvider}()")},
-                dependencies: {dependencies}){(takeFocus ? "" : ".WithFocus(false)")}";
+                dependencies: {dependencies}){(takeFocus ? "" : ".WithFocus(false)")}{(inputCoverage == null ? "" : $".WithInputCoverage({inputCoverage})")}";
         }
 
         static bool ValidateDependencies(

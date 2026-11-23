@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using FUI.Binding;
 using FUI.Infrastructure;
 using FUI.Presentation;
@@ -13,10 +12,12 @@ namespace FUI.Rendering.URUI
     /// <summary>
     /// 保留隐藏作者模板，为独立绑定实例提供受控创建和所有权释放。
     /// </summary>
-    public sealed class ProjectionTemplateElement : ElementAdapter, IProjectionTemplateElement
+    public sealed class ProjectionTemplateElement : ElementAdapter, IProjectionTemplateElement, IListView, IProjectionLayoutElement, IExternalValueSource
     {
-        readonly Dictionary<ViewInstance, View> instances = new Dictionary<ViewInstance, View>();
+        readonly Dictionary<ViewInstance, View> instances = new Dictionary<ViewInstance, View>(ViewInstance.IdentityComparer.Instance);
         readonly Func<ViewScope, View> factory;
+        ProjectionCollection collection;
+        BindableProperty<ProjectionLayout> layoutValue;
         bool disposed;
 
         public ProjectionTemplateElement(Element element, string name, Func<ViewScope, View> factory) : base(element, name)
@@ -29,6 +30,51 @@ namespace FUI.Rendering.URUI
         public BindableProperty<ProjectionTemplate> Template
         {
             get;
+        }
+
+        ProjectionCollection Collection
+        {
+            get
+            {
+                RequireOwner();
+                var document = Element.Document;
+                return collection ??= new ProjectionCollection(CreateProjection, PlaceBefore, document.RunAfterEvent, document.BeginUpdate);
+            }
+        }
+
+        public BindableProperty<IReadOnlyObservableList<ObservableObject>> ItemsSource => Collection.ItemsSource;
+
+        public BindableProperty<ProjectionLayout> LayoutValue =>
+            layoutValue ??= new BindableProperty<ProjectionLayout>(ReadLayout());
+
+        void IListView.OnAdd(object sender, int? index, object itemData) => collection?.Notify(sender, index, 1);
+        void IListView.OnRemove(object sender, int? index, object item) => collection?.Notify(sender, index, -1);
+        void IListView.OnReplace(object sender, int? index, object oldItem, object newItem) => collection?.Notify(sender, index);
+        void IListView.OnUpdate(object sender) => collection?.Notify(sender);
+
+        void IExternalValueSource.SynchronizeExternalValues()
+        {
+            if (layoutValue != null && !disposed && Element.IsValid && Element.IsAttached)
+            {
+                layoutValue.Value = ReadLayout();
+            }
+        }
+
+        void PlaceBefore(ViewInstance instance, ViewInstance next)
+        {
+            var node = instances[instance].Root;
+            var parent = Element.Parent;
+            if (next == null)
+            {
+                parent.Add(node);
+                return;
+            }
+
+            var target = instances[next].Root;
+            if (!ReferenceEquals(node, target))
+            {
+                parent.InsertBefore(node, target);
+            }
         }
 
         ProjectionCreation CreateProjection(ObservableObject model)
@@ -135,14 +181,16 @@ namespace FUI.Rendering.URUI
                     return value;
                 }
             }
-            var raw = element.ResolvedStyle.Get(horizontal ? "width" : "height");
-            if (raw != null && raw.EndsWith("px", StringComparison.Ordinal) && float.TryParse(raw.Substring(0, raw.Length - 2), NumberStyles.Float, CultureInfo.InvariantCulture, out var pixels))
+            if (element.ResolvedStyle.TryGetLength(horizontal ? "width" : "height", out var length))
             {
-                return pixels;
-            }
-            if (raw != null && raw.EndsWith("%", StringComparison.Ordinal) && float.TryParse(raw.Substring(0, raw.Length - 1), NumberStyles.Float, CultureInfo.InvariantCulture, out var percent))
-            {
-                return Dimension(element.Parent, horizontal) * percent / 100;
+                if (length.Unit == global::URUI.Elements.LengthUnit.Pixel)
+                {
+                    return length.Value;
+                }
+                if (length.Unit == global::URUI.Elements.LengthUnit.Percent)
+                {
+                    return Dimension(element.Parent, horizontal) * length.Value / 100;
+                }
             }
             throw new InvalidOperationException("Projection layout is not ready; declare authored dimensions or wait for layout.");
         }
@@ -180,6 +228,15 @@ namespace FUI.Rendering.URUI
             }
             disposed = true;
             Exception failure = null;
+            try
+            {
+                collection?.Dispose();
+            }
+            catch (Exception exception)
+            {
+                failure = exception;
+            }
+            layoutValue?.Dispose();
             foreach (var instance in new List<ViewInstance>(instances.Keys))
             {
                 try

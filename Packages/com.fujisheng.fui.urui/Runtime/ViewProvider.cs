@@ -43,6 +43,7 @@ namespace FUI.Rendering.URUI
             try
             {
                 var view = definition.Compose(scope, assets, clock);
+                view.Visible = false;
                 view.Layer = (int)route.Settings.Layer;
                 return new ViewLease(view, scope);
             }
@@ -132,12 +133,14 @@ namespace FUI.Rendering.URUI
     public sealed class ViewLease : IViewLease
     {
         static readonly IAssetScope EmptyAssets = new EmptyAssetScope();
-        readonly ViewScope scope;
 
         public ViewLease(IView view, ViewScope scope)
         {
             View = view ?? throw new ArgumentNullException(nameof(view));
-            this.scope = scope ?? throw new ArgumentNullException(nameof(scope));
+            if (scope == null)
+            {
+                throw new ArgumentNullException(nameof(scope));
+            }
         }
 
         public IView View

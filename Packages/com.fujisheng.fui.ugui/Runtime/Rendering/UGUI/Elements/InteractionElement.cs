@@ -108,7 +108,13 @@ namespace FUI.Rendering.UGUI.Elements
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData) => OnPointerExit?.Invoke(eventData);
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
+            PageInputRaycaster.Observe(eventData);
+            var canClick = eventData.eligibleForClick;
             OnPointerDown?.Invoke(eventData);
+            if (canClick && !eventData.eligibleForClick)
+            {
+                return;
+            }
             if(!isActiveAndEnabled || contactPointer.HasValue || eventData.button != PointerEventData.InputButton.Left) {return;}
             contactPointer=eventData.pointerId;contactData=eventData;contactSystem=EventSystem.current;contactModule=contactSystem?contactSystem.currentInputModule:null; lastContact=ReadContact(eventData); PointerPressed?.Invoke(lastContact);
         }
@@ -177,6 +183,18 @@ namespace FUI.Rendering.UGUI.Elements
         }
         void OnApplicationFocus(bool focused){if(!focused){CancelContact();CancelDrag();}}
         void OnDisable() {CancelContact(); CancelDrag();}
+
+        internal void CancelPointer(int pointer)
+        {
+            if (contactPointer == pointer)
+            {
+                CancelContact();
+            }
+            if (draggingPointer == pointer)
+            {
+                CancelDrag();
+            }
+        }
 
         void CancelDrag()
         {

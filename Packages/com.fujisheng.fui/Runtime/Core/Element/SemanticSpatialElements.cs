@@ -24,6 +24,12 @@ namespace FUI.Rendering
     public interface ISizeElement : IElement {BindableProperty<ScrollPoint> SizeValue {get;}}
     /// <summary>原始二维锚点位置；不执行坐标或布局转换。</summary>
     public interface IAnchoredPositionElement : IElement {BindableProperty<ScrollPoint> AnchoredPositionValue {get;}}
+    /// <summary>提供条目模板及父级容器的只读布局快照。</summary>
+    public interface IProjectionLayoutElement : IElement
+    {
+        BindableProperty<ProjectionLayout> LayoutValue { get; }
+    }
+
     /// <summary>通过既有真实模板创建受控子投影，后端拥有实例资源。</summary>
     public interface IProjectionTemplateElement : IElement {BindableProperty<ProjectionTemplate> Template {get;}}
 }

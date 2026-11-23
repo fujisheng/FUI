@@ -88,11 +88,23 @@ namespace FUI.Rendering.URUI
             }
         }
 
+        const global::URUI.Elements.ElementState InteractiveMask =
+            global::URUI.Elements.ElementState.Valid |
+            global::URUI.Elements.ElementState.Attached |
+            global::URUI.Elements.ElementState.VisibleInHierarchy;
+
+        bool IsInteractive()
+        {
+            var flags = element.StateFlags;
+            return (flags & InteractiveMask) == InteractiveMask &&
+                (flags & global::URUI.Elements.ElementState.DisabledInHierarchy) == 0;
+        }
+
         static PointerPosition ScreenPosition(Vector2 value) => new PointerPosition(value.x, Screen.height - value.y);
 
         void OnDown(PointerDownEvent evt)
         {
-            if (disposed || pointer >= 0 || evt.Button != 0 || !element.EnabledInHierarchy || !IsVisible())
+            if (disposed || pointer >= 0 || evt.Button != 0 || !IsInteractive())
             {
                 return;
             }
@@ -112,7 +124,7 @@ namespace FUI.Rendering.URUI
             {
                 return;
             }
-            if (!element.EnabledInHierarchy || !IsVisible())
+            if (!IsInteractive())
             {
                 CancelPointer(pointer);
                 return;
@@ -144,7 +156,7 @@ namespace FUI.Rendering.URUI
                 {
                     return;
                 }
-                if (!element.EnabledInHierarchy || !IsVisible())
+                if (!IsInteractive())
                 {
                     CancelPointer(id);
                     return;
@@ -159,7 +171,7 @@ namespace FUI.Rendering.URUI
             {
                 return;
             }
-            if (!element.EnabledInHierarchy || !IsVisible())
+            if (!IsInteractive())
             {
                 CancelPointer(pointer);
                 return;
@@ -194,22 +206,6 @@ namespace FUI.Rendering.URUI
             suppressPointer = -1;
             evt.PreventDefault();
             evt.StopImmediatePropagation();
-        }
-
-        bool IsVisible()
-        {
-            for (var current = element; current != null; current = current.Parent)
-            {
-                if (!current.IsValid || !current.IsAttached || current.Style.Display == global::URUI.Elements.DisplayStyle.None || current.Style.Get("visibility") == "hidden")
-                {
-                    return false;
-                }
-                if (current.HasLayout && (current.ResolvedStyle.Get("display") == "none" || current.ResolvedStyle.Get("visibility") == "hidden"))
-                {
-                    return false;
-                }
-            }
-            return true;
         }
 
         void CancelPointer(int id)

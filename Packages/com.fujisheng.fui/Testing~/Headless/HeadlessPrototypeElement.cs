@@ -7,17 +7,29 @@ using FUI.Rendering;
 namespace FUI.Testing
 {
     /// <summary>通过真实Core模板/生成绑定创建受控子投影，拥有其View及释放回调。</summary>
-    public sealed class HeadlessPrototypeElement : HeadlessElement,IProjectionTemplateElement
+    public sealed class HeadlessPrototypeElement : HeadlessElement,IProjectionTemplateElement,IListView,IProjectionLayoutElement
     {
         readonly Func<ObservableObject,HeadlessView> createView;
         readonly Action<HeadlessView> releaseView;
-        readonly Dictionary<ViewInstance,ChildView> owned=new Dictionary<ViewInstance,ChildView>();
+        ProjectionCollection collection;
+        readonly Dictionary<ViewInstance,ChildView> owned=new Dictionary<ViewInstance,ChildView>(ViewInstance.IdentityComparer.Instance);
         public HeadlessPrototypeElement(string name,Func<ObservableObject,HeadlessView> createView,Action<HeadlessView> releaseView=null,ProjectionLayout layout=default) : base(name)
         {
             this.createView=createView??throw new ArgumentNullException(nameof(createView));this.releaseView=releaseView;
             Template=new BindableProperty<ProjectionTemplate>(new ProjectionTemplate(CreateProjection,layout,null));
+            LayoutValue = new BindableProperty<ProjectionLayout>(layout);
         }
         public BindableProperty<ProjectionTemplate> Template {get;}
+        public BindableProperty<ProjectionLayout> LayoutValue { get; }
+
+        public BindableProperty<IReadOnlyObservableList<ObservableObject>> ItemsSource =>
+            (collection ??= new ProjectionCollection(CreateProjection)).ItemsSource;
+
+        void IListView.OnAdd(object sender, int? index, object data) => collection?.Notify(sender, index, 1);
+        void IListView.OnRemove(object sender, int? index, object data) => collection?.Notify(sender, index, -1);
+        void IListView.OnReplace(object sender, int? index, object oldData, object newData) => collection?.Notify(sender, index);
+        void IListView.OnUpdate(object sender) => collection?.Notify(sender);
+
         ProjectionCreation CreateProjection(ObservableObject vm)
         {
             if(IsDisposed) {throw new ObjectDisposedException(Name);}
@@ -77,7 +89,13 @@ namespace FUI.Testing
         }
         protected override void OnDispose()
         {
-            Template.Dispose();var actions=new List<Action>();
+            Template.Dispose();
+            LayoutValue.Dispose();
+            var actions = new List<Action>();
+            if (collection != null)
+            {
+                actions.Add(collection.Dispose);
+            }
             foreach(var instance in new List<ViewInstance>(owned.Keys)) {var current=instance;actions.Add(()=>ReleaseProjection(current));}
             var failure=HeadlessCleanup.Collect(actions);
             if(failure!=null) {System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();}

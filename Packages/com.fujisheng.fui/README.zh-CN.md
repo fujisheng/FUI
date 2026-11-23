@@ -84,6 +84,12 @@ navigator.Close(handle);
 
 从[五分钟快速开始](Documentation~/zh-CN/quick-start.md)继续，并从 Package Manager 的 UGUI 包导入 Settings Sample。
 
+## 绑定独立定位的条目
+
+用 `IListView.ItemsSource` 绑定 `ObservableList<T>`。URUI 的 `ProjectionTemplateElement` 和 UGUI 的 `ViewPrototypeElement` 根据集合增删模板实例，保留未变化的条目，并在各自的生命周期内复用闲置实例。条目模型可用现有的局部或屏幕位置契约分别定位。需要测量的页面可经 `IProjectionLayoutElement.LayoutValue` 读取布局快照。
+
+在业务 ViewModel 和 Presenter 使用数据属性、集合与命令。FUI0301 会报告对投影模板或投影句柄的访问。
+
 ## 程序集
 
 | 程序集 | 职责 |

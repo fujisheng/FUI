@@ -2,14 +2,12 @@
 
 Navigator owns page state, ordering, focus, dependencies, caching, and rollback. Initialize it on the Unity main thread before opening a route.
 
-Typical lifecycle:
-
 ```text
 Create lease → Initialize View → Create binding and Presenter
-→ OnCreate → OnOpen → enter transition → Focus
-→ exit transition → OnClose → release or cache
+→ OnCreate → Present the interactive page → Enter transition completes
+→ Exit transition → OnClose → Release or cache
 ```
 
-Asynchronous operations carry an operation version. A late completion cannot overwrite a newer open or close. Cancellation and failures release temporary leases, input gates, bindings, and dependency ownership.
+The page can receive new gestures as soon as its bindings are ready and it enters navigation. Back can interrupt the enter transition. Operation versions keep a late animation result from overwriting a newer navigation action. Covering, hiding, or closing a page cancels its active gestures.
 
-Use `CoverageMode`, `HistoryMode`, and `CacheMode` through `[RoutePolicy]`. Do not reproduce Navigator state in application-level managers.
+Set `CoverageMode`, `HistoryMode`, `CacheMode`, and `InputCoverage` through `[RoutePolicy]`. A focused Popup or a window that hides the previous page blocks lower pages while it is visible, including blank areas and during exit. `InputCoverageMode.BlockBehind` explicitly blocks lower pages. `InputCoverageMode.HitTest` uses the page's authored hit areas and lets composite HUDs receive input on lower companion pages.

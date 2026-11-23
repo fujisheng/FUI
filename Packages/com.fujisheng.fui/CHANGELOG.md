@@ -6,9 +6,15 @@ All notable public changes to `com.fujisheng.fui` are documented here. Versions 
 
 ### Added
 
+- `FUI0301` checks ViewModel and Presenter source for renderer-owned objects. Generated binding contexts have assembly and derived-type visibility.
+- `IScrollableListView.ScrollRequest` exposes item positioning as a ViewModel binding.
 - Renderer-neutral `ITextElement` and `IClickElement` contracts for portable generated binding. Existing uGUI Elements and Mixed-mode pages retain their current behavior.
 - Source-linked .NET Core/Navigation projects and portable contract tests under `tools/dotnet`, including execution of Pure generated bindings against the actual runtime.
 - Float/bool semantic value contracts and a renderer-neutral Settings Sample ViewModel; uGUI contracts forward the existing properties and commands. Isolated Unity validation passes; Client/game and target-platform regression validation remain pending.
+
+### Changed
+
+- List bindings use `IListView.ItemsSource`. Update property bindings and package consumers as a coordinated change.
 
 ### Fixed
 

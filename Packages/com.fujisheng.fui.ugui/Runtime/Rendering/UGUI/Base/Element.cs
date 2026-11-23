@@ -11,6 +11,9 @@ namespace FUI.Rendering.UGUI
 	/// </summary>
 	public partial class Element : MonoBehaviour, IElement, IVisibilityElement, IExternalValueSource, IWorldPositionElement, ILocalPositionElement, ILocalScaleElement, IQuaternionRotationElement, ILocalQuaternionRotationElement
 	{
+		[SerializeField]
+		string bindingName;
+
 		/// <summary>
 		/// 描述 Element 初始化与释放事务的内部状态。
 		/// </summary>
@@ -114,7 +117,7 @@ namespace FUI.Rendering.UGUI
 			try
 			{
 				AssetLoader = assetLoader;
-				Name = Utility.RemoveCloneSuffix(gameObject.name);
+				Name = string.IsNullOrWhiteSpace(bindingName) ? Utility.RemoveCloneSuffix(gameObject.name) : bindingName;
 
 				Visible = CreateProperty(gameObject.activeSelf, (oldValue, newValue) => gameObject.SetActive(newValue));
 

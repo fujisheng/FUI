@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using global::URUI.Documents;
 using global::URUI.Elements;
 
@@ -10,12 +11,14 @@ namespace FUI.Rendering.URUI
     /// </summary>
     public sealed class ViewScope
     {
+        static readonly ConditionalWeakTable<Document, Dictionary<Element, int>> bindingRoots = new();
         Element root;
         readonly Action release;
         readonly DisplayState displayState = new();
         bool destroyed;
         bool visible = true;
         bool modal;
+        bool controlsDocumentInput;
         int layer;
         int order;
         public Document Document
@@ -39,13 +42,14 @@ namespace FUI.Rendering.URUI
             this.root = root ?? throw new ArgumentNullException(nameof(root));
             Document = root.Document;
         }
-        internal ViewScope(Document document, int layer, int order, bool modal, Action release)
+        internal ViewScope(Document document, int layer, int order, bool modal, bool visible, Action release)
         {
             Document = document;
             root = document.Body;
             this.layer = layer;
             this.order = order;
             this.modal = modal;
+            this.visible = visible;
             this.release = release ?? throw new ArgumentNullException(nameof(release));
         }
         public void LoadFragment(string html)
@@ -82,6 +86,14 @@ namespace FUI.Rendering.URUI
                 Document.SetPresentation(layer, order, visible, modal);
             }
         }
+        internal void ConfigureInput(bool blocksInputBehind, bool interactable)
+        {
+            controlsDocumentInput = true;
+            modal = blocksInputBehind;
+            Document.SetInputEnabled(interactable);
+            ApplyPresentation();
+        }
+
         internal void SetLayer(int value)
         {
             layer = value;
@@ -124,13 +136,73 @@ namespace FUI.Rendering.URUI
         }
         public void SetInteractable(bool value)
         {
-            if (!destroyed && Root.IsValid)
+            if (destroyed)
+            {
+                return;
+            }
+
+            if (controlsDocumentInput)
+            {
+                Document.SetInputEnabled(value);
+            }
+            else if (Root.IsValid)
             {
                 Root.SetEnabled(value);
             }
         }
         public Element Find(string name) => Root.Q(name);
         public IReadOnlyList<Element> FindAll(string name) => Root.Query(name);
+
+        internal void RegisterBindingRoot()
+        {
+            if (OwnsDocument)
+            {
+                return;
+            }
+
+            var roots = bindingRoots.GetValue(Document, _ => new Dictionary<Element, int>());
+            roots.TryGetValue(root, out var count);
+            roots[root] = count + 1;
+        }
+
+        internal void UnregisterBindingRoot()
+        {
+            if (!OwnsDocument && bindingRoots.TryGetValue(Document, out var roots) &&
+                roots.TryGetValue(root, out var count))
+            {
+                if (count == 1)
+                {
+                    roots.Remove(root);
+                }
+                else
+                {
+                    roots[root] = count - 1;
+                }
+            }
+        }
+
+        internal bool ContainsBindingCandidate(Element element)
+        {
+            var scopeRoot = Root;
+            if (ReferenceEquals(element, scopeRoot) ||
+                !bindingRoots.TryGetValue(Document, out var roots) || roots.Count == 0)
+            {
+                return true;
+            }
+
+            for (var ancestor = element.Parent; ancestor != null; ancestor = ancestor.Parent)
+            {
+                if (ReferenceEquals(ancestor, scopeRoot))
+                {
+                    return true;
+                }
+                if (roots.ContainsKey(ancestor))
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
         public void Destroy()
         {
             if (destroyed)

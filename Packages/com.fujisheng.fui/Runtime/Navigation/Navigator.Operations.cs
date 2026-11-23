@@ -80,7 +80,10 @@ namespace FUI.Navigation
                 using ((openingView as IViewUpdate)?.BeginUpdate())
                 {
                     if (instance.Instance == null)
+                    {
+                        (openingView as IViewInputScope)?.SetBlocksInputBehind(route.Descriptor.Settings.BlocksInputBehind);
                         instance.Instance = route.Descriptor.CreateInstance(openingView, viewModel);
+                    }
                     instance.State = ViewState.Opening;
                     instance.Instance.Enable(param);
                 }
@@ -172,7 +175,6 @@ namespace FUI.Navigation
             executionContext.AssertMainThread();
             // 所有页面都参与独立 Canvas 排序；导航历史和焦点只属于显式打开页面。
             activeOrder.Add(instance.Handle);
-            instance.Instance.Interactable = false;
             ReorderLayer(instance.Route.Descriptor.Settings.Layer);
 
             if (origin != OpenOrigin.Explicit || !instance.Route.Descriptor.Settings.TakeFocus)
@@ -205,41 +207,34 @@ namespace FUI.Navigation
         {
             var version = instance.OperationVersion;
             var transition = instance.Route.Descriptor.Settings.EnterTransitionProvider?.Get(instance.Instance.View);
-            if (transition == null)
+            if (!IsCurrent(instance, version) || !CanNavigate(instance.State))
             {
-                instance.EnterTransitionPending = false;
-                instance.State = ViewState.Open;
-                instance.Instance.Interactable = true;
-                ReleaseOperationGate(instance, version);
                 return;
             }
+            if (instance.State == ViewState.Opening && transition == null)
+            {
+                instance.State = ViewState.Open;
+            }
+            if (instance.State != ViewState.Covered)
+            {
+                instance.Instance.Interactable = true;
+            }
+            ReleaseOperationGate(instance, version);
 
-            instance.EnterTransitionPending = true;
-            _ = CompleteOpenTransitionAsync(instance, version, transition);
+            if (transition != null && IsCurrent(instance, version) && CanNavigate(instance.State))
+            {
+                _ = CompleteOpenTransitionAsync(instance, version, transition);
+            }
         }
 
         async Task CompleteOpenTransitionAsync(NavigationEntry instance, int version, ITransition transition)
         {
             await PlayTransitionSafelyAsync(instance, version, "OpenTransition", transition, CancellationToken.None);
             await executionContext.SwitchToMainThreadAsync();
-            if (!IsCurrent(instance, version))
-            {
-                ReleaseOperationGate(instance, version);
-                return;
-            }
-
-            instance.EnterTransitionPending = false;
-            if (instance.State == ViewState.Opening)
+            if (IsCurrent(instance, version) && instance.State == ViewState.Opening)
             {
                 instance.State = ViewState.Open;
-                instance.Instance.Interactable = true;
             }
-            else if (instance.State == ViewState.Open && focusedHandle == instance.Handle)
-            {
-                // 页面在动画期间被覆盖后又恢复，直到旧动画结束才重新允许交互。
-                instance.Instance.Interactable = true;
-            }
-            ReleaseOperationGate(instance, version);
         }
 
         bool TryBeginClose(ViewHandle handle, out NavigationEntry instance, out int version)
@@ -268,10 +263,9 @@ namespace FUI.Navigation
             {
                 LogFailure(instance, "StopEnterTransition", exception, "Continue closing");
             }
-            activeOrder.Remove(handle);
+            // 保留退出页面的视觉和指针顺序，直到它变为不可见。
             history.Remove(handle);
             ReleaseFocusAfterClose(instance);
-            ReorderLayer(instance.Route.Descriptor.Settings.Layer);
             return true;
         }
 
@@ -313,11 +307,16 @@ namespace FUI.Navigation
             // 父页面生命周期结束后再释放依赖，避免父 OnClose 执行期间依赖已被销毁。
             ReleaseDependencies(instance);
             ReleaseOperationGate(instance, version);
-            if (failure == null && TryCacheInstance(instance))
+            var layer = instance.Route.Descriptor.Settings.Layer;
+            if (failure != null || !TryCacheInstance(instance))
             {
-                return;
+                DestroyInstance(instance, failure == null ? "Close" : "CloseAfterFailure");
             }
-            DestroyInstance(instance, failure == null ? "Close" : "CloseAfterFailure");
+            ReorderLayer(layer);
+            if (instance.Route.Descriptor.Settings.BlocksInputBehind && GetFocused()?.Instance is { Interactable: true } focused)
+            {
+                (focused.View as IViewInputFocus)?.FocusInput();
+            }
         }
 
         void DestroyInstance(NavigationEntry instance, string phase)

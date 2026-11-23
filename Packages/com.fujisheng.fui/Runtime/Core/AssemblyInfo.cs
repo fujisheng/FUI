@@ -9,3 +9,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("FUI.Cli")]
 
 [assembly: InternalsVisibleTo("FUI.Testing")]
+[assembly: InternalsVisibleTo("FUI.Portable.Tests")]

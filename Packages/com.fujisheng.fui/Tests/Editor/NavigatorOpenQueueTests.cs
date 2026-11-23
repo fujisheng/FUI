@@ -117,7 +117,7 @@ namespace FUI.Tests
         }
 
         [Test]
-        public async Task RevealedPageWaitsForItsPendingEnterAnimationBeforeInteraction()
+        public async Task RevealedPageAcceptsInputWhileItsOriginalEnterAnimationIsRunning()
         {
             var enter = new TestTransitionProvider();
             var a = navigator.OpenAsync(Route("A", new RoutePolicy(enterTransitionProvider: enter))).AsTask();
@@ -129,8 +129,8 @@ namespace FUI.Tests
 
             navigator.Close(second);
             Assert.That(navigator.GetState(first), Is.EqualTo(ViewState.Open));
-            Assert.That(provider.Leases[0].View.Interactable, Is.False,
-                "恢复焦点时旧进入动画仍未结束");
+            Assert.That(enter.Transition.IsPlaying, Is.True);
+            Assert.That(provider.Leases[0].View.Interactable, Is.True);
 
             enter.Transition.Complete();
             await Task.Yield();

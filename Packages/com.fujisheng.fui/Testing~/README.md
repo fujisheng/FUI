@@ -4,7 +4,7 @@
 
 ## 使用
 
-页面/行VM使用Pure字段和现有IListView.Items、ITextElement.Text、IClickElement.Click等语义接口，通过实际Generator生成绑定；不手动Synchronize。完整可执行例子见tools/dotnet/Tests/HeadlessListScenario.cs.txt与GeneratedListBindingTests.cs。
+页面/行VM使用Pure字段和现有IListView.ItemsSource、ITextElement.Text、IClickElement.Click等语义接口，通过实际Generator生成绑定；不手动Synchronize。完整可执行例子见tools/dotnet/Tests/HeadlessListScenario.cs.txt与GeneratedListBindingTests.cs。
 
 ```csharp
 var list = new HeadlessListElement("Rows", item =>

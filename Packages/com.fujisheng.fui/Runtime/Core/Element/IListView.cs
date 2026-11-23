@@ -10,7 +10,7 @@ namespace FUI.Rendering
         /// <summary>
         /// 数据
         /// </summary>
-        BindableProperty<IReadOnlyObservableList<ObservableObject>> Items { get; }
+        BindableProperty<IReadOnlyObservableList<ObservableObject>> ItemsSource { get; }
 
         /// <summary>
         /// 当有元素被添加时

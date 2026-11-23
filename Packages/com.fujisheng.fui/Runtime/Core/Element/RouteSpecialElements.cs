@@ -15,10 +15,13 @@ namespace FUI.Rendering
     /// <summary>绑定原始四元数的控件。</summary>
     public interface IQuaternionRotationElement : IElement {BindableProperty<RotationValue> RotationValue {get;}}
     /// <summary>原始屏幕指针坐标，不包含 Unity 事件对象。</summary>
-    public readonly struct PointerPosition
+    public readonly struct PointerPosition : IEquatable<PointerPosition>
     {
         public readonly float x,y;
         public PointerPosition(float x,float y){this.x=x;this.y=y;}
+        public bool Equals(PointerPosition other) => x.Equals(other.x) && y.Equals(other.y);
+        public override bool Equals(object value) => value is PointerPosition other && Equals(other);
+        public override int GetHashCode() => unchecked((x.GetHashCode() * 397) ^ y.GetHashCode());
     }
     /// <summary>公开屏幕指针拖拽三个阶段的控件。</summary>
     public interface IPointerDragElement : IElement

@@ -8,11 +8,26 @@ using URUI.Hosting;
 using URUI.Resources;
 using FUI.Rendering;
 using FUI.Navigation;
+using FUI.Binding;
+using FUI.Infrastructure;
+using FUI.Infrastructure.Binding;
+using FUI.Presentation;
 
 namespace FUI.Rendering.URUI.Tests
 {
     public sealed class ResourceTemplateTests
     {
+        sealed class RowModel : ObservableObject
+        {
+        }
+
+        sealed class RowContext : BindingContext<RowModel>
+        {
+            public RowContext(IView view, RowModel model) : base(view, model)
+            {
+            }
+        }
+
         GameObject root;
         GameObject cameraObject;
         static TextAsset Asset(string key) => global::UnityEngine.Resources.Load<TextAsset>("URUI/Tests/" + key);
@@ -22,6 +37,7 @@ namespace FUI.Rendering.URUI.Tests
         [SetUp]
         public void SetUp()
         {
+            GeneratedBindingRegistry.Register<RowModel>((view, model) => new RowContext(view, model), () => new EmptyPresenter());
             cameraObject = new GameObject("Main Camera", typeof(Camera));
             cameraObject.tag = "MainCamera";
             root = new GameObject("External resource template test");
@@ -35,6 +51,135 @@ namespace FUI.Rendering.URUI.Tests
             UnityEngine.Object.DestroyImmediate(cameraObject);
         }
 
+        [Test]
+        public void ContinuousRangeKeepsAuthoredStepAndSilentValues()
+        {
+            var document = root.AddComponent<Document>();
+            document.Surface = root.GetComponent<Surface>();
+            document.LoadHtml("<!doctype html><html><head></head><body>" +
+                "<input id='volume' type='range' min='0' max='1' step='any' value='.8'></body></html>", "/range.html");
+            var slider = document.Q<global::URUI.Controls.Slider>("volume");
+            using var adapter = new SliderElement(slider, "volume");
+            var changes = 0;
+            adapter.ValueChanged.AddListener(_ => changes++);
+
+            adapter.Value.Value = .65f;
+
+            Assert.That(slider.GetAttribute("step"), Is.EqualTo("any"));
+            Assert.That(slider.Value, Is.EqualTo(.65f).Within(.001f));
+            Assert.That(changes, Is.Zero);
+            adapter.WholeNumbers.Value = true;
+            Assert.That(slider.Step, Is.EqualTo(1));
+            adapter.WholeNumbers.Value = false;
+            Assert.That(slider.GetAttribute("step"), Is.EqualTo("any"));
+        }
+
+        [Test]
+        public void InlineTemplateCreatesIndependentDirectListItems()
+        {
+            var document = root.AddComponent<Document>();
+            document.Surface = root.GetComponent<Surface>();
+            document.LoadHtml("<!doctype html><html><head></head><body><ul id='list'></ul>" +
+                "<template id='row'> <li><span id='label'>Row</span></li> </template></body></html>", "/inline.html");
+            var host = document.Q("list");
+            var template = document.Q<global::URUI.Controls.Template>("row");
+            using var list = new ListElement(host, "list", template, scope => View.CreateForBinding("row", scope));
+            var contents = new ObservableList<ObservableObject>();
+            contents.Add(new RowModel());
+            contents.Add(new RowModel());
+            list.ItemsSource.Value = contents;
+
+            Assert.That(host.ChildCount, Is.EqualTo(2));
+            var first = host.Hierarchy.Children()[0];
+            var second = host.Hierarchy.Children()[1];
+            Assert.That(first.TagName, Is.EqualTo("li"));
+            Assert.That(second.TagName, Is.EqualTo("li"));
+            first.Q("label").Text = "Changed";
+            Assert.That(second.Q("label").Text, Is.EqualTo("Row"));
+            Assert.That(template.ChildCount, Is.Zero);
+        }
+
+        [UnityTest]
+        public IEnumerator ScrollingVirtualListDoesNotMountTheWholeSource()
+        {
+            return CheckScrollWindow(horizontal: false);
+        }
+
+        [UnityTest]
+        public IEnumerator HorizontalVirtualListKeepsOnlyVisibleRows()
+        {
+            return CheckScrollWindow(horizontal: true);
+        }
+
+        IEnumerator CheckScrollWindow(bool horizontal)
+        {
+            var document = root.AddComponent<Document>();
+            document.Surface = root.GetComponent<Surface>();
+            var layout = horizontal
+                ? "#viewport{width:300px;height:100px;overflow-x:auto;overflow-y:hidden;}#list{display:inline-flex;height:100px;}"
+                : "#viewport{width:300px;height:100px;overflow-y:auto;}#list{width:300px;display:flex;flex-wrap:wrap;}";
+            document.LoadHtml("<!doctype html><html><head><style>" + layout +
+                "#list>div{width:100px;height:20px;}" +
+                "</style></head><body><div id='viewport'><div id='list'></div></div>" +
+                "<template id='row'><div><span id='name'>Row</span></div></template></body></html>", "/window.html");
+            var viewport = document.Q("viewport");
+            var host = document.Q("list");
+            var template = document.Q<global::URUI.Controls.Template>("row");
+            var scrollType = typeof(ListElement).Assembly.GetType("FUI.Rendering.URUI.ScrollListElement");
+            Assert.That(scrollType, Is.Not.Null);
+            using var list = (ListElement)Activator.CreateInstance(scrollType, host, "list", template,
+                (Func<ViewScope, View>)(scope => View.CreateForBinding("row", scope)), viewport);
+            var data = new ObservableList<ObservableObject>();
+            for (var index = 0; index < 1000; index++)
+            {
+                data.Add(new RowModel());
+            }
+            list.ItemsSource.Value = data;
+            yield return null;
+            yield return null;
+
+            Assert.That(host.ChildCount, Is.InRange(1, 21));
+            Assert.That(list.GetItemView(999), Is.Null);
+            ((IScrollableListView)list).ScrollRequest.Value = new ItemScrollRequest(999, 1);
+            yield return null;
+            yield return null;
+
+            Assert.That(host.ChildCount, Is.InRange(1, 21));
+            Assert.That(list.GetItemView(999), Is.Not.Null);
+            Assert.That(list.GetItemView(0), Is.Null);
+
+            ((IScrollableListView)list).ScrollRequest.Value = new ItemScrollRequest(0, 2);
+            yield return null;
+            yield return null;
+            Assert.That(list.TryGetRealizedItem(0, out _), Is.True);
+            Assert.That(list.TryGetRealizedItem(999, out _), Is.False);
+
+            ((IScrollableListView)list).ScrollRequest.Value = new ItemScrollRequest(500, 3);
+            yield return null;
+            yield return null;
+            var previous = horizontal ? viewport.ScrollOffset.x : viewport.ScrollOffset.y;
+            var unit = horizontal ? 100 : 20;
+            var across = horizontal ? 1 : 3;
+            var firstVisible = Mathf.FloorToInt(previous / unit) * across;
+            var row = list.GetItemView(firstVisible);
+            Assert.That(row, Is.Not.Null);
+            using (document.BeginUpdate())
+            {
+                for (var index = 0; index < 6; index++)
+                {
+                    var newItem = new RowModel();
+                    data.Insert(0, newItem);
+                    list.OnAdd(data, 0, newItem);
+                }
+            }
+            yield return null;
+            yield return null;
+            var after = horizontal ? viewport.ScrollOffset.x : viewport.ScrollOffset.y;
+            Assert.That(after, Is.EqualTo(previous + 6 / across * unit).Within(.1f));
+            Assert.That(list.GetItemView(firstVisible + 6), Is.SameAs(row));
+            Assert.That(host.ChildCount, Is.InRange(1, 21));
+        }
+
         [UnityTest]
         public IEnumerator ComposedValueAdaptersKeepSilentBindingAndUserEvents()
         {
@@ -44,6 +189,8 @@ namespace FUI.Rendering.URUI.Tests
             document.Load(Asset("ValueVisuals"), "URUI/Tests/ValueVisuals.html");
             var slider = document.Q<global::URUI.Controls.Slider>("slider");
             var toggle = document.Q<global::URUI.Controls.Toggle>("toggle");
+            slider.Style.Set("opacity", "0");
+            toggle.Style.Set("opacity", "0");
             using var sliderAdapter = new SliderElement(slider, "volume", new global::URUI.Controls.SliderVisual(slider, document.Q("fill"), document.Q("thumb")));
             using var toggleAdapter = new ToggleElement(toggle, "enabled", new global::URUI.Controls.ToggleVisual(toggle, document.Q("toggle-host")));
             var changes = 0;

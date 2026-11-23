@@ -14,7 +14,7 @@ using System;using System.Collections.Generic;using FUI.Binding;using FUI.Render
 [ObservableProperty][Bind("Scroll",nameof(IScrollViewElement.NormalizedScroll),bindingMode:BindingMode.TwoWay)][Bind("Rows",nameof(IScrollPositionElement.NormalizedScroll))]ScrollPoint position=new ScrollPoint(0,1);
 [ObservableProperty][Bind("Scroll",nameof(IScrollViewElement.Horizontal))]bool horizontal=false;
 [ObservableProperty][Bind("Scroll",nameof(IScrollViewElement.Vertical))]bool vertical=true;
-[ObservableProperty][Bind("Rows",nameof(IListView.Items))]ObservableList<Row> items=new ObservableList<Row>();
+[ObservableProperty][Bind("Rows",nameof(IListView.ItemsSource))]ObservableList<Row> items=new ObservableList<Row>();
 public int Events;[Command("Scroll",nameof(IScrollViewElement.ScrollChanged))]void Scroll(ScrollPoint point){Events++;}
 }
 public static class Scenario{public static string[]Run(int n){Generated.Routes.Initialize();var image=new HeadlessGraphicElement("Image");var raw=new HeadlessRawImageElement("Raw");var scroll=new HeadlessScrollViewElement("Scroll");var list=new HeadlessListElement("Rows",item=>new HeadlessView("Row",new HeadlessTextElement("Label")));var vm=new Vm();vm.Items.Add(new Row());var view=new HeadlessView("Display",image,raw,scroll,list);using(var p=Projection.Create(view,vm)){p.Activate();

@@ -38,17 +38,17 @@ namespace FUI.Rendering.UGUI.Elements
         {
             if (index >= MaximumVisibleItems)
             {
-                OnItemsOverflow(Items.Value.Count, MaximumVisibleItems);
+                OnItemsOverflow(ItemsSource.Value.Count, MaximumVisibleItems);
                 return;
             }
 
-            var visibleCount = Mathf.Min(Items.Value.Count, MaximumVisibleItems);
+            var visibleCount = Mathf.Min(ItemsSource.Value.Count, MaximumVisibleItems);
             // 如果itemInstances的数量大于List的数量，表示有多余的itemInstance 则直接复用
             if (items.Count >= visibleCount)
             {
                 for (int i = index; i < visibleCount; i++)
                 {
-                    var item = UpdateOrReplaceItem(i, Items.Value[i]);
+                    var item = UpdateOrReplaceItem(i, ItemsSource.Value[i]);
                     SetParent(i, item.gameObject);
                     item.instance.Enable();
                 }
@@ -92,10 +92,10 @@ namespace FUI.Rendering.UGUI.Elements
 
         protected override void OnUpdate()
         {
-            var visibleCount = Mathf.Min(Items.Value.Count, MaximumVisibleItems);
+            var visibleCount = Mathf.Min(ItemsSource.Value.Count, MaximumVisibleItems);
             for (int index = 0; index < visibleCount; index++)
             {
-                var item = Items.Value[index];
+                var item = ItemsSource.Value[index];
                 if (index < items.Count)
                 {
                     var instance = items[index].instance;
@@ -124,10 +124,97 @@ namespace FUI.Rendering.UGUI.Elements
                 items[index].instance.Disable();
             }
 
-            if (Items.Value.Count > MaximumVisibleItems)
+            if (ItemsSource.Value.Count > MaximumVisibleItems)
             {
-                OnItemsOverflow(Items.Value.Count, MaximumVisibleItems);
+                OnItemsOverflow(ItemsSource.Value.Count, MaximumVisibleItems);
             }
+        }
+
+        private protected void RealizeRange(int first, int end, bool synchronize)
+        {
+            var count = end - first;
+            for (var position = 0; position < count; position++)
+            {
+                var index = first + position;
+                var model = ItemsSource.Value[index];
+                var existing = position;
+                while (existing < items.Count && !ReferenceEquals(items[existing].instance.ViewModel, model))
+                {
+                    existing++;
+                }
+
+                if (existing < items.Count)
+                {
+                    MoveItem(existing, position);
+                    if (synchronize)
+                    {
+                        items[position].instance.SynchronizeProperties();
+                    }
+                }
+                else
+                {
+                    var spare = position;
+                    while (spare < items.Count && AppearsLater(items[spare].instance.ViewModel, index + 1, end))
+                    {
+                        spare++;
+                    }
+                    if (spare < items.Count)
+                    {
+                        MoveItem(spare, position);
+                        UpdateOrReplaceItem(position, model);
+                    }
+                    else
+                    {
+                        var instance = CreateItem(model, out var row);
+                        items.Insert(position, (instance, row));
+                        MoveLastItemInstanceTo(position);
+                    }
+                }
+
+                var item = items[position];
+                PlaceRealizedItem(index, position, item.gameObject);
+                item.instance.Enable();
+            }
+
+            while (items.Count > count)
+            {
+                var last = items.Count - 1;
+                var item = items[last];
+                items.RemoveAt(last);
+                ReleaseItemInstance(item.instance);
+                item.gameObject.SetActive(false);
+                Utility.DestroyObject(item.gameObject);
+            }
+        }
+
+        bool AppearsLater(ObservableObject model, int first, int end)
+        {
+            for (var index = first; index < end; index++)
+            {
+                if (ReferenceEquals(ItemsSource.Value[index], model))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        void MoveItem(int from, int to)
+        {
+            if (from == to)
+            {
+                return;
+            }
+            var item = items[from];
+            items.RemoveAt(from);
+            items.Insert(to, item);
+            ItemInstances.RemoveAt(from);
+            ItemInstances.Insert(to, item.instance);
+        }
+
+        private protected virtual void PlaceRealizedItem(int index, int position, GameObject item)
+        {
+            SetParent(position, item);
         }
 
         (ViewInstance instance, GameObject gameObject) UpdateOrReplaceItem(int index, ObservableObject itemData)

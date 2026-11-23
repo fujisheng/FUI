@@ -20,7 +20,7 @@ namespace FUI.Rendering.UGUI.Elements
         /// <summary>
         /// 当前列表数据；设置为 null 等价于 Reset。
         /// </summary>
-        public BindableProperty<IReadOnlyObservableList<ObservableObject>> Items { get; private set; }
+        public BindableProperty<IReadOnlyObservableList<ObservableObject>> ItemsSource { get; private set; }
 
         /// <summary>
         /// 当前选中索引。
@@ -41,7 +41,7 @@ namespace FUI.Rendering.UGUI.Elements
         {
             base.OnInitialize();
 
-            Items = CreateProperty<IReadOnlyObservableList<ObservableObject>>(null, (oldValue, newValue) =>
+            ItemsSource = CreateProperty<IReadOnlyObservableList<ObservableObject>>(null, (oldValue, newValue) =>
             {
                 if (newValue == null)
                 {
@@ -107,7 +107,7 @@ namespace FUI.Rendering.UGUI.Elements
 
         void IListView.OnUpdate(object sender)
         {
-            if (Items.Value == null)
+            if (ItemsSource.Value == null)
             {
                 OnReset();
             }
@@ -124,7 +124,7 @@ namespace FUI.Rendering.UGUI.Elements
         public virtual bool TryGetBoundItemViewModel(int index, out ObservableObject itemViewModel)
         {
             itemViewModel = null;
-            var list = Items?.Value;
+            var list = ItemsSource?.Value;
             if (list == null || index < 0 || index >= list.Count || index >= ItemInstances.Count)
             {
                 return false;
@@ -139,6 +139,32 @@ namespace FUI.Rendering.UGUI.Elements
             itemViewModel = instance.ViewModel;
             return itemViewModel != null;
         }
+
+        /// <summary>供渲染扩展查询已实现的行。离屏查询不创建实例。</summary>
+        public bool TryGetRealizedItem(int index, out IView view)
+        {
+            view = null;
+            var source = ItemsSource?.Value;
+            if (source == null || index < 0 || index >= source.Count)
+            {
+                return false;
+            }
+            var slot = GetRealizedSlot(index);
+            if (slot < 0 || slot >= ItemInstances.Count)
+            {
+                return false;
+            }
+            var instance = ItemInstances[slot];
+            if (instance == null || (instance.State & ViewInstanceState.Enabled) == 0 ||
+                !ReferenceEquals(instance.ViewModel, source[index]))
+            {
+                return false;
+            }
+            view = instance.View;
+            return view != null;
+        }
+
+        protected virtual int GetRealizedSlot(int index) => index;
 
         /// <summary>
         /// 当添加一个元素的时候
@@ -168,7 +194,7 @@ namespace FUI.Rendering.UGUI.Elements
         /// </summary>
         protected abstract void OnUpdate();
 
-        /// <summary>在 Items 被清空时隐藏或重置全部可视项目。</summary>
+        /// <summary>在 ItemsSource 被清空时隐藏或重置全部可视项目。</summary>
         protected abstract void OnReset();
 
         /// <summary>
@@ -305,7 +331,7 @@ namespace FUI.Rendering.UGUI.Elements
 
         ObservableObject ResolveItemByIndex(int index)
         {
-            var list = Items?.Value;
+            var list = ItemsSource?.Value;
             if (list == null || index < 0 || index >= list.Count)
             {
                 return null;
@@ -316,7 +342,7 @@ namespace FUI.Rendering.UGUI.Elements
 
         int ResolveIndexByItem(ObservableObject item)
         {
-            var list = Items?.Value;
+            var list = ItemsSource?.Value;
             if (list == null || item == null)
             {
                 return -1;

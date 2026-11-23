@@ -95,12 +95,12 @@ Sprite、Texture、Material 和动态 View 使用事务式 Lease 切换：先加
 
 ## 列表
 
-所有列表统一使用 `Items`、`SelectedIndex`、`SelectedItem` 和 `TryGetBoundItemViewModel()`。`Items = null` 等价于 Reset。
+两端的 `IListView` 通过 `ItemsSource` 接收数据。`ItemsSource = null` 等价于 Reset。用 `IScrollableListView.ScrollRequest` 绑定数据索引和请求序号，可在相同索引重复定位。
 
 - `RecyclingListElement`：按历史最大数量创建并复用实例。
 - `SlotListElement`：绑定已有固定子节点，超出容量的项目隐藏。
 - `AnchoredListElement`：将实例放入固定 Anchor，容量规则与 Slot 相同。
-- `ScrollListElement`：组合 Recycling List 与 ScrollRect 行为。
+- `ScrollListElement`：通过 ScrollRect 布局固定网格与固定尺寸的横向或纵向列表，只维护视口及其邻近的活动条目。
 - `ScrollViewElement`：只包装普通 ScrollRect，不承担列表职责。
 
-本版本不提供虚拟化。未来的 `VirtualizedListElement` 会沿用相同 Items 和选择 API。
+可见条目查询由渲染扩展使用。业务读取 ViewModel 数据并通过属性或命令触发更新。

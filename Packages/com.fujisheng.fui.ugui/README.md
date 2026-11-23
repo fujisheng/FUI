@@ -20,6 +20,8 @@ Runtime types live in the `FUI.Rendering.UGUI` namespace; built-in Elements live
 
 `com.fujisheng.fui` contains the renderer-neutral core: MVVM primitives, source-generated bindings, typed navigation, and resource leases. This package adds the uGUI implementation of the rendering layer. The core package does not reference uGUI; install this package only when the project renders with uGUI.
 
+List bindings use `IListView.ItemsSource`. Assign `IScrollableListView.ScrollRequest` from the ViewModel to reveal an item by data index. A `ScrollListElement` with a fixed grid or a fixed-size row layout realizes a bounded window of entries.
+
 ## Documentation
 
 See the `Documentation~` folder shipped with this package for installation, minimal usage, backend selection, and limitations.

@@ -28,7 +28,7 @@ namespace PortableList
     public partial class ListVm : ViewModel
     {
         [ObservableProperty]
-        [Bind("Rows", nameof(IListView.Items))]
+        [Bind("Rows", nameof(IListView.ItemsSource))]
         ObservableList<RowVm> items = new ObservableList<RowVm>();
     }
     public sealed class CleanupFailureElement : IElement, IDisposable

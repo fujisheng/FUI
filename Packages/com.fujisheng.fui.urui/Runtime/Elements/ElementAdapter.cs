@@ -13,8 +13,9 @@ namespace FUI.Rendering.URUI
     {
         readonly string name;
         global::URUI.Elements.Element element;
-        bool interactable = true;
         readonly VisibilityLease visibility;
+        BindableProperty<bool> interactable;
+        BindableProperty<Rgba> tint;
 
         static readonly Unity.Profiling.ProfilerMarker constructMarker = new("FUI.URUI.Element.Construct");
         public ElementAdapter(global::URUI.Elements.Element element, string name)
@@ -25,8 +26,6 @@ namespace FUI.Rendering.URUI
 
             visibility = new VisibilityLease(element);
             Visible = visibility.Property;
-            Interactable = new BindableProperty<bool>(element.EnabledInHierarchy, (_, value) => ApplyInteractable(value));
-            Tint = new BindableProperty<Rgba>(new Rgba(1f, 1f, 1f, 1f), (_, value) => ApplyTint(value));
         }
 
         public string Name => name;
@@ -39,14 +38,10 @@ namespace FUI.Rendering.URUI
         }
 
         public BindableProperty<bool> Interactable
-        {
-            get;
-        }
+            => interactable ??= new BindableProperty<bool>(element.EnabledInHierarchy, (_, value) => ApplyInteractable(value));
 
         public BindableProperty<Rgba> Tint
-        {
-            get;
-        }
+            => tint ??= new BindableProperty<Rgba>(new Rgba(1f, 1f, 1f, 1f), (_, value) => ApplyTint(value));
         BindableProperty<ScrollPoint> sizeValue;
         public BindableProperty<ScrollPoint> SizeValue
         {
@@ -79,7 +74,6 @@ namespace FUI.Rendering.URUI
 
         void ApplyInteractable(bool value)
         {
-            interactable = value;
             element.SetEnabled(value);
         }
 
@@ -125,8 +119,8 @@ namespace FUI.Rendering.URUI
             sizeValue?.Dispose();
             localPositionValue?.Dispose();
             visibility.Dispose();
-            Interactable?.Dispose();
-            Tint?.Dispose();
+            interactable?.Dispose();
+            tint?.Dispose();
             element = null;
         }
     }
